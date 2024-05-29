@@ -3,7 +3,7 @@ import Link from "next/link";
 
 interface FigureItemProps {
   className?: string;
-  image?: any;
+  image?: string;
   text?: string;
   url: string;
   size?: string;
@@ -17,7 +17,7 @@ const FigureItem: React.FC<FigureItemProps> = (props) => {
         className={`${props.size} relative flex items-center justify-center`}
       >
         <Image
-          src={props.image}
+          src={`${props.image}`}
           width={1000}
           height={1000}
           alt="this is Back"

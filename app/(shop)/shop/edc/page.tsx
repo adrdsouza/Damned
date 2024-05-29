@@ -4,11 +4,10 @@ import { fetchProducts } from '@/lib/integration/products/query';
 
 const Edc:React.FC = async () => {    
     const products = await fetchProducts('1143');
-    // console.log(products);
     return(
-        <div>
+        <div>            
             <EdcBack />
-            <EdcMain className="mx-5 mt-10" data={products} />
+            <EdcMain className="mx-5 mt-3" data={products} />
         </div>
     )
 }

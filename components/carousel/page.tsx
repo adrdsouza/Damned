@@ -13,7 +13,7 @@ const Carousel: React.FC<CarouselProps> = ({ images }) => {
   const settings = {
     dots: true,
     infinite: true,
-    autoplay: true,    
+    autoplay: true,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
@@ -27,6 +27,14 @@ const Carousel: React.FC<CarouselProps> = ({ images }) => {
             <Image src={`${image}`} alt="" width={1000} height={500} className="h-[700px]" />
           </div>
         ))}
+        {
+          images.length < 2 &&
+          images.map((image, index) => (
+            <div key={index}>
+              <Image src={`${image}`} alt="" width={1000} height={500} className="h-[700px]" />
+          </div>
+          ))
+        }
       </Slider>
     </div>
   );

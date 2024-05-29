@@ -6,29 +6,24 @@ interface PocketItemProps {
   className?: string;
   productId?: string;
   name?: string;
-  price?: string;
+  price?: number;
   img?: any;
   star?: Number;
   onSale: Boolean;
 }
 
-const PocketItem: React.FC<PocketItemProps> = (props) => {
+const Card: React.FC<PocketItemProps> = (props) => {
   return (
-    <div className={`${props.className} relative`}>
+    <div className={`relative`}>
       <Link
         href={{
-          pathname: `/shop/cerberus-fixed/${props.productId}/${props.price}`
-          // pathname: "/shop/cerberus-fixed",
-          // query: {
-          //   name: props.name,
-          //   img: props.img,
-          //   price: props.price
-          // }
+          pathname: `/shop/cerberus-fixed/${props.productId}/${props.price}`,
         }}
-        className="relative w-full max-w-sm bg-white shadow flex justify-center items-center hover:opacity-50 group/button"
+        className="relative w-full bg-white shadow flex justify-center items-center group/button"
       >
         {props.img && (
           <Image
+            className="group-hover/button:opacity-50"
             src={`${props.img}`}
             width={1000}
             height={1000}
@@ -36,14 +31,14 @@ const PocketItem: React.FC<PocketItemProps> = (props) => {
           />
         )}
         {!props.img && (
-          <Image src="/dark.png" width={1000} height={800} alt="product Image" />
+          <Image
+            src="https://damnedventures.com/wp-content/uploads/woocommerce-placeholder-1000x1000.png"
+            width={411}
+            height={308}
+            alt="product Image"
+          />
         )}
         <div className="absolute text-white hidden group-hover/button:block">
-          <span>
-            <h5 className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
-              {props.name}
-            </h5>
-          </span>
           <div className="flex items-center mt-2.5 mb-5">
             <div className="flex items-center space-x-1 rtl:space-x-reverse">
               <svg
@@ -105,8 +100,15 @@ const PocketItem: React.FC<PocketItemProps> = (props) => {
           Sold Out{" "}
         </div>
       )}
+      <div className="flex flex-col">
+        <span>
+          <h5 className="text-lg text-gray-600">
+            {props.name}
+          </h5>
+        </span>
+      </div>
     </div>
   );
 };
 
-export default PocketItem;
+export default Card;

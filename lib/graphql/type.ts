@@ -14,17 +14,13 @@ export interface Product {
   node: {
     id: string;
     name: string;
-    slug: string;
     totalSales: any;
     onSale: Boolean;
-    reviewCount: Number;
-    reviewsAllowed: any;
-    price: string;
-    regularPrice: string;
+    reviewCount: number;
+    price: number;
     image: {
       sourceUrl: string;
-      title: string;
-      alt: string;
+      date: string
     };
   };
 }

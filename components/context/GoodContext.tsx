@@ -9,7 +9,7 @@ interface Good {
 
 interface GoodContextType {
   good: Good[] | null;
-  setGood: (good: Good[] | null) => void;
+  setGood: (update: Good[] | null) => void;
 }
 
 const GoodContext = createContext<GoodContextType | undefined>(undefined);
@@ -27,7 +27,7 @@ export const GoodProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 export const useGood = (): GoodContextType => {
   const context = useContext(GoodContext);
   if (context === undefined) {
-    throw new Error('useUser must be used within a UserProvider');
+    throw new Error('useGood must be used within a GoodProvider');
   }
   return context;
 };

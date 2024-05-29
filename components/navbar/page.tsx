@@ -1,7 +1,5 @@
 "use client";
 import Image from "next/image";
-import Mark1 from "@/public/assets/images/mark1.png";
-import Mark2 from "@/public/assets/images/mark2.png";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -14,7 +12,7 @@ const Page: React.FC<NavbarProps> = (props) => {
 
   return (
     <div
-      className={`flex transition justify-center hover:bg-slate-100 duration-300 py-2 z-10 ${
+      className={`flex transition-all justify-center hover:bg-slate-100 duration-300 py-2 z-50 ${
         props.style ? "text-slate-100" : "text-slate-900 bg-white"
       } hover:text-slate-700`}
       onMouseOver={() => setHover(true)}
@@ -25,20 +23,26 @@ const Page: React.FC<NavbarProps> = (props) => {
           {props.style ? (
             hover ? (
               <Image
-                src={Mark1}
+                src="https://damnedventures.com/wp-content/uploads/Asset-14.png"
+                width={100}
+                height={100}
                 alt="this is mark"
                 className="w-12 hover:opacity-50"
               />
             ) : (
               <Image
-                src={Mark2}
+                src="https://damnedventures.com/wp-content/uploads/Asset-12.png"
+                width={100}
+                height={100}
                 alt="this is mark"
                 className="w-12 hover:opacity-50"
               />
             )
           ) : (
             <Image
-              src={Mark1}
+              src="https://damnedventures.com/wp-content/uploads/Asset-14.png"
+              width={100}
+              height={100}
               alt="this is mark"
               className="w-12 hover:opacity-50"
             />
@@ -66,7 +70,7 @@ const Page: React.FC<NavbarProps> = (props) => {
                     <polyline points="6 9 12 15 18 9" />
                   </svg>
                 </div>
-                <div className="absolute top-full lg:left-[-35vw] left-[-10vw] opacity-0 hidden lg:group-hover/bouton:flex lg:flex-wrap lg:justify-center group-hover/bouton:grid grid-cols-1 gap-[2vw] group-hover/bouton:opacity-100 lg:w-[80vw] w-[60vw] bg-[#a89c9c] py-5 z-10 transition duration-200 text-slate-700">
+                <div className="absolute top-full lg:left-[-35vw] left-[-10vw] opacity-0 hidden lg:group-hover/bouton:flex lg:flex-wrap lg:justify-center group-hover/bouton:grid grid-cols-1 gap-[2vw] group-hover/bouton:opacity-100 lg:w-[80vw] w-[60vw] bg-[#a89c9c] py-5 z-10 text-slate-700">
                   <Link href="/shop/osiris-chef-knives" className="hover:text-slate-200">
                     OSIRIS CHEF KNIFE
                   </Link>
@@ -116,7 +120,7 @@ const Page: React.FC<NavbarProps> = (props) => {
             </svg>
           </Link>
         </div>
-        <Link href="/auth">
+        <Link href="/my-account">
           <svg
             className="h-8 w-8 hover:text-slate-400"
             viewBox="0 0 24 24"

@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 interface CardProps {
   className?: string;
   name?: string;
@@ -13,61 +15,44 @@ const Card: React.FC<CardProps> = (props) => {
     <div className={`${props.className}`}>
       <div className="w-full flex justify-between">
         <div className="flex items-center">
-          <svg
-            className="h-20 w-20 text-green-100"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
+          <Image
+            src="https://damnedventures.com/wp-content/plugins/reviews-feed-pro/vendor/smashballoon/customizer/sb-common/sb-customizer/assets/images/avatar.jpg"
+            width={60}
+            height={60}
+            alt=""
+          />
           <div className="px-2">
             <p className="text-xl font-semibold">{props.name}</p>
             <p>{props.time}</p>
           </div>
         </div>
-        <svg
-          className="h-8 w-8 text-green-500"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          strokeWidth="2"
-          stroke="currentColor"
-          fill="none"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          {" "}
-          <path stroke="none" d="M0 0h24v24H0z" />{" "}
-          <path d="M12 17.75l-6.172 3.245 1.179-6.873-4.993-4.867 6.9-1.002L12 2l3.086 6.253 6.9 1.002-4.993 4.867 1.179 6.873z" />
-        </svg>
+        <Image
+          src="https://damnedventures.com/wp-content/plugins/reviews-feed-pro/assets/icons/trustpilot-provider.svg"
+          width={25}
+          height={25}
+          alt="star"
+        />
       </div>
-      <div className="flex">
+      <div className="flex items-center gap-1 py-5">
         {starArray.map((value, index) => (
-          <svg
-            key={index}
-            className="h-8 w-8 text-green-500"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            strokeWidth="2"
-            stroke="currentColor"
-            fill="none"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            {" "}
-            <path stroke="none" d="M0 0h24v24H0z" />{" "}
-            <path d="M12 17.75l-6.172 3.245 1.179-6.873-4.993-4.867 6.9-1.002L12 2l3.086 6.253 6.9 1.002-4.993 4.867 1.179 6.873z" />
-          </svg>
+          <span key={index}>
+            <svg
+              className="h-5 w-5 text-[#417505]"
+              viewBox="0 0 24 24"
+              stroke="currentColor"        
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                fill="#417505"
+                d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"
+              />
+            </svg>
+          </span>
         ))}
       </div>
-      <p className="my-2 indent-4 truncate">{props.text}</p>
+      <div className="transition-all my-2 indent-4 truncate hover:text-wrap">{props.text}</div>
     </div>
   );
 };

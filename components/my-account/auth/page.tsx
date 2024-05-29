@@ -1,7 +1,7 @@
 "use client";
 
-import Register from "@/components/auth/register/page";
-import Login from "@/components/auth/login/page";
+import Register from "@/components/my-account/auth/register/page";
+import Login from "@/components/my-account/auth/login/page";
 import classnames from "classnames";
 import { useState } from "react";
 
