@@ -5,7 +5,7 @@ const nextConfig = {
     },
     images: {
         domains: ['damnedventures.com']
-    }
+    },
 };
 
 export default nextConfig;

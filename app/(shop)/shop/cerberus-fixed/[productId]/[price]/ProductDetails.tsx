@@ -1,21 +1,39 @@
-'use client';
+"use client";
 
-import { useGood } from '@/components/context/GoodContext';
-import { ProductInfo } from '@/lib/graphql/type';
+import { useState } from "react";
+import { ProductInfo } from "@/lib/graphql/type";
+import { useGood } from "@/components/context/GoodContext";
 
 interface ProductDetailsProps {
   productInfo: ProductInfo;
-  price: string
+  price: string;
 }
 
-const ProductDetails: React.FC<ProductDetailsProps> = ( {productInfo, price} ) => {
+const ProductDetails: React.FC<ProductDetailsProps> = ({
+  productInfo,
+  price,
+}) => {
   const { good, setGood } = useGood();
-  
+  const [type, setType] = useState<any>();
+
   const handleGood = () => {
-    good && good.filter(g => g.name == productInfo.name).length < 1 ?
-    setGood([...good, { name: productInfo.name, price: productInfo.price ? productInfo.price: '' }]) :
-    alert("Already added");
-  }
+    good
+      ? good.filter((g) => g.name == productInfo.name).length < 1
+        ? setGood([
+            ...(good || []),
+            {
+              name: productInfo.name,
+              price: productInfo.price ? productInfo.price : "",
+            },
+          ])
+        : alert("Already added")
+      : setGood([
+          {
+            name: productInfo.name,
+            price: productInfo.price ? productInfo.price : "",
+          },
+        ]);
+  };
 
   return (
     <>
@@ -35,6 +53,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ( {productInfo, price} ) =
                 type="radio"
                 name="countries"
                 value={option}
+                onClick={() => setType(option)}
                 className="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-stone-300 dark:focus:ring-stone-600 dark:focus:bg-stone-600 dark:bg-gray-700 dark:border-gray-600"
               />
               <label
@@ -50,25 +69,40 @@ const ProductDetails: React.FC<ProductDetailsProps> = ( {productInfo, price} ) =
           ))}
         </fieldset>
       </div>
+
+      {type && (
+        <div className="py-1 gap-1">
+          <p>
+            Join the waitlist to be emailed when this product becomes available
+          </p>
+          <div className="flex flex-col w-1/4 gap-1">
+            <input
+              type="email"
+              name=""
+              id=""
+              className="border border-stone-300 px-2 py-1 text-slate-600 focus:outline-none"
+              placeholder="Email Address"
+            />
+            <button className="px-5 py-2 bg-stone-400 uppercase text-white text-xl hover:bg-stone-300">
+              JOIN WAITLIST
+            </button>
+            {/* <p>The email provided is already on the waitlist for this project</p> */}
+          </div>
+        </div>
+      )}
+
       <button
         className="px-4 py-2 w-1/3 text-white bg-stone-400 hover:bg-stone-300 focus:outline-none"
         onClick={handleGood}
       >
-        ADD TO CART
+        <span>ADD TO CART</span>
       </button>
-      <div dangerouslySetInnerHTML={{ __html: productInfo.description}}></div>
-      <p>SPECS</p>
-      <div className="flex flex-col gap-2 text-sm">
-        {/* Assuming you have more specs data to display */}
-        <p>Product ID: {productInfo.id}</p>
-      </div>
-      <div className="gallery">
-        {/* {productInfo.galleryImages.edges.map((imageEdge, index) => (
-          <Image key={index} src={imageEdge.node.sourceUrl} alt={`Gallery image ${index + 1}`} width={100} height={100} />
-        ))} */}
-      </div>
+      <div
+        className="my-5"
+        dangerouslySetInnerHTML={{ __html: productInfo.description }}
+      ></div>
     </>
   );
-}
+};
 
 export default ProductDetails;

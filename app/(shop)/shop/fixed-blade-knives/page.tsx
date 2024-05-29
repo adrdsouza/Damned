@@ -5,8 +5,9 @@ const FixedBladeKnives: React.FC = async () => {
   const product = await fetchProducts('1266', '', '12');
   
   return (
-    <div>
-      <FixedBladeKnivesMain className="mx-5 mt-10" data={product} />
+    <div className="px-5">
+      <p className="mt-5">Home / Fixed blade knives</p>
+      <FixedBladeKnivesMain data={product} />
     </div>
   );
 };

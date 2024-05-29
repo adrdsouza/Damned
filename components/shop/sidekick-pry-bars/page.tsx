@@ -1,8 +1,5 @@
 import Image from "next/image";
 import SideItem from "@/components/card/card";
-import sideBack from "@/public/assets/images/sidekick-back.png";
-import sidekickBar4 from "@/public/assets/images/sidekick-bar4.png";
-import sidekickBar5 from "@/public/assets/images/sidekick-bar5.png";
 import { Product } from "@/lib/graphql/type";
 
 interface SidekideProps {
@@ -16,7 +13,9 @@ const Sidekidkpry: React.FC<SidekideProps> = async (props) => {
       <div className="relative flex justify-center items-center">
         <Image
           className="w-screen h-lvh object-cover"
-          src={sideBack}
+          src="https://damnedventures.com/wp-content/uploads/IMG_23fh38.png"
+          width={1000}
+          height={1000}
           alt="this is back"
         />
         <div className="absolute text-white">
@@ -33,7 +32,7 @@ const Sidekidkpry: React.FC<SidekideProps> = async (props) => {
           <p className="text-lg">Adn yes, it can pry!</p>
         </div>
       </div>
-      <div className="lg:mt-8 flex justify-center gap-8">
+      <div className="lg:mt-8 flex xl:px-96 justify-center gap-8">
         {props.data.map(
           (p, index) =>
             (
@@ -44,28 +43,23 @@ const Sidekidkpry: React.FC<SidekideProps> = async (props) => {
                   name={p.node.name}
                   price={p.node.price}
                   onSale={p.node.onSale}
-                />
-                <p>{p.node.name}</p>
-                <p>{p.node.price}</p>
+                />                                
               </div>
             )
         )}
       </div>
-      <div className="flex lg:mt-10">
+      <div className="flex lg:mt-10" style={{backgroundImage:"url('https://damnedventures.com/wp-content/uploads/1626981433015-scaled-e1714662604922.jpg')", backgroundSize: "cover"}}>
         <Image
           className="w-1/2 h-lvh object-cover"
-          src={sidekickBar4}
+          src="https://damnedventures.com/wp-content/uploads/IMG_5234.jpg"
+          width={1000}
+          height={1000}
           alt="this is bar"
         />
-        <div className="relative w-1/2 flex justify-center items-center">
-          <Image
-            className="w-full h-lvh object-cover"
-            src={sidekickBar5}
-            alt="this is bar"
-          />
-          <div className="absolute w-2/3 text-center text-white">
+        <div className="w-1/2 flex justify-center items-center">          
+          <div className="w-2/3 text-center text-white">
             <p className="text-4xl">Do More</p>
-            <p className="lg:mt-4 text-3xl text-slate-400">Bit by bit</p>
+            <p className="lg:mt-4 text-3xl text-slate-300 italic">Bit by bit</p>
             <p className="lg:mt-8 text-md">
               Want to maintainyour knife on the gor? Replace the supplied bits
               with the relevant torq bits in our bit storage compatments with

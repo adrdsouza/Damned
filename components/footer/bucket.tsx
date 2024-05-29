@@ -27,16 +27,25 @@ export default function Bucket() {
       </button>
       <div className={`${!show && "hidden"} w-screen h-[100vh] flex fixed bottom-0 right-0`}>
         <div className="w-3/4 bg-black opacity-25" onClick={() => setShow(false)}></div>
-        <div className="w-1/4 px-10 gap-5 bg-stone-500 flex flex-col justify-center items-around shadow transition duration-300 linear">
+        <div className="w-1/4  px-10 gap-5 bg-white flex flex-col justify-center items-around shadow transition duration-300 linear">
+          {
+            good && 
+            <div className="flex justify-around text-slate-600">
+              <p>Name</p>
+              <p>Price</p>
+              <p>return</p>
+            </div>
+          }
           {good &&
             good.map((g) => (
-              <div className="flex justify-around text-white" key={g.name}>
+              <div className="flex justify-around  text-slate-600" key={g.name}>
                 <p>{g.name}</p>
                 <p>{g.price}</p>
-                <button onClick={() => setGood([...good.filter((go) => go.name !== g.name)])}>return cart</button>
+                <button className="transition-all duration-500 px-2 py-1 border border-blue-400 text-blue-500 hover:bg-blue-400 hover:text-white" onClick={() => setGood([...good.filter((go) => go.name !== g.name)])}>return cart</button>
               </div>
             ))}
-          <button className="px-5 py-2 bg-white border-4 border-blue-300" onClick={() => setGood(null)}>
+            { !good && <div className="flex justify-center">Your cart is empty!</div>}
+          <button className="lg:mx-20 transition-all duration-500 px-5 py-2 border-2 border-blue-400 text-blue-500 hover:bg-blue-400 hover:text-white" onClick={() => setGood(null)}>
             Return Cart
           </button>
         </div>

@@ -24,7 +24,7 @@ const Help: React.FC = () => {
             name="name"
             id="name"
             placeholder="Found in your order confirmation email."
-            className="px-3 py-2.5 bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-violet-300"
+            className="px-3 py-2.5 bg-gray-100 border border-gray-300 rounded-lg focus:outline-none "
           />
         </div>
         <div className="grid gap-4 lg:ml-8">
@@ -34,11 +34,11 @@ const Help: React.FC = () => {
             name="name"
             id="name"
             placeholder="Email you used during checkout."
-            className="px-3 py-2.5 bg-gray-100 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-violet-300"
+            className="px-3 py-2.5 bg-gray-100 border border-gray-300 rounded-lg focus:outline-none "
           />
         </div>
       </div>
-      <button className="lg:mt-8 px-20 py-3 bg-gradient-to-b from-gray-600 to-gray-900 rounded-lg text-white text-center">
+      <button className="lg:mt-8 px-20 py-3 border-2 border-slate-700 rounded hover:border-stone-100 text-center hover:bg-stone-100">
         Track
       </button>
     </div>
