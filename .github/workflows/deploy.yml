@@ -11,55 +11,33 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: "20" # specify your Node.js version
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build the application
-        run: npm run build
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: nextjs-build
-          path: .next # or your build directory
-
-      - name: Download build artifacts
-        uses: actions/download-artifact@v2
-        with:
-          name: nextjs-build
-          path: .next # or your build directory
+        uses: actions/checkout@v4
 
       - name: Deploy to Server
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          SSH_HOST: damnedventures-new
-          SSH_USER: 107.174.102.231
+          SSH_HOST: 107.174.102.231
+          SSH_USER: github
           SSH_PORT: 22 # default SSH port, change if necessary
         run: |
           echo "$SSH_PRIVATE_KEY" > private_key
           chmod 600 private_key
-          
+
           # Stop old server and clean old files
           ssh -i private_key -p $SSH_PORT $SSH_USER@$SSH_HOST << 'EOF'
             pm2 stop all
             rm -rf /home/damnedventures-new/htdocs/new.damnedventures.com*
           EOF
-          
+
           # Deploy new files
-          rsync -avz -e "ssh -i private_key -p $SSH_PORT" .next/ $SSH_USER@$SSH_HOST:/home/damnedventures-new/htdocs/new.damnedventures.com
+          rsync -avz -e "ssh -i private_key -p $SSH_PORT" ./ $SSH_USER@$SSH_HOST:/home/damnedventures-new/htdocs/new.damnedventures.com
 
           # Install dependencies and start the server with PM2
-          ssh -i private_key -p $SSH_PORT $SSH_USER@$SSH_HOST << 'EOF'
-            cd /path/to/your/deployment/directory
+          ssh -i private_key -p $SSH_PORT $SSH_USER@$SSH_HOST -t << 'EOF'
+            cd /home/damnedventures-new/htdocs/new.damnedventures.com
             npm install
+            npm run build
             pm2 start npm --name "nextjs-app" -- run start
           EOF
-          
+
           rm private_key
