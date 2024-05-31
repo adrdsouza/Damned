@@ -17,7 +17,7 @@ jobs:
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           SSH_HOST: 107.174.102.231
-          SSH_USER: github
+          SSH_USER: damnedventures-new
           SSH_PORT: 22 # default SSH port, change if necessary
         run: |
           ssh -i private_key -p $SSH_PORT $SSH_USER@$SSH_HOST -t << 'EOF'
@@ -29,7 +29,7 @@ jobs:
         uses: appleboy/ssh-action@master
         with:
           host: 107.174.102.231
-          username: github
+          username: damnedventures-new
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
