@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import PocketItem from "../../card/card";
+import { useState, useEffect } from 'react';
+import PocketItem from '../../card/card';
 import GridPagenation, {
   Sorting,
-} from "@/components/pagenation/gridpagenation";
-import Pagenation from "@/components/pagenation/page";
-import { Product } from "@/lib/graphql/type";
+} from '@/components/pagenation/gridpagenation';
+import Pagenation from '@/components/pagenation/page';
+import { Product } from '@/lib/graphql/type';
 
 interface PocketKnivesProps {
   className?: string;
@@ -40,7 +40,7 @@ const PocketKnives: React.FC<PocketKnivesProps> = (props) => {
         total={props.data && props.data.length}
         onSort={setSort}
       />
-      <div className="lg:mt-2 grid grid-cols-4 gap-5">
+      <div className='lg:mt-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5'>
         {Sorting(sort, props.data).map(
           (p, index) =>
             12 * (page - 1) <= index &&
@@ -57,7 +57,7 @@ const PocketKnives: React.FC<PocketKnivesProps> = (props) => {
         )}
       </div>
       <Pagenation
-        className="lg:mt-8"
+        className='lg:mt-8'
         page={page}
         prePage={prePage}
         afterPage={afterPage}

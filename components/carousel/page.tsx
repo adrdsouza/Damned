@@ -1,7 +1,7 @@
 'use client';
 
-import Image from "next/image";
-import Slider from "react-slick";
+import Image from 'next/image';
+import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
@@ -20,21 +20,31 @@ const Carousel: React.FC<CarouselProps> = ({ images }) => {
   };
 
   return (
-    <div className="w-full">
+    <div className='w-full'>
       <Slider {...settings}>
         {images.map((image, index) => (
           <div key={index}>
-            <Image src={`${image}`} alt="" width={1000} height={500} className="h-[700px]" />
+            <Image
+              src={`${image}`}
+              alt=''
+              width={1000}
+              height={1000}
+              className='h-full'
+            />
           </div>
         ))}
-        {
-          images.length < 2 &&
+        {images.length < 2 &&
           images.map((image, index) => (
             <div key={index}>
-              <Image src={`${image}`} alt="" width={1000} height={500} className="h-[700px]" />
-          </div>
-          ))
-        }
+              <Image
+                src={`${image}`}
+                alt=''
+                width={1000}
+                height={500}
+                className='h-[700px]'
+              />
+            </div>
+          ))}
       </Slider>
     </div>
   );

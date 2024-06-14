@@ -16,7 +16,7 @@ export default function RootLayout({
     <html lang='en'>
       <body className={inter.className}>
         <GoodProvider>
-          <Navbar style={true} />
+          <Navbar />
           {children}
           <FooterBar />
         </GoodProvider>

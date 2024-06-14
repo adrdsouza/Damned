@@ -1,5 +1,5 @@
-import Image from "next/image";
-import Link from "next/link";
+import Image from 'next/image';
+import Link from 'next/link';
 
 interface FigureItemProps {
   className?: string;
@@ -10,9 +10,8 @@ interface FigureItemProps {
 }
 
 const FigureItem: React.FC<FigureItemProps> = (props) => {
-  
   return (
-    <Link className={`${props.className} grid`} href={{pathname:props.url}}>
+    <Link className={`${props.className} `} href={{ pathname: props.url }}>
       <figure
         className={`${props.size} relative flex items-center justify-center`}
       >
@@ -20,10 +19,10 @@ const FigureItem: React.FC<FigureItemProps> = (props) => {
           src={`${props.image}`}
           width={1000}
           height={1000}
-          alt="this is Back"
-          className="lg:h-full w-full object-cover hover:opacity-50"
+          alt='this is Back'
+          className='h-full w-full object-cover hover:opacity-50'
         />
-        <figcaption className="absolute text-white">{props.text}</figcaption>
+        <figcaption className='absolute text-white'>{props.text}</figcaption>
       </figure>
     </Link>
   );
