@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 
-import PocketItem from "../../card/card";
+import PocketItem from '../../card/card';
 import GridPagenation, {
   Sorting,
-} from "@/components/pagenation/gridpagenation";
-import Pagenation from "@/components/pagenation/page";
-import { Product } from "@/lib/graphql/type";
+} from '@/components/pagenation/gridpagenation';
+import Pagenation from '@/components/pagenation/page';
+import { Product } from '@/lib/graphql/type';
 
 interface FixedBladeKnivesProps {
   className?: string;
@@ -35,9 +35,13 @@ const FixedBladeKnives: React.FC<FixedBladeKnivesProps> = (props) => {
   }, [page]);
 
   return (
-    <div className={`${props.className} grid justify-items-between py-5`}>      
-      <GridPagenation count={count} total={props.data && props.data.length} onSort={setSort} />
-      <div className="lg:mt-2 grid grid-cols-4 gap-5">
+    <div className={`${props.className} grid justify-items-between py-5`}>
+      <GridPagenation
+        count={count}
+        total={props.data && props.data.length}
+        onSort={setSort}
+      />
+      <div className='lg:mt-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5'>
         {Sorting(sort, props.data).map(
           (p, index) =>
             12 * (page - 1) <= index &&
@@ -54,7 +58,7 @@ const FixedBladeKnives: React.FC<FixedBladeKnivesProps> = (props) => {
         )}
       </div>
       <Pagenation
-        className="lg:mt-8"
+        className='lg:mt-8'
         page={page}
         prePage={prePage}
         afterPage={afterPage}
