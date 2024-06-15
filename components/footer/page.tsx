@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import Buket from './bucket';
 
 interface FooterProps {
@@ -20,7 +21,14 @@ const Footer: React.FC<FooterProps> = (props) => {
         </div>
         <div className='flex gap-2 text-center flex-col sm:flex-row  justify-between'>
           <p className=''>@2017 Damned Design All RightsReserved.</p>
-          <p className=''>T&C | Privacy Policy | Shipping Information</p>
+
+          <div className='flex gap-2'>
+            <Link href='/terms-conditions'>T&C</Link>
+            <p> | </p>
+            <Link href='/privacy-policy'>Privacy Policy</Link>
+            <p> | </p>
+            <Link href='#'>Shipping Information</Link>
+          </div>
         </div>
         <Buket />
       </div>
