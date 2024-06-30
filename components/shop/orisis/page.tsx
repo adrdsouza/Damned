@@ -1,44 +1,43 @@
 'use client';
 
-import { useState } from 'react';
-import Image from 'next/image';
-import { Product } from '@/lib/graphql/type';
 import PocketItem from '@/components/card/card';
-import orisisKnife4 from '@/public/assets/images/orisis-knife4.gif';
-import orisisKnife5 from '@/public/assets/images/orisis-knife5.jpg';
 
 interface OrisisProps {
   className?: string;
-  data: Product[];
+  data: any;
 }
 
 const Orisis: React.FC<OrisisProps> = (props) => {
+  console.log(props.data);
+
   return (
     <div className='w-full bg-white'>
       <div className='2xl:w-[1440px] w-full px-[30px] m-auto'>
-        <div className='py-[2em] md:py-[5em] flex flex-col lg:flex-row justify-center gap-8'>
+        {/* <div className='py-[2em] md:py-[5em] flex flex-col lg:flex-row justify-center gap-8'>
           {props.data.map((p, index) => (
             <div key={index}>
               <PocketItem
-                img={p.node.image && p.node.image.sourceUrl}
-                productId={p.node.id}
-                name={p.node.name}
-                price={p.node.price}
-                onSale={p.node.onSale}
+                img={p.image && p.image.sourceUrl}
+                productId={p.id}
+                name={p.name}
+                price={p.price}
+                slug={p.slug}
+                onSale={false}
+                stockStatus={p.stockStatus === 'OUT_OF_STOCK' ? false : true}
               />
             </div>
           ))}
-        </div>
+        </div> */}
         <div className='flex flex-col lg:flex-row py-[2em] md:py-[5em]'>
           <img
             className='w-full  lg:w-1/2 h-[350px] object-contain '
-            src='https://damnedventures.com/wp-content/uploads/Presentation12.gif'
+            src='https://admin.damneddesigns.com/wp-content/uploads/Presentation12.gif'
             alt='this is orisis'
           />
           <div className='relative w-full lg:w-1/2 grid'>
             <img
               className='w-full h-[350px] object-cover'
-              src='https://damnedventures.com/wp-content/uploads/IMG_2642-scaled.jpg'
+              src='https://admin.damneddesigns.com/wp-content/uploads/IMG_2642-scaled.jpg'
               alt='this is orisis'
             />
             <div className='absolute text-center self-center p-10  text-white'>

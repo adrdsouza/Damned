@@ -18,15 +18,15 @@ const Ticket: React.FC<TicketProps> = (props) => {
       <div className='grid lg:grid-cols-3 gap-10 w-full'>
         <MarkTicket
           text='Buy now, Pay Later. 0% interest'
-          mark='https://damnedventures.com/wp-content/uploads/4payments6weeks0interest-white-1.png'
+          mark='https://admin.damneddesigns.com/wp-content/uploads/4payments6weeks0interest-white-1.png'
         />
         <MarkTicket
           text='Free shipping on US orders over $100'
-          mark='https://damnedventures.com/wp-content/uploads/1_jLAS3yLE6G-ERUcNhAdWUA-Copy-1.png'
+          mark='https://admin.damneddesigns.com/wp-content/uploads/1_jLAS3yLE6G-ERUcNhAdWUA-Copy-1.png'
         />
         <MarkTicket
           text='Military and first responder discounts'
-          mark='https://damnedventures.com/wp-content/uploads/Asset-4-1.png'
+          mark='https://admin.damneddesigns.com/wp-content/uploads/Asset-4-1.png'
         />
       </div>
       {/* <div

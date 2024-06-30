@@ -51,7 +51,7 @@ const Page: React.FC<NavbarProps> = (props) => {
           {navStyle ? (
             hover ? (
               <Image
-                src='https://damnedventures.com/wp-content/uploads/Asset-14.png'
+                src='https://admin.damneddesigns.com/wp-content/uploads/Asset-14.png'
                 width={100}
                 height={100}
                 alt='this is mark'
@@ -59,7 +59,7 @@ const Page: React.FC<NavbarProps> = (props) => {
               />
             ) : (
               <Image
-                src='https://damnedventures.com/wp-content/uploads/Asset-12.png'
+                src='https://admin.damneddesigns.com/wp-content/uploads/Asset-12.png'
                 width={100}
                 height={100}
                 alt='this is mark'
@@ -68,7 +68,7 @@ const Page: React.FC<NavbarProps> = (props) => {
             )
           ) : (
             <Image
-              src='https://damnedventures.com/wp-content/uploads/Asset-14.png'
+              src='https://admin.damneddesigns.com/wp-content/uploads/Asset-14.png'
               width={100}
               height={100}
               alt='this is mark'
@@ -112,9 +112,9 @@ const Page: React.FC<NavbarProps> = (props) => {
                 <Link href='/shop/edc' className='hover:text-slate-200'>
                   POCKET ART
                 </Link>
-                <Link href='/shop/fidget' className='hover:text-slate-200'>
+                {/* <Link href='/shop/fidget' className='hover:text-slate-200'>
                   FIDGET
-                </Link>
+                </Link> */}
                 <Link
                   href='/shop/sidekick-pry-bars'
                   className='hover:text-slate-200'

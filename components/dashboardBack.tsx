@@ -11,11 +11,11 @@ const DashboardBack = () => {
         playsInline
         muted
         className='w-full h-full object-cover'
-        src='https://damnedventures.com/wp-content/uploads/Hero-2.mp4'
+        src='https://admin.damneddesigns.com/wp-content/uploads/Hero-2.mp4'
       >
         <source
           type='video/mp4'
-          src='https://damnedventures.com/wp-content/uploads/Hero-2.mp4'
+          src='https://admin.damneddesigns.com/wp-content/uploads/Hero-2.mp4'
         />
       </video>
     </div>
