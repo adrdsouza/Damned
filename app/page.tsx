@@ -17,7 +17,7 @@ export default async function Home() {
             <div className='flex-1 flex justify-end'>
               <Image
                 className='mt-[-50px] md:mt-[-150px] '
-                src='https://damnedventures.com/wp-content/uploads/996A9287-4-e1714822334887.png'
+                src='https://admin.damneddesigns.com/wp-content/uploads/996A9287-4-e1714822334887.png'
                 width={500}
                 height={500}
                 alt='this is knife'

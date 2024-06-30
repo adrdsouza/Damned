@@ -1,0 +1,337 @@
+fragment ThumbnailImageFields on MediaItem {
+  id
+  sourceUrl(size: WOOCOMMERCE_THUMBNAIL)
+  altText
+}
+
+fragment ImageFields on MediaItem {
+  id
+  sourceUrl
+  altText
+}
+
+fragment ProductContentSlice on ProductUnion {
+  id
+  databaseId
+  name
+  slug
+  type
+  image {
+    ...ThumbnailImageFields
+  }
+  ... on ProductWithPricing {
+    price
+    regularPrice
+    salePrice
+  }
+  ... on InventoriedProduct {
+    stockStatus
+    stockQuantity
+    soldIndividually
+  }
+}
+
+fragment ProductTaxonomies on Product {
+  productCategories(first: 20) {
+    nodes {
+      id
+      slug
+      name
+    }
+  }
+  productTags(first: 20) {
+    nodes {
+      id
+      slug
+      name
+    }
+  }
+}
+
+fragment ProductContentSmall on ProductUnion {
+  id
+  databaseId
+  slug
+  name
+  type
+  ... on ProductUnion {
+    shortDescription(format: RAW)
+  }
+  image {
+    ...ThumbnailImageFields
+  }
+  ... on ProductWithPricing {
+    price
+    regularPrice
+    salePrice
+  }
+  ... on InventoriedProduct {
+    stockStatus
+    stockQuantity
+    soldIndividually
+  }
+}
+
+fragment VariationContent on ProductVariation {
+  id
+  databaseId
+  slug
+  name
+  type
+  ...ProductContentSmall
+  attributes {
+    nodes {
+      id
+      attributeId
+      name
+      value
+      label
+    }
+  }
+}
+
+fragment ProductContentFullRoot on Product {
+  id
+  databaseId
+  slug
+  name
+  type
+  description
+  shortDescription(format: RAW)
+  image {
+    ...ImageFields
+  }
+  galleryImages {
+    nodes {
+      ...ImageFields
+    }
+  }
+  productTags(first: 20) {
+    nodes {
+      id
+      slug
+      name
+    }
+  }
+  attributes(first: 100) {
+    nodes {
+      id
+      attributeId
+      ... on LocalProductAttribute {
+        name
+        label
+        options
+        variation
+      }
+      ... on GlobalProductAttribute {
+        name
+        label
+        options
+        variation
+        slug
+        terms(first: 100) {
+          nodes {
+            id
+            name
+            slug
+          }
+        }
+      }
+    }
+  }
+  ... on ProductWithPricing {
+    price
+    rawPrice: price(format: RAW)
+    regularPrice
+    salePrice
+  }
+  ... on InventoriedProduct {
+    manageStock
+    stockStatus
+    stockQuantity
+    soldIndividually
+  }
+  ... on ProductWithVariations {
+    variations(first: 100) {
+      nodes {
+        ...VariationContent
+      }
+    }
+  }
+  ... on ProductWithAttributes {
+    defaultAttributes(first: 100) {
+      nodes {
+        id
+        attributeId
+        name
+        value
+        label
+      }
+    }
+  }
+}
+
+fragment ProductContentFull on Product {
+  ...ProductContentFullRoot
+}
+
+fragment CartItemContent on CartItem {
+  key
+  product {
+    node {
+      ...ProductContentSlice
+    }
+  }
+  variation {
+    attributes {
+      id
+      label
+      name
+      value
+    }
+    node {
+      ...ProductContentSlice
+    }
+  }
+  quantity
+  total
+  subtotal
+  subtotalTax
+  extraData {
+    key
+    value
+  }
+}
+
+fragment CartContent on Cart {
+  contents(first: 100) {
+    itemCount
+    nodes {
+      ...CartItemContent
+    }
+  }
+  appliedCoupons {
+    code
+    discountAmount
+    discountTax
+  }
+  needsShippingAddress
+  chosenShippingMethods
+  availableShippingMethods {
+    packageDetails
+    supportsShippingCalculator
+    rates {
+      id
+      instanceId
+      methodId
+      label
+      cost
+    }
+  }
+  subtotal
+  subtotalTax
+  shippingTax
+  shippingTotal
+  total(format: RAW)
+  totalTax
+  feeTax
+  feeTotal
+  discountTax
+  discountTotal
+}
+
+fragment LineItemFields on LineItem {
+  id
+  databaseId
+  product {
+    node {
+      ...ProductContentSlice
+    }
+  }
+  variation {
+    node {
+      ...ProductContentSlice
+    }
+  }
+  quantity
+  total
+  subtotal
+  subtotalTax
+}
+
+fragment AddressFields on CustomerAddress {
+  firstName
+  lastName
+  company
+  address1
+  address2
+  city
+  state
+  postcode
+  country
+  email
+  phone
+}
+
+fragment OrderFields on Order {
+  id
+  databaseId
+  orderKey
+  orderNumber
+  status
+  date
+  paymentMethodTitle
+  subtotal
+  shippingTotal
+  shippingTax
+  discountTotal
+  discountTax
+  totalTax
+  total
+  billing {
+    ...AddressFields
+  }
+  shipping {
+    ...AddressFields
+  }
+  lineItems {
+    nodes {
+      ...LineItemFields
+    }
+  }
+}
+
+fragment PaymentTokenFields on PaymentTokenCC {
+  id
+  tokenId
+  isDefault
+  last4
+  expiryMonth
+  expiryYear
+  cardType
+}
+
+fragment CustomerFields on Customer {
+  id
+  databaseId
+  firstName
+  lastName
+  displayName
+  email
+  sessionToken
+  orders {
+    nodes {
+      ...OrderFields
+    }
+  }
+  billing {
+    ...AddressFields
+  }
+  shipping {
+    ...AddressFields
+  }
+  metaData {
+    key
+    value
+  }
+}

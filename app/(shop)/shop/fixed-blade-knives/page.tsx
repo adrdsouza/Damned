@@ -1,13 +1,12 @@
-import FixedBladeKnivesMain from '@/components/shop/fixed-blade-knives/page';
-import { fetchProducts } from '@/lib/integration/products/query';
+import ProductsList from '@/components/shop/products-listing';
+import Products from '@/components/shop/products-listing/products';
+import { fetchProducts } from '@/graphql';
 
 const FixedBladeKnives: React.FC = async () => {
-  const product = await fetchProducts('1266', '', '12');
-
   return (
-    <div className='w-full px-[30px] py-[2em]  2xl:w-[1440px] m-auto'>
+    <div className='w-full px-[30px] py-[2em] md:[5em] 2xl:w-[1440px] m-auto'>
       <p className=''>Home / Fixed blade knives</p>
-      <FixedBladeKnivesMain data={product} />
+      <Products id={1266} showPagination={true} />
     </div>
   );
 };

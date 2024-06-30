@@ -1,11 +1,4 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-    experimental: {
-        typedRoutes: true
-    },
-    images: {
-        domains: ['damnedventures.com']
-    },
-};
+const nextConfig = {};
 
 export default nextConfig;

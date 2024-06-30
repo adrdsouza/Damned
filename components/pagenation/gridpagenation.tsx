@@ -2,27 +2,39 @@
 
 import { Product } from '@/lib/graphql/type';
 
-export const Sorting = (sorttype: number, data: Product[]): Product[] => {
+function extractMinPrice(priceStr) {
+  // Remove the dollar sign and split by hyphen
+  const prices = priceStr.replace('$', '').split(' - ');
+  // Convert to numbers and return the minimum value
+  return parseFloat(prices[0]);
+}
+
+export const Sorting = (sorttype: number, data: any) => {
   switch (sorttype.toString()) {
-    case '1':
-      return data.sort((a, b) => a.node.reviewCount - b.node.reviewCount);
+    // case '1':
+    //   return data.sort((a, b) => a.node.reviewCount - b.node.reviewCount);
     case '2':
       return data.sort(
         (a, b) =>
-          new Date(b.node.image && b.node.image.date).getUTCDate() -
-          new Date(a.node.image && a.node.image.date).getUTCDate()
+          new Date(b.image && b.image.date).getUTCDate() -
+          new Date(a.image && a.image.date).getUTCDate()
       );
     case '3':
-      return data.sort((a, b) => a.node.price - b.node.price);
+      return data.sort(
+        (a, b) => extractMinPrice(a.price) - extractMinPrice(b.price)
+      );
     case '4':
-      return data.sort((a, b) => b.node.price - a.node.price);
+      return data.sort(
+        (a, b) => extractMinPrice(b.price) - extractMinPrice(a.price)
+      );
     case '0':
     default:
       return data.sort((a, b) =>
-        a.node.name.toLowerCase().localeCompare(b.node.name.toLowerCase())
+        a.name.toLowerCase().localeCompare(b.name.toLowerCase())
       );
   }
 };
+
 interface GridPagenation {
   className?: string;
   count?: number;
