@@ -34,7 +34,7 @@ jobs:
           port: 22
           script: |
             pm2 stop all
-            cd /home/damnedventures-new/htdocs/new.spoares.com
+            cd /home/damnedventures-new/htdocs/new.spoares.com/Damned
             npm install
             npm run build
-            pm2 start npm --name "Damned" -- run start
+            pm2 start npm --name "Damned" -- run dev
