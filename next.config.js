@@ -10,7 +10,7 @@ const nextConfig = {
   images: {
     dangerouslyAllowSVG: true,
     // formats: ['image/avif', 'image/webp'],
-    domains: ['admin.damneddesigns.com'],
+    domains: ['admin.damneddesigns.com','damnedventures.com'],
     minimumCacheTTL: 60,
     disableStaticImages: true,
   },
