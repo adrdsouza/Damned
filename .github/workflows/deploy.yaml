@@ -13,18 +13,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Upload to Server
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          SSH_HOST: 107.174.102.231
-          SSH_USER: spoares
-          SSH_PORT: 22 # default SSH port, change if necessary
-        run: |
-          ssh -i private_key -p $SSH_PORT $SSH_USER@$SSH_HOST -t << 'EOF'
-            rm -rf /home/spoares/htdocs/www.spoares.com*
-          EOF
-          rsync -avz -e "ssh -i private_key -p $SSH_PORT" ./ $SSH_USER@$SSH_HOST:/home/spoares-new/htdocs/www.spoares.com
-
       - name: Deploy using ssh
         uses: appleboy/ssh-action@master
         with:
