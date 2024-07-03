@@ -17,24 +17,24 @@ jobs:
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           SSH_HOST: 107.174.102.231
-          SSH_USER: spoares-new
+          SSH_USER: spoares
           SSH_PORT: 22 # default SSH port, change if necessary
         run: |
           ssh -i private_key -p $SSH_PORT $SSH_USER@$SSH_HOST -t << 'EOF'
-            rm -rf /home/spoares-new/htdocs/new.spoares.com*
+            rm -rf /home/spoares/htdocs/www.spoares.com*
           EOF
-          rsync -avz -e "ssh -i private_key -p $SSH_PORT" ./ $SSH_USER@$SSH_HOST:/home/spoares-new/htdocs/new.spoares.com
+          rsync -avz -e "ssh -i private_key -p $SSH_PORT" ./ $SSH_USER@$SSH_HOST:/home/spoares-new/htdocs/www.spoares.com
 
       - name: Deploy using ssh
         uses: appleboy/ssh-action@master
         with:
           host: 107.174.102.231
-          username: spoares-new
+          username: spoares
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
             pm2 stop all
-            cd /home/spoares-new/htdocs/new.spoares.com/Damned
+            cd /home/spoares/htdocs/www.spoares.com/Damned
             npm install
             npm run build
             pm2 start npm --name "Damned" -- run dev
