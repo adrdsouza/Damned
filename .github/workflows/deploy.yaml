@@ -1,28 +1,25 @@
-name: Deploy Next.js Application
+name: Deploy Next.js
 
 on:
   push:
     branches:
-      - master # or the branch you want to trigger the deployment
+      - main  # Trigger on pushes to main branch
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
-
+    
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Deploy using ssh
-        uses: appleboy/ssh-action@master
-        with:
-          host: 107.174.102.231
-          username: spoares
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 22
-          script: |
-            pm2 stop all
-            cd /home/spoares/htdocs/www.spoares.com/Damned
-            npm install
-            npm run build
-            pm2 start npm --name "Damned" -- run dev
+        
+      - name: Install dependencies
+        run: npm install
+        
+      - name: Build Next.js app
+        run: npm run build
+        
+      - name: Deploy to Cloud Panel
+        run: |
+          # Example deployment script (replace with your actual deployment commands)
+          ssh spoares@107.174.102.231 'cd /path/to/nextjs/app && git pull origin main && npm install && npm run build && pm2 restart all'
