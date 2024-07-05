@@ -21,7 +21,7 @@ jobs:
         SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
       run: |
         sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no spoares@107.174.102.231 << EOF
-          cd /htdocs/www.spoares.com/Damned || { echo "Directory not found"; exit 1; }
+          cd htdocs/www.spoares.com/Damned || { echo "Directory not found"; exit 1; }
           git pull origin master
           npm install
           npm run build
