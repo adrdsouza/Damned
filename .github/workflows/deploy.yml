@@ -21,8 +21,9 @@ jobs:
         
       - name: Deploy to Cloud Panel
         run: |
-          'cd /htdocs/www.spoares.com/Damned'
-          git pull origin master
-          npm install
-          npm run build
-          pm2 restart Damned
+           mkdir -p /htdocs/www.spoares.com/Damned
+           cd /htdocs/www.spoares.com/Damned || exit 1
+           git pull origin master
+           npm install
+           npm run build
+           pm2 restart Damned
