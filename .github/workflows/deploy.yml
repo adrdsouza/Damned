@@ -1,29 +1,29 @@
-name: Deploy Next.js
+name: Deploy to Ubuntu Server
 
 on:
   push:
     branches:
-      - master  # Trigger on pushes to main branch
+      - master
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        
-      - name: Install dependencies
-        run: npm install
-        
-      - name: Build Next.js app
-        run: npm run build
-        
-      - name: Deploy to Cloud Panel
-        run: |
-           mkdir -p /htdocs/www.spoares.com/Damned
-           cd /htdocs/www.spoares.com/Damned || exit 1
-           git pull origin master
-           npm install
-           npm run build
-           pm2 restart Damned
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install sshpass
+      run: sudo apt-get install sshpass
+
+    - name: Deploy to server
+      env:
+        SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+      run: |
+        sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no spoares@107.174.102.231 << EOF
+          cd /htdocs/www.spoares.com/Damned || { echo "Directory not found"; exit 1; }
+          git pull origin master
+          npm install
+          npm run build
+          pm2 restart 0
+        EOF
