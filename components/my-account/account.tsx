@@ -2,18 +2,26 @@
 
 import Auth from '@/components/my-account/auth/page';
 import Account from '@/components/my-account/account/page';
-import { Protected } from '@/client/SessionProvider/Protected';
 import { useSession } from '@/client/SessionProvider';
+import { useEffect, useState } from 'react';
+import { CircularProgress } from '@mui/material';
 
 const AccountClient = () => {
-  const { hasCredentials, isAuthenticated, fetching } = useSession();
+  const { isAuthenticated, customer, fetching, hasCredentials } = useSession();
 
   return (
     <div>
-      {isAuthenticated ? <Account /> : <Auth />}
-
-      {/* {isLogin && <Account />}
-      {!isLogin && <Auth />} */}
+      {fetching === false ? (
+        customer && isAuthenticated ? (
+          <Account />
+        ) : (
+          <Auth />
+        )
+      ) : (
+        <div className='w-full h-screen flex justify-center items-center'>
+          <CircularProgress color='inherit' />
+        </div>
+      )}
     </div>
   );
 };

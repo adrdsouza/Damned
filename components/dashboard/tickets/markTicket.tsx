@@ -10,7 +10,7 @@ const MarkTicket: React.FC<MarkTicketProps> = (props) => {
   return (
     <button
       onClick={() => props.onShow(true)}
-      className={`${props.className} lg:py-5 border border-slate-200 bg-slate-50 hover:bg-slate-100 rounded-lg flex flex-col justify-center items-center`}
+      className='p-4 border border-slate-200 bg-slate-50 hover:bg-slate-100 rounded-lg flex flex-col justify-center items-center'
     >
       <Image
         src={`${props.mark}`}
