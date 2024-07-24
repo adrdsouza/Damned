@@ -4,7 +4,6 @@ import FooterBar from '@/components/footer/page';
 import { SessionProvider } from '@/client/SessionProvider';
 import { Toaster } from 'react-hot-toast';
 import ReduxProvider from '@/redux/provider';
-import Cart from '@/components/cart';
 
 export default function RootLayout({
   children,
