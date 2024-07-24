@@ -1,11 +1,8 @@
-import type { Product } from '@woographql/react-hooks';
-
+import { type Product } from '@woographql/react-hooks';
 import { fetchProduct, ProductIdTypeEnum } from '@/graphql';
-import { Suspense } from 'react';
-import Carousel from '@/components/carousel/page';
-
-import { ProductInfo } from '@/lib/graphql/type';
 import ProductDetails from './ProductDetails';
+import { ProductProvider } from '@/client/ProductProvider';
+import ImageCarousel from '@/components/carousel/page';
 
 export interface ProductPageProps {
   params: {
@@ -17,25 +14,25 @@ const ProductPage = async ({ params }: ProductPageProps) => {
   const { slug } = params;
   const product: any = await fetchProduct(slug, ProductIdTypeEnum.SLUG);
 
-  console.log(product);
-
-  if (!slug || !product) return <h1>Page not found</h1>;
+  if (!slug || !product) return <h1>Product not found</h1>;
 
   let images = [
-    product?.image?.sourceUrl,
-    ...product?.galleryImages?.nodes?.map((d: any) => d.sourceUrl),
+    product?.image?.sourceUrl ??
+      'https://admin.damneddesigns.com/wp-content/uploads/woocommerce-placeholder-1000x1000.png',
+    ...product?.galleryImages?.nodes?.map(
+      (d: any) =>
+        d.sourceUrl ??
+        'https://admin.damneddesigns.com/wp-content/uploads/woocommerce-placeholder-1000x1000.png'
+    ),
   ];
 
   return (
-    <div
-      className='2xl:w-[1440px] w-full px-[30px] m-auto py-[2em] md:py-[5em]
-      flex flex-col lg:flex-row gap-10'
-    >
+    <div className='w-full px-8 m-auto py-8 flex flex-col lg:flex-row gap-10'>
       <div className='w-full lg:w-1/2'>
-        <Carousel images={images} />
+        <ImageCarousel images={images} />
       </div>
       <div className='w-full lg:w-1/2 flex flex-col gap-5 py-5'>
-        <ProductDetails productInfo={product} price={product.price} />
+        <ProductDetails product={product} />
       </div>
     </div>
   );

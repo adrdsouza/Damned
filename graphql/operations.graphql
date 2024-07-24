@@ -291,3 +291,23 @@ mutation CreateOrder($input: CreateOrderInput!) {
     }
   }
 }
+
+query orders(
+  $first: Int
+  $last: Int
+  $after: String
+  $before: String
+  $where: RootQueryToOrderConnectionWhereArgs
+) {
+  orders(
+    first: $first
+    last: $last
+    after: $after
+    before: $before
+    where: $where
+  ) {
+    nodes {
+      ...OrderFields
+    }
+  }
+}
