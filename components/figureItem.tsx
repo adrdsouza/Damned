@@ -1,21 +1,28 @@
-import { text } from '@/app/styles';
 import Image from 'next/image';
 import Link from 'next/link';
 
-const FigureItem = ({ data }: any) => {
+interface FigureItemProps {
+  className?: string;
+  image?: string;
+  text?: string;
+  url: string;
+  size?: string;
+}
+
+const FigureItem: React.FC<FigureItemProps> = (props) => {
   return (
-    <Link className='h-full w-full' href={data.href}>
-      <figure className='relative flex items-center justify-center h-full w-full'>
+    <Link className={`${props.className} `} href={{ pathname: props.url }}>
+      <figure
+        className={`${props.size} relative flex items-center justify-center`}
+      >
         <Image
-          src={data.src}
+          src={`${props.image}`}
           width={1000}
           height={1000}
-          alt=''
-          className='h-full w-full object-cover'
+          alt='this is Back'
+          className='h-full w-full object-cover hover:opacity-50'
         />
-        <figcaption className={`${text.md} absolute text-white`}>
-          {data.title}
-        </figcaption>
+        <figcaption className='absolute text-white'>{props.text}</figcaption>
       </figure>
     </Link>
   );

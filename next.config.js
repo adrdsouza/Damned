@@ -9,8 +9,8 @@ const nextConfig = {
   swcMinify: true,
   images: {
     dangerouslyAllowSVG: true,
-    formats: ['image/avif', 'image/webp'],
-    domains: ['admin.damneddesigns.com'],
+    // formats: ['image/avif', 'image/webp'],
+    domains: ['admin.damneddesigns.com','damnedventures.com'],
     minimumCacheTTL: 60,
     disableStaticImages: true,
   },

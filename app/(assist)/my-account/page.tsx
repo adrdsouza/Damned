@@ -1,19 +1,11 @@
-'use client';
+import AccountClient from '@/components/my-account/account';
 
-import { useSession } from '@/client/SessionProvider';
-import { Customer } from '@/graphql';
+export default function Myaccount() {
+  //const [isLogin, setLogin] = useState<Boolean>(false);
 
-export default function DashboardPage() {
-  const { customer } = useSession();
+  // const { hasCredentials, isAuthenticated, fetching } = useSession();
 
-  return (
-    <div className='flex flex-col gap-2'>
-      <p>{`Hello ${customer?.firstName}`}</p>
-      <p>
-        From your account dashboard you can view your recent orders, manage your
-        shipping and billing address, and edit your password and account
-        details.
-      </p>
-    </div>
-  );
+  // console.log(hasCredentials(), isAuthenticated);
+
+  return <AccountClient />;
 }

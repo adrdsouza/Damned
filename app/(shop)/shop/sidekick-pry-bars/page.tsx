@@ -1,14 +1,11 @@
 import { text } from '@/app/styles';
 import ProductsList from '@/components/shop/products-listing';
+import Products from '@/components/shop/products-listing/products';
 import { fetchProducts } from '@/graphql';
+
 import Image from 'next/image';
 
 export default async function SideKid() {
-  const { nodes: products } = await fetchProducts({
-    first: 30,
-    where: { categoryId: 1270 },
-  });
-
   return (
     <div>
       <div className='relative flex justify-center items-center'>
@@ -19,7 +16,7 @@ export default async function SideKid() {
           height={1000}
           alt=''
         />
-        <div className='absolute text-white w-full px-8 py-4 m-auto'>
+        <div className='absolute text-white w-full px-[30px] py-[2em] md:py-[5em] 2xl:w-[1440px] m-auto'>
           <p className={`${text.lg} mb-2`}>SIDEKICK PRY BARS</p>
           <p className={`${text.md} mb-2`}>FUNCTION X AESTHETIC</p>
           <p className={`${text.md}`}>
@@ -30,8 +27,8 @@ export default async function SideKid() {
           </p>
         </div>
       </div>
-      <div className='w-full min-h-[500px] px-8 py-8 m-auto'>
-        <ProductsList data={products} showPagination={false} />
+      <div className='w-full px-[30px] py-[2em] md:py-[5em] 2xl:w-[1440px] m-auto'>
+        <Products id={1270} showPagination={false} />
       </div>
       <div
         className='flex flex-col md:flex-row w-full'

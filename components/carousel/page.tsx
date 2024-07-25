@@ -1,45 +1,53 @@
 'use client';
 
+import Image from 'next/image';
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+
 interface CarouselProps {
   images: string[];
 }
 
-import 'react-responsive-carousel/lib/styles/carousel.min.css';
-import { Carousel } from 'react-responsive-carousel';
-import Image from 'next/image';
-import { useState } from 'react';
-import { CircularProgress } from '@mui/material';
+const Carousel: React.FC<CarouselProps> = ({ images }) => {
+  const settings = {
+    dots: true,
+    infinite: true,
+    autoplay: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+  };
 
-const ImageCarousel = ({ images }: CarouselProps) => {
   return (
-    <Carousel>
-      {images.map((image, index) => (
-        <CustomImage key={index} image={image} />
-        //<Image key={index} src={image} alt='' width={500} height={500} />
-        //<img key={index} src={image} alt='' />
-      ))}
-    </Carousel>
-  );
-};
-
-const CustomImage = ({ image }: any) => {
-  const [loading, setLoading] = useState(true);
-  return (
-    <div className='h-full w-full'>
-      {loading ? (
-        <div className='bg-stone-200 h-full flex w-full'>
-          <CircularProgress sx={{ color: 'grey', m: 'auto' }} />
-        </div>
-      ) : null}
-
-      <Image
-        src={image}
-        alt=''
-        width={500}
-        height={500}
-        onLoadingComplete={() => setLoading(false)}
-      />
+    <div className='w-full'>
+      <Slider {...settings}>
+        {images.map((image, index) => (
+          <div key={index}>
+            <Image
+              src={`${image}`}
+              alt=''
+              width={1000}
+              height={1000}
+              className='h-full'
+            />
+          </div>
+        ))}
+        {images.length < 2 &&
+          images.map((image, index) => (
+            <div key={index}>
+              <Image
+                src={`${image}`}
+                alt=''
+                width={1000}
+                height={500}
+                className='h-[700px]'
+              />
+            </div>
+          ))}
+      </Slider>
     </div>
   );
 };
-export default ImageCarousel;
+
+export default Carousel;

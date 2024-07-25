@@ -5,7 +5,6 @@ import Card from './card';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { text } from '@/app/styles';
 
 interface CardsProps {
   className?: string;
@@ -17,7 +16,7 @@ const Cards: React.FC<CardsProps> = (props) => {
     infinite: true,
     autoplay: true,
     speed: 500,
-    slidesToShow: 4,
+    slidesToShow: 3,
     slidesToScroll: 1,
     responsive: [
       {
@@ -77,7 +76,7 @@ const Cards: React.FC<CardsProps> = (props) => {
     <div
       className={`${props.className} flex flex-col gap-5 py-[1em] md:py-[5em] `}
     >
-      <p className={`${text.lg} text-center `}>A PROVEN TRACK RECORD!</p>
+      <p className='text-2xl text-center '>A PROVEN TRACK RECORD!</p>
       <div className='flex flex-col sm:flex-row items-center justify-between '>
         <div className='flex items-center'>
           <p className='text-xl px-2 font-semibold text-slate-500'>4.7</p>
