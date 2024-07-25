@@ -3,7 +3,6 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useSession } from '@/client/SessionProvider';
 import { TextField } from '@mui/material';
-import toast from 'react-hot-toast';
 
 const validationSchema = Yup.object({
   email: Yup.string()
@@ -35,20 +34,18 @@ const RegisterForm = () => {
     });
 
     if (!!customer?.id && customer.id !== 'guest') {
-      toast.success('You have registered successfully');
       // toast({
       //   title: 'Success',
-      //   description: `Welcome Back! ${customer.firstName}`,
+      //   description: 'You have successfully registered',
       // });
     } else {
-      toast.error(
-        (customer || 'Registration failed. Please try again.') as string
-      );
+      console.log(customer);
       // toast({
-      //   title: 'Login Error',
-      //   description: (customer || 'Login failed. Please try again.') as string,
+      //   title: 'Registration Error',
+      //   description: (customer || 'Failed to register') as string,
       //   variant: 'destructive',
       // });
+
       formik.resetForm();
     }
   };

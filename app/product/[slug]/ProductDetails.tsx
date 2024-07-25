@@ -1,129 +1,111 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { text } from '@/app/styles';
-import {
-  Button,
-  CircularProgress,
-  FormControl,
-  FormControlLabel,
-  Radio,
-  RadioGroup,
-  TextField,
-} from '@mui/material';
-import { useCartMutations, useProduct } from '@woographql/react-hooks';
-import { sessionContext, useSession } from '@/client/SessionProvider';
-import { getRequiredAttributes } from './helpers';
-import toast from 'react-hot-toast';
-import { LoadingButton } from '@mui/lab';
-import { Cart, CartItem } from '@/graphql';
-import { clearLocalStorage, reloadBrowser } from '@/components/utils';
+import { useState } from 'react';
+import { ProductInfo } from '@/lib/graphql/type';
+import { useGood } from '@/components/context/GoodContext';
 
-const ProductDetails = ({ product }: any) => {
-  const [selectedVariation, setSelectedVariation] = useState<any>(null);
-  const [executing, setExecuting] = useState<any>(false);
-  // const { fetching: fetchingSessionData } = useSession();
-  const productId = product.databaseId as number;
-  const variationId = (selectedVariation?.databaseId as number) ?? undefined;
+interface ProductDetailsProps {
+  productInfo: any;
+  price: string;
+}
 
-  const { fetching, mutate, quantityFound } = useCartMutations(
-    {
-      productId,
-      variationId,
-    },
-    sessionContext
-  );
+const ProductDetails: React.FC<ProductDetailsProps> = ({
+  productInfo,
+  price,
+}) => {
+  const { good, setGood } = useGood();
+  const [type, setType] = useState<any>();
 
-  const cartButtonDisabled =
-    fetching ||
-    executing ||
-    selectedVariation?.stockStatus === 'OUT_OF_STOCK' ||
-    !selectedVariation;
+  console.log(productInfo);
 
-  const addToCart = async () => {
-    setExecuting(true);
-    try {
-      if (quantityFound) {
-        toast.success(`${selectedVariation.name} is already added to cart`);
-        setExecuting(false);
-        return;
-      }
-      const flag = await mutate('addToCart', {
-        quantity: 1,
-      });
-      if (!flag) {
-        clearLocalStorage();
-        reloadBrowser();
-        return;
-      }
-      toast.success(`${selectedVariation.name} is added to cart`);
-    } catch (error: any) {
-      console.log(error);
-      if (error.message.includes('out of stock')) {
-        toast.error('Product is currently out of stock.');
-      } else {
-        toast.error('Cart session expired.');
-        setTimeout(() => {
-          reloadBrowser();
-        }, 2000);
-      }
-    }
-    setExecuting(false);
+  const handleGood = () => {
+    good
+      ? good.filter((g) => g.name == productInfo.name).length < 1
+        ? setGood([
+            ...(good || []),
+            {
+              name: productInfo.name,
+              price: productInfo.price ? productInfo.price : '',
+            },
+          ])
+        : alert('Already added')
+      : setGood([
+          {
+            name: productInfo.name,
+            price: productInfo.price ? productInfo.price : '',
+          },
+        ]);
   };
 
   return (
-    <div className='flex flex-col gap-4'>
-      <div>
-        <h1 className={`${text.lg} font-normal uppercase`}>{product.name}</h1>
-        <p className={`${text.lg} font-normal`}>{product.price}</p>
+    <>
+      <p className='text-3xl fond-semibold uppercase'>{productInfo.name}</p>
+      <div className='flex flex-col'>
+        <p className='text-xl'>{productInfo.price}</p>
+        <p>or 4 interest-free payments with</p>
+      </div>
+      <div className='flex flex-col text-sm font-semibold'>
+        <fieldset>
+          <legend className='sr-only'>Countries</legend>
+          {productInfo.attributes.nodes[0].options.map(
+            (option: any, index: any) => (
+              <div className='flex items-center mb-4' key={index}>
+                <input
+                  id={`country-option-${index}`}
+                  type='radio'
+                  name='countries'
+                  value={option}
+                  onClick={() => setType(option)}
+                  className='w-4 h-4 border-gray-300 focus:ring-2 focus:ring-stone-300 dark:focus:ring-stone-600 dark:focus:bg-stone-600 dark:bg-gray-700 dark:border-gray-600'
+                />
+                <label
+                  htmlFor={`country-option-${index}`}
+                  className='block ms-2 text-sm font-medium text-gray-900 dark:text-gray-300'
+                >
+                  <div className='flex flex-col'>
+                    <span>{option}</span>
+                    <span>{price}</span>
+                  </div>
+                </label>
+              </div>
+            )
+          )}
+        </fieldset>
       </div>
 
-      <FormControl>
-        <RadioGroup>
-          {product.variations.nodes.map((option: any) => (
-            <FormControlLabel
-              key={option.id}
-              sx={{ width: 'fit-content', mb: 2 }}
-              onChange={() => {
-                setSelectedVariation(option);
-              }}
-              checked={selectedVariation?.id === option.id}
-              control={<Radio />}
-              label={
-                <div>
-                  <p>{option?.attributes.nodes[0]?.value ?? ''}</p>
-                  <p>{option?.price ?? ''}</p>
-                </div>
-              }
-            />
-          ))}
-        </RadioGroup>
-      </FormControl>
-
-      {selectedVariation?.stockStatus === 'OUT_OF_STOCK' ? (
-        <div className=' flex flex-col gap-4 items-start'>
-          <p>Sold Out!</p>
+      {type && (
+        <div className='py-1 gap-1'>
           <p>
             Join the waitlist to be emailed when this product becomes available
           </p>
-          <TextField type='email' size='small' />
-          <Button className='py-2 px-8 bg-stone-400 w-fit text-white hover:bg-stone-600'>
-            ADD TO WISHLIST
-          </Button>
+          <div className='flex flex-col w-1/4 gap-1'>
+            <input
+              type='email'
+              name=''
+              id=''
+              className='border border-stone-300 px-2 py-1 text-slate-600 focus:outline-none'
+              placeholder='Email Address'
+            />
+            <button className='px-5 py-2 bg-stone-400 uppercase text-white text-xl hover:bg-stone-300'>
+              JOIN WAITLIST
+            </button>
+            {/* <p>The email provided is already on the waitlist for this project</p> */}
+          </div>
         </div>
-      ) : null}
+      )}
 
-      <LoadingButton
-        onClick={addToCart}
-        loading={executing || fetching}
-        disabled={cartButtonDisabled}
-        className='py-2 px-8 bg-stone-400 w-fit text-white hover:bg-stone-600'
+      <button
+        className='px-4 py-2 w-1/3 text-white bg-stone-400 hover:bg-stone-300 focus:outline-none'
+        onClick={handleGood}
       >
-        ADD TO CART
-      </LoadingButton>
+        <span>ADD TO CART</span>
+      </button>
 
-      <div dangerouslySetInnerHTML={{ __html: product.description }} />
-    </div>
+      <div
+        className='my-5'
+        dangerouslySetInnerHTML={{ __html: productInfo.description }}
+      ></div>
+    </>
   );
 };
 

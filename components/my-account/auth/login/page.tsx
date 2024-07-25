@@ -1,11 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useSession } from '@/client/SessionProvider';
 import { TextField, Button } from '@mui/material';
-import toast from 'react-hot-toast';
-import { pallete } from '@/app/styles';
-import { LoadingButton } from '@mui/lab';
+
 const validationSchema = Yup.object({
   email: Yup.string()
     .email('Invalid email address')
@@ -14,29 +12,7 @@ const validationSchema = Yup.object({
 });
 
 const LoginForm = () => {
-  const { login } = useSession();
-  const [loading, setLoading] = useState(false);
-
-  const handleSubmit = async (values) => {
-    setLoading(true);
-    const customer = await login({
-      mutation: 'login',
-      input: {
-        username: values.email,
-        password: values.password,
-      },
-    });
-    setLoading(false);
-
-    console.log(customer);
-
-    if (!!customer?.id && customer.id !== 'guest') {
-      toast.success(`Welcome Back! ${customer.firstName}`);
-    } else {
-      toast.error((customer || 'Login failed. Please try again.') as string);
-      formik.resetForm();
-    }
-  };
+  const { login, fetching } = useSession();
 
   const formik = useFormik({
     initialValues: {
@@ -44,7 +20,31 @@ const LoginForm = () => {
       password: '',
     },
     validationSchema: validationSchema,
-    onSubmit: handleSubmit,
+    onSubmit: async (values) => {
+      const customer = await login({
+        mutation: 'login',
+        input: {
+          username: values.email,
+          password: values.password,
+        },
+      });
+
+      console.log(customer);
+
+      if (!!customer?.id && customer.id !== 'guest') {
+        // toast({
+        //   title: 'Success',
+        //   description: `Welcome Back! ${customer.firstName}`,
+        // });
+      } else {
+        // toast({
+        //   title: 'Login Error',
+        //   description: (customer || 'Login failed. Please try again.') as string,
+        //   variant: 'destructive',
+        // });
+        // formik.resetForm();
+      }
+    },
   });
 
   return (
@@ -81,20 +81,13 @@ const LoginForm = () => {
         />
       </div>
 
-      <LoadingButton
+      <button
         type='submit'
-        sx={{
-          ':hover': {
-            bgcolor: pallete[1],
-          },
-          color: 'white',
-          p: 2,
-          bgcolor: pallete[0],
-        }}
-        loading={loading}
+        className='w-full text-center bg-[#a89c9c] p-3 text-white'
+        disabled={fetching}
       >
-        SIGN IN
-      </LoadingButton>
+        {fetching ? 'Signing In...' : 'SIGN IN'}
+      </button>
     </form>
   );
 };
