@@ -30,7 +30,6 @@ const Footer: React.FC<FooterProps> = (props) => {
             <Link href='#'>Shipping Information</Link>
           </div>
         </div>
-        <Buket />
       </div>
     </div>
   );

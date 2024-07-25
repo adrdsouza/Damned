@@ -1,5 +1,6 @@
 'use client';
 
+import { text } from '@/app/styles';
 import { Product } from '@/lib/graphql/type';
 
 function extractMinPrice(priceStr) {
@@ -48,17 +49,17 @@ const GridPagenation: React.FC<GridPagenation> = (props) => {
   };
 
   return (
-    <div className={`${props.className} w-full flex justify-between lg:px-10`}>
+    <div className={`${props.className} w-full flex mb-2 justify-between`}>
       <div className='flex items-center'>
-        <p className='lg:ml-4 sm:ml-2'>
+        <p className={`${text.sm}`}>
           Showing {props.count && props.count} of {props.total && props.total}{' '}
           results
         </p>
       </div>
       <div className='flex items-center'>
-        <p>Setting Sorting Method</p>
+        {/* <p>Setting Sorting Method</p> */}
         <select
-          className='w-full  lg:ml-4 px-10 py-2 bg-gray-100 border-0 focus:outline-none'
+          className={`w-full ${text.sm} py-2 px-4 rounded bg-gray-100 border-0 focus:outline-none`}
           name=''
           id=''
           onChange={(e) => handleSort(e)}

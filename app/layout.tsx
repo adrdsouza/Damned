@@ -1,12 +1,10 @@
-// import type { Metadata } from "next";
 import Navbar from '@/components/navbar/page';
-import { Inter } from 'next/font/google';
 import './globals.css';
 import FooterBar from '@/components/footer/page';
-import { GoodProvider } from '@/components/context/GoodContext';
 import { SessionProvider } from '@/client/SessionProvider';
-
-const inter = Inter({ subsets: ['latin'] });
+import { Toaster } from 'react-hot-toast';
+import ReduxProvider from '@/redux/provider';
+import Cart from '@/components/cart';
 
 export default function RootLayout({
   children,
@@ -15,14 +13,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='en'>
-      <body suppressHydrationWarning={true} className={inter.className}>
-        <SessionProvider>
-          <GoodProvider>
-            <Navbar />
-            {children}
-            <FooterBar />
-          </GoodProvider>
-        </SessionProvider>
+      <body suppressHydrationWarning={true}>
+        <ReduxProvider>
+          <SessionProvider>
+            <div className='flex flex-col w-full h-screen'>
+              <Navbar />
+              <div className='flex-1'>{children}</div>
+              <FooterBar />
+            </div>
+          </SessionProvider>
+        </ReduxProvider>
+        <Toaster />
       </body>
     </html>
   );
