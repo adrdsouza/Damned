@@ -14,6 +14,7 @@ const ProductsList = ({
   data: any;
   showPagination?: Boolean | undefined;
 }) => {
+  const cols = data.length >= 4 ? 4 : data.length;
   const [page, setPage] = useState<number>(1);
   const [count, setCount] = useState<number>(0);
   const [sort, setSort] = useState<number>(0);
@@ -34,7 +35,7 @@ const ProductsList = ({
   }, [page]);
 
   return (
-    <div className={`grid justify-items-between`}>
+    <div className='grid w-full'>
       {showPagination === true ? (
         <GridPagenation
           count={count}
@@ -43,7 +44,9 @@ const ProductsList = ({
         />
       ) : null}
 
-      <div className='lg:mt-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'>
+      <div
+        className={`lg:mt-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-${cols} gap-2`}
+      >
         {Sorting(sort, data).map(
           (p: any, index) =>
             12 * (page - 1) <= index &&

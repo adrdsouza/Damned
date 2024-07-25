@@ -8,11 +8,12 @@ import type {
 
 import { apiCall } from '@/utils/apiCall';
 import { PaymentTokenCC, Customer as CustomerType } from '@/graphql';
+import getOrders from '@/lib/graphql/orders/query';
+import { useRouter } from 'next/navigation';
 
 type LoginResponse = {
   authToken: string;
   refreshToken: string;
-
   sessionToken: string;
   customer: Customer;
   cart: Cart;
@@ -117,7 +118,9 @@ export function createSessionOperations(
 
       // If
       const itemCount = state.cart?.contents?.itemCount;
+
       console.log({ state });
+
       if (itemCount && itemCount > 0) {
         body.sessionToken = tokens.sessionToken;
         console.log(body);
@@ -132,6 +135,7 @@ export function createSessionOperations(
           });
 
         tokenManager.saveTokens({ sessionToken, authToken, refreshToken });
+
         dispatch({
           type: 'UPDATE_STATE',
           payload: {

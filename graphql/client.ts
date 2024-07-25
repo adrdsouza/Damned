@@ -16,6 +16,9 @@ import {
   CollectionStats,
   RootQueryToProductCategoryConnection,
   Product,
+  RootQueryToOrderConnectionWhereArgs,
+  ordersQueryVariables,
+  RootQueryToOrderConnection,
 } from './generated';
 
 export function getClient() {
@@ -43,6 +46,18 @@ const initialConnectionResults = {
 export function fetchProducts(variables: GetProductsQueryVariables = {}) {
   return apiCall<RootQueryToProductUnionConnection>(
     `${process.env.FRONTEND_URL}/api/products`,
+    {
+      method: 'POST',
+      body: JSON.stringify(variables),
+      next: { revalidate: 24 * HOUR_IN_SECONDS },
+    }
+  );
+}
+
+export function fetchOrders(variables: ordersQueryVariables = {}) {
+  console.log('in fetch ORDERS\n\n\n');
+  return apiCall<RootQueryToOrderConnection>(
+    `${process.env.FRONTEND_URL}/api/orders`,
     {
       method: 'POST',
       body: JSON.stringify(variables),
