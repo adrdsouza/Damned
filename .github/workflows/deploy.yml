@@ -37,6 +37,7 @@ jobs:
             node -v
             npm -v
 
+            npm install pm2 -g
             pm2 -v
 
             # Navigate to project directory and deploy
