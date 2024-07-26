@@ -25,6 +25,8 @@ const NextResponse = BaseResponse<ResponseBody>;
 export async function POST(request: Request) {
   try {
     const input = (await request.json()) as RequestBody;
+
+    console.log('\n\ncreate order input\n\n:', input);
     if (!input.customerId && !input.billing?.email) {
       return NextResponse.json(
         { errors: { message: 'Missing user identifiers' } },

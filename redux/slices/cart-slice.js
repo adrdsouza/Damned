@@ -4,11 +4,12 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   openCart: false,
   cartLoading: false,
-  checkingOut: false,
+  totalLoading: false,
   diffShipAddress: false,
   cartSection: 'CART',
   checkoutSuccess: false,
   paymentMethod: 'cod',
+  changeShipping: true,
 };
 
 const cartSlice = createSlice({
@@ -33,8 +34,11 @@ const cartSlice = createSlice({
     setPaymentMethod: (state, action) => {
       state.paymentMethod = action.payload;
     },
-    setCheckingOut: (state, action) => {
-      state.checkingOut = action.payload;
+    setTotalLoading: (state, action) => {
+      state.totalLoading = action.payload;
+    },
+    setChangeShipping: (state, action) => {
+      state.changeShipping = action.payload;
     },
   },
 });
@@ -46,7 +50,8 @@ export const {
   setDiffShipAddress,
   setCartSection,
   setPaymentMethod,
-  setCheckingOut,
+  setTotalLoading,
+  setChangeShipping,
 } = cartSlice.actions;
 
 export default cartSlice.reducer;

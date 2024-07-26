@@ -15,7 +15,7 @@ export const reloadBrowser = () => {
   if (typeof window !== 'undefined') {
     setTimeout(() => {
       window.location.reload();
-    }, 2000);
+    }, 4000);
   }
 };
 

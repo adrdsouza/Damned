@@ -21,7 +21,7 @@ import {
 import { reloadBrowser } from '@/components/utils';
 import { useOtherCartMutations } from '@woographql/react-hooks';
 import { useSelector } from 'react-redux';
-import { setCartLoading } from '@/redux/slices/cart-slice';
+import { setCartLoading, setChangeShipping } from '@/redux/slices/cart-slice';
 import { dispatch } from '@/redux/store';
 
 const BillingForm = ({ formik }: any) => {
@@ -30,6 +30,9 @@ const BillingForm = ({ formik }: any) => {
   const { setShippingLocale } = useOtherCartMutations<Data>(sessionContext);
   const diffShipAddress = useSelector(
     (state: any) => state.cartSlice.diffShipAddress
+  );
+  const changeShipping = useSelector(
+    (state: any) => state.cartSlice.changeShipping
   );
 
   const billingCountry = formik.values.billing.country as CountriesEnum;
@@ -41,17 +44,6 @@ const BillingForm = ({ formik }: any) => {
   const updateShippingRate = async () => {
     dispatch(setCartLoading(true));
     try {
-      // const detialsUpdated = await updateCheckoutDetails({
-      //   billing: {
-      //     ...formik.values.billing,
-      //     country: formik.values.billing.country,
-      //   },
-      // });
-
-      // if (!detialsUpdated) {
-      //   reloadBrowser();
-      // }
-
       await setShippingLocale({
         country: formik.values.billing.country,
         city: formik.values.billing.city,
@@ -70,13 +62,12 @@ const BillingForm = ({ formik }: any) => {
           ],
         },
       });
-
-      dispatch(setCartLoading(false));
     } catch (error) {
       console.log(error);
       toast.error('Cart Session Expired');
       reloadBrowser();
     }
+    dispatch(setCartLoading(false));
   };
 
   useEffect(() => {
@@ -90,16 +81,31 @@ const BillingForm = ({ formik }: any) => {
   }, [billingStates]);
 
   useEffect(() => {
-    if (!diffShipAddress) {
+    if (
+      !diffShipAddress &&
+      (billingCountry as string) !== '' &&
+      prevBillingCountry.current !== billingCountry
+    ) {
       updateShippingRate();
     }
   }, [billingCountry, diffShipAddress]);
 
+  useEffect(() => {
+    if (changeShipping) {
+      formik.setFieldValue('billing.country', '');
+      dispatch(setChangeShipping(false));
+      const el = document.getElementById('billing-country-select');
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  }, [changeShipping]);
+
   return (
     <div className='grid grid-cols-2 gap-2'>
-      <div className='col-span-2'>BILLING DETAILS</div>
+      <div className='col-span-2 mb-2'>BILLING DETAILS</div>
       <div className='col-span-1'>
-        <label htmlFor='firstName'>First Name</label>
+        {/* <label htmlFor='firstName'>First Name</label> */}
         <TextField
           fullWidth
           size='small'
@@ -121,8 +127,9 @@ const BillingForm = ({ formik }: any) => {
       </div>
 
       <div className='col-span-1'>
-        <label htmlFor='lastName'>Last Name</label>
+        {/* <label htmlFor='lastName'>Last Name</label> */}
         <TextField
+          placeholder='Last Name'
           fullWidth
           variant='outlined'
           name='billing.lastName'
@@ -141,8 +148,15 @@ const BillingForm = ({ formik }: any) => {
         />
       </div>
 
-      <FormControl className='col-span-1' fullWidth size='small'>
-        <label htmlFor='country'>Country / Region</label>
+      <FormControl
+        id='billing-country-select'
+        className='col-span-1'
+        fullWidth
+        size='small'
+      >
+        <label htmlFor='country' className='mb-2'>
+          Country / Region
+        </label>
         <Select
           MenuProps={{
             PaperProps: {
@@ -172,7 +186,9 @@ const BillingForm = ({ formik }: any) => {
       </FormControl>
 
       <FormControl className='col-span-1' fullWidth size='small'>
-        <label htmlFor='state'>State</label>
+        <label htmlFor='state' className='mb-2'>
+          State
+        </label>
         <Select
           MenuProps={{
             PaperProps: {
@@ -203,7 +219,7 @@ const BillingForm = ({ formik }: any) => {
       </FormControl>
 
       <div className='col-span-2 flex flex-col gap-2'>
-        <label htmlFor='address1'>Street Address</label>
+        {/* <label htmlFor='address1'>Street Address</label> */}
         <TextField
           fullWidth
           placeholder='House number and street name'
@@ -243,8 +259,9 @@ const BillingForm = ({ formik }: any) => {
       </div>
 
       <div className='col-span-1'>
-        <label htmlFor='city'>Town / City</label>
+        {/* <label htmlFor='city'>Town / City</label> */}
         <TextField
+          placeholder='Town / City'
           fullWidth
           variant='outlined'
           name='billing.city'
@@ -263,8 +280,9 @@ const BillingForm = ({ formik }: any) => {
       </div>
 
       <div className='col-span-1'>
-        <label htmlFor='postcode'>ZIP Code</label>
+        {/* <label htmlFor='postcode'>ZIP Code</label> */}
         <TextField
+          placeholder='Postcode'
           fullWidth
           variant='outlined'
           name='billing.postcode'
@@ -284,8 +302,9 @@ const BillingForm = ({ formik }: any) => {
       </div>
 
       <div className='col-span-1'>
-        <label htmlFor='phone'>Phone</label>
+        {/* <label htmlFor='phone'>Phone</label> */}
         <TextField
+          placeholder='Phone'
           fullWidth
           variant='outlined'
           name='billing.phone'
@@ -305,8 +324,9 @@ const BillingForm = ({ formik }: any) => {
       </div>
 
       <div className='col-span-1'>
-        <label htmlFor='email'>Email address</label>
+        {/* <label htmlFor='email'>Email address</label> */}
         <TextField
+          placeholder='Email Address'
           fullWidth
           variant='outlined'
           name='billing.email'

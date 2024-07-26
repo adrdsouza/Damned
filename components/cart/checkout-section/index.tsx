@@ -6,7 +6,6 @@ import {
   setCartClose,
   setCartLoading,
   setCartSection,
-  setCheckingOut,
   setPaymentMethod,
 } from '@/redux/slices/cart-slice';
 import { useEffect, useRef, useState } from 'react';
@@ -32,7 +31,6 @@ const CheckoutSection = () => {
   //-------------------->     CONSTANTS & HOOKS
   //-------------------->
   //-------------------->
-  const checkingOut = useSelector((state: any) => state.cartSlice.checkingOut);
   const cartLoading = useSelector((state: any) => state.cartSlice.cartLoading);
 
   const paymentMethods = [
@@ -42,15 +40,14 @@ const CheckoutSection = () => {
   ];
   const { push } = useRouter();
   const [checkoutSuccess, setCheckoutSuccess] = useState<any>(null);
-
   const diffShipAddress = useSelector(
     (state: any) => state.cartSlice.diffShipAddress
   );
   const paymentMethod = useSelector(
     (state: any) => state.cartSlice.paymentMethod
   );
-  // const { cart: cartData, updateCart } = useSession();
-  // const cart = cartData as Cart;
+  const { cart: cartData } = useSession();
+  const cart = cartData as Cart;
 
   const {
     customerId,
@@ -74,12 +71,20 @@ const CheckoutSection = () => {
   };
 
   const handleSubmit = async (values: any) => {
-    dispatch(setCheckingOut(true));
+    dispatch(setCartLoading(true));
     try {
-      const detialsUpdated = await updateCheckoutDetails({
-        billing: values.billing,
-        shipping: diffShipAddress ? values.shipping : values.billing,
-      });
+      let detialsUpdated;
+      if (diffShipAddress) {
+        detialsUpdated = await updateCheckoutDetails({
+          billing: values.billing,
+          shipping: values.shipping,
+        });
+      } else {
+        detialsUpdated = await updateCheckoutDetails({
+          billing: values.billing,
+        });
+      }
+
       if (!detialsUpdated) {
         console.log(detialsUpdated);
         toast.error('Error while updating checkout details.');
@@ -94,7 +99,6 @@ const CheckoutSection = () => {
         lineItems,
         shippingLines,
         coupons,
-        paymentMethod: 'cod',
         paymentMethodTitle: 'Cash on Delivery',
       });
 
@@ -117,7 +121,7 @@ const CheckoutSection = () => {
       toast.error('Cart Session Expired');
       reloadBrowser();
     }
-    dispatch(setCheckingOut(false));
+    dispatch(setCartLoading(false));
   };
 
   const formik = useFormik({
@@ -186,11 +190,11 @@ const CheckoutSection = () => {
 
       <Button
         type='submit'
-        disabled={cartLoading || checkingOut}
+        disabled={cartLoading}
         onClick={() => formik.handleSubmit()}
         className='py-8 bg-stone-500 w-full rounded-none text-white hover:bg-stone-600'
       >
-        Checkout
+        {`Place Order - $${cart?.total}`}
       </Button>
 
       {checkoutSuccess ? (

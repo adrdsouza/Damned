@@ -9,7 +9,11 @@ import {
 } from '@mui/material';
 import { useCountries } from '@/hooks/useCountries';
 import { Cart, CountriesEnum } from '@/graphql';
-import { setCartLoading, setDiffShipAddress } from '@/redux/slices/cart-slice';
+import {
+  setCartLoading,
+  setChangeShipping,
+  setDiffShipAddress,
+} from '@/redux/slices/cart-slice';
 import { Data, sessionContext, useSession } from '@/client/SessionProvider';
 import { useCheckoutDetails } from '@/client/CheckoutProvider';
 import { useOtherCartMutations } from '@woographql/react-hooks';
@@ -26,7 +30,9 @@ const ShippingForm = ({ formik }: any) => {
   const diffShipAddress = useSelector(
     (state: any) => state.cartSlice.diffShipAddress
   );
-
+  const changeShipping = useSelector(
+    (state: any) => state.cartSlice.changeShipping
+  );
   const shippingCountry = formik.values.shipping.country as CountriesEnum;
   const prevShippingCountry = useRef(shippingCountry);
   const { countries: shippingCountries, states: shippingStates } =
@@ -35,17 +41,6 @@ const ShippingForm = ({ formik }: any) => {
   const updateShippingRate = async () => {
     dispatch(setCartLoading(true));
     try {
-      // const detialsUpdated = await updateCheckoutDetails({
-      //   billing: {
-      //     ...formik.values.billing,
-      //     country: formik.values.billing.country,
-      //   },
-      // });
-
-      // if (!detialsUpdated) {
-      //   reloadBrowser();
-      // }
-
       await setShippingLocale({
         country: formik.values.shipping.country,
         city: formik.values.shipping.city,
@@ -83,17 +78,33 @@ const ShippingForm = ({ formik }: any) => {
   }, [shippingStates]);
 
   useEffect(() => {
-    if (diffShipAddress) {
+    if (
+      diffShipAddress &&
+      (shippingCountry as string) !== '' &&
+      prevShippingCountry.current !== shippingCountry
+    ) {
       updateShippingRate();
     }
   }, [shippingCountry, diffShipAddress]);
 
+  useEffect(() => {
+    if (changeShipping) {
+      formik.setFieldValue('shipping.country', '');
+      dispatch(setChangeShipping(false));
+      const el = document.getElementById('shipping-country-select');
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  }, [changeShipping]);
+
   return (
     <div className='grid grid-cols-2 gap-2'>
-      <div className='col-span-2'>SHIPPING DETAILS</div>
+      <div className='col-span-2 mb-2'>SHIPPING DETAILS</div>
       <div className='col-span-1'>
-        <label htmlFor='firstName'>First Name</label>
+        {/* <label htmlFor='firstName'>First Name</label> */}
         <TextField
+          placeholder='First Name'
           fullWidth
           size='small'
           variant='outlined'
@@ -114,8 +125,9 @@ const ShippingForm = ({ formik }: any) => {
       </div>
 
       <div className='col-span-1'>
-        <label htmlFor='lastName'>Last Name</label>
+        {/* <label htmlFor='lastName'>Last Name</label> */}
         <TextField
+          placeholder='Last Name'
           fullWidth
           variant='outlined'
           name='shipping.lastName'
@@ -135,8 +147,15 @@ const ShippingForm = ({ formik }: any) => {
         />
       </div>
 
-      <FormControl className='col-span-1' fullWidth size='small'>
-        <label htmlFor='country'>Country / Region</label>
+      <FormControl
+        id='shipping-country-select'
+        className='col-span-1'
+        fullWidth
+        size='small'
+      >
+        <label htmlFor='country' className='mb-2'>
+          Country / Region
+        </label>
         <Select
           MenuProps={{
             PaperProps: {
@@ -166,7 +185,9 @@ const ShippingForm = ({ formik }: any) => {
       </FormControl>
 
       <FormControl className='col-span-1' fullWidth size='small'>
-        <label htmlFor='state'>State</label>
+        <label htmlFor='state' className='mb-2'>
+          State
+        </label>
         <Select
           MenuProps={{
             PaperProps: {
@@ -197,7 +218,7 @@ const ShippingForm = ({ formik }: any) => {
       </FormControl>
 
       <div className='col-span-2 flex flex-col gap-4'>
-        <label htmlFor='address1'>Street Address</label>
+        {/* <label htmlFor='address1'>Street Address</label> */}
         <TextField
           fullWidth
           placeholder='House number and street name'
@@ -239,8 +260,9 @@ const ShippingForm = ({ formik }: any) => {
       </div>
 
       <div className='col-span-1'>
-        <label htmlFor='city'>Town / City</label>
+        {/* <label htmlFor='city'>Town / City</label> */}
         <TextField
+          placeholder='Town / City'
           fullWidth
           variant='outlined'
           name='shipping.city'
@@ -260,8 +282,9 @@ const ShippingForm = ({ formik }: any) => {
       </div>
 
       <div className='col-span-1'>
-        <label htmlFor='postcode'>ZIP Code</label>
+        {/* <label htmlFor='postcode'>ZIP Code</label> */}
         <TextField
+          placeholder='Postcode'
           fullWidth
           variant='outlined'
           name='shipping.postcode'

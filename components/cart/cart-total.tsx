@@ -7,11 +7,11 @@ import toast from 'react-hot-toast';
 import { Loader, reloadBrowser } from '../utils';
 import { useSelector } from 'react-redux';
 import { dispatch } from '@/redux/store';
-import { setCartLoading } from '@/redux/slices/cart-slice';
+import { setCartLoading, setChangeShipping } from '@/redux/slices/cart-slice';
 
 const CartTotal = ({ showDetails }: { showDetails?: Boolean | undefined }) => {
   const cartLoading = useSelector((state: any) => state.cartSlice.cartLoading);
-  const { cart: cartData } = useSession();
+  const { cart: cartData, fetching } = useSession();
   const cart = cartData as Cart;
   const subTotal = cart?.subtotal;
   const total = cart?.total;
@@ -25,9 +25,9 @@ const CartTotal = ({ showDetails }: { showDetails?: Boolean | undefined }) => {
 
   return (
     <div className='relative w-full'>
-      {cartLoading ? (
+      {/* {fetching || fetching === null ? (
         <Loader className='absolute bg-[#ffffff75] z-[999] w-full h-full' />
-      ) : null}
+      ) : null} */}
 
       <ApplyCoupon />
 
@@ -72,6 +72,10 @@ const ShippingOptions = () => {
   const { cart: cartData } = useSession();
   const cart = cartData as Cart;
 
+  const handleClick = () => {
+    dispatch(setChangeShipping(true));
+  };
+
   const availableShippingRates: ShippingRate[] = (
     cart?.availableShippingMethods || []
   ).reduce<ShippingRate[]>((rates, nextPackage) => {
@@ -82,7 +86,12 @@ const ShippingOptions = () => {
 
   return (
     <div className='p-4'>
-      <p className='mb-2'>Shipping</p>
+      <div className='flex mb-2 gap-2'>
+        <p>Shipping</p>
+        <button onClick={handleClick} className='font-medium'>
+          Edit
+        </button>
+      </div>
       <div className='flex gap-4 justify-between'>
         <p>{availableShippingRates[0]?.label}</p>
         <p>{`$${availableShippingRates[0]?.cost}`}</p>
@@ -97,7 +106,8 @@ const ApplyCoupon = () => {
   const { applyCoupon, applyingCoupon } =
     useOtherCartMutations<Data>(sessionContext);
 
-  const handleClick = async () => {
+  const handleClick = async (e: any) => {
+    e.preventDefault();
     if (coupon === '') {
       toast.error('Please enter a coupon code.');
       return;
@@ -105,10 +115,17 @@ const ApplyCoupon = () => {
     dispatch(setCartLoading(true));
     try {
       await applyCoupon(coupon);
-    } catch (error) {
-      console.log(error);
-      toast.error('Cart session expired');
-      reloadBrowser();
+    } catch (error: any) {
+      if (
+        error.message.includes('does not exist') ||
+        error.message.includes('already been applied')
+      ) {
+        toast.error(error.message);
+      } else {
+        console.log(error);
+        toast.error('Cart session expired');
+        reloadBrowser();
+      }
     }
     dispatch(setCartLoading(false));
   };
@@ -119,7 +136,7 @@ const ApplyCoupon = () => {
         Have a coupon?
       </button>
       {open ? (
-        <div className='border flex w-full'>
+        <form onSubmit={handleClick} className='border flex w-full'>
           <input
             className='p-2 flex-1 focus:outline-none'
             type='text'
@@ -127,13 +144,12 @@ const ApplyCoupon = () => {
             onChange={(e) => setCoupon(e.target.value)}
           />
           <Button
-            onClick={handleClick}
-            disabled={applyingCoupon}
+            type='submit'
             className='bg-stone-400 hover:bg-stone-500 rounded-none text-white px-2'
           >
             APPLY COUPON
           </Button>
-        </div>
+        </form>
       ) : null}
     </div>
   );
@@ -155,8 +171,8 @@ const AppliedCoupons = () => {
                 await removeCoupon(coupon?.code as string);
               } catch (error) {
                 console.log(error);
-                toast.error('Cart session expired');
-                reloadBrowser();
+                //toast.error('Cart session expired');
+                //reloadBrowser();
               }
               dispatch(setCartLoading(false));
             };
