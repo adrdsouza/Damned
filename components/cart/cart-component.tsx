@@ -10,7 +10,7 @@ import CheckoutSection from './checkout-section';
 import PaymentSection from './payment-section';
 
 const CartComponent = () => {
-  const checkingOut = useSelector((state: any) => state.cartSlice.checkingOut);
+  const cartLoading = useSelector((state: any) => state.cartSlice.cartLoading);
   const cartSection = useSelector((state: any) => state.cartSlice.cartSection);
 
   const getCartSection = () => {
@@ -42,7 +42,7 @@ const CartComponent = () => {
         <X />
       </IconButton>
 
-      {checkingOut ? (
+      {cartLoading ? (
         <div className='absolute bg-[#ffffff75] z-[999] h-full w-full flex'>
           <CircularProgress className='m-auto' color='inherit' />
         </div>

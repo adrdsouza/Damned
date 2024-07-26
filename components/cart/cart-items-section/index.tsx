@@ -44,7 +44,7 @@ const CartItemsSection = () => {
             onClick={() => dispatch(setCartSection('CHECKOUT'))}
             className='py-8 bg-stone-500 w-full rounded-none  text-white hover:bg-stone-600'
           >
-            {`Place Order - $${cart?.total}`}
+            checkout
           </Button>
         </>
       )}

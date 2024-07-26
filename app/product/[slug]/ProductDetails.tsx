@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { text } from '@/app/styles';
 import {
   Button,
@@ -22,7 +22,7 @@ import { clearLocalStorage, reloadBrowser } from '@/components/utils';
 const ProductDetails = ({ product }: any) => {
   const [selectedVariation, setSelectedVariation] = useState<any>(null);
   const [executing, setExecuting] = useState<any>(false);
-  // const { fetching: fetchingSessionData } = useSession();
+
   const productId = product.databaseId as number;
   const variationId = (selectedVariation?.databaseId as number) ?? undefined;
 
@@ -33,6 +33,8 @@ const ProductDetails = ({ product }: any) => {
     },
     sessionContext
   );
+  const timeoutRef = useRef<any>(null);
+  const { cart } = useSession();
 
   const cartButtonDisabled =
     executing ||
@@ -47,11 +49,13 @@ const ProductDetails = ({ product }: any) => {
         setExecuting(false);
         return;
       }
+
       const flag = await mutate('addToCart', {
         quantity: 1,
       });
 
       if (!flag) {
+        toast.error('Add to cart failed');
         clearLocalStorage();
         reloadBrowser();
         return;
@@ -63,12 +67,42 @@ const ProductDetails = ({ product }: any) => {
       if (error.message.includes('out of stock')) {
         toast.error('Product is currently out of stock.');
       } else {
+        console.log(error);
         toast.error('Cart session expired.');
         reloadBrowser();
       }
     }
     setExecuting(false);
   };
+
+  useEffect(() => {
+    const startTimeout = () => {
+      timeoutRef.current = setTimeout(() => {
+        if (fetching === false && cart === null) {
+          toast.loading('Loading Cart Session');
+          reloadBrowser();
+        }
+      }, 3000); // 4 seconds timeout
+    };
+
+    if (fetching === false && cart === null) {
+      startTimeout();
+    } else {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+
+      if (fetching === false && cart !== null) {
+        // Fetching is false and cart is not null, no need to create a new timeout
+        return;
+      }
+      if (fetching !== false) {
+        // Fetching changed, start a new timeout
+        startTimeout();
+      }
+    }
+
+    return () => clearTimeout(timeoutRef.current); // Cleanup on unmount
+  }, [fetching, cart]);
 
   return (
     <div className='flex flex-col gap-4'>
@@ -114,7 +148,7 @@ const ProductDetails = ({ product }: any) => {
 
       <LoadingButton
         onClick={addToCart}
-        loading={executing || fetching}
+        loading={executing || !cart}
         disabled={cartButtonDisabled}
         className='py-2 px-8 bg-stone-400 w-fit text-white hover:bg-stone-600'
       >

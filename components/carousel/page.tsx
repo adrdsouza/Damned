@@ -12,7 +12,7 @@ import { CircularProgress } from '@mui/material';
 
 const ImageCarousel = ({ images }: CarouselProps) => {
   return (
-    <Carousel>
+    <Carousel showThumbs={false}>
       {images.map((image, index) => (
         <CustomImage key={index} image={image} />
         //<Image key={index} src={image} alt='' width={500} height={500} />
@@ -37,7 +37,7 @@ const CustomImage = ({ image }: any) => {
         alt=''
         width={500}
         height={500}
-        onLoadingComplete={() => setLoading(false)}
+        onLoad={() => setLoading(false)}
       />
     </div>
   );
