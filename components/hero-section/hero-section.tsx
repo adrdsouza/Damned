@@ -18,7 +18,7 @@ const HeroSection: React.FC = () => {
         </p>
         <Link
           href='/shop'
-          className={`inline-block hover:bg-gray-600 ${text.md} text-xs px-8 py-4 border border-white rounded hover:border-slate`}
+          className={`inline-block ${text.md} text-xs px-8 py-4 border border-white rounded `}
         >
           SHOP NOW
         </Link>

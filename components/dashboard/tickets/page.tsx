@@ -1,13 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import MarkTicket from './markTicket';
 import { Sezzle, SheerMark } from './ticketDisplay';
-interface TicketProps {
-  className?: string;
-}
 
-const Ticket: React.FC<TicketProps> = (props) => {
+const Ticket = () => {
   const [sheerMark, setSheerMark] = useState<Boolean>(false);
   const [sezzle, setSezzle] = useState<Boolean>(false);
   const [shipping, setShipping] = useState<Boolean>(false);

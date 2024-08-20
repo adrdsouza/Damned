@@ -1,5 +1,4 @@
 import { ThankYou } from '@/client/ThankYou';
-import { fetchOrders } from '@/graphql';
 import Link from 'next/link';
 
 const Page = ({

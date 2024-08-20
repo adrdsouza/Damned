@@ -1,5 +1,10 @@
 import ProductsList from '@/components/shop/products-listing';
 import { fetchProducts } from '@/graphql';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Fixed Blade Knives - Damned Designs',
+};
 
 const FixedBladeKnives: React.FC = async () => {
   const { nodes: products } = await fetchProducts({

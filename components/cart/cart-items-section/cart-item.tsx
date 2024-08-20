@@ -1,21 +1,14 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useCartMutations } from '@woographql/react-hooks';
-import {
-  Cart,
-  CartItem as CartItemInterface,
-  StockStatusEnum,
-} from '@/graphql';
-
-import { sessionContext, useSession } from '@/client/SessionProvider';
+import { CartItem as CartItemInterface } from '@/graphql';
+import { sessionContext } from '@/client/SessionProvider';
 import { Minus, Plus, Trash2 } from 'lucide-react';
 import Image from 'next/image';
 import { dispatch } from '@/redux/store';
 import { setCartClose, setCartLoading } from '@/redux/slices/cart-slice';
 import toast from 'react-hot-toast';
-import { useSelector } from 'react-redux';
 import { IconButton } from '@mui/material';
-import { useRouter } from 'next/navigation';
 import { reloadBrowser } from '@/components/utils';
 
 export interface CartItemProps {

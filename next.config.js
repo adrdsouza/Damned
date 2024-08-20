@@ -27,6 +27,7 @@ const nextConfig = {
     STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
     CREATE_ORDER_PASSWORD: process.env.CREATE_ORDER_PASSWORD,
     APP_ENV: process.env.APP_ENV,
+    OFFICIAL_URL: process.env.OFFICIAL_URL,
   },
 };
 

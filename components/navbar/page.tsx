@@ -1,23 +1,11 @@
 'use client';
-import { ChevronDown, Menu, Search, UserCircle } from 'lucide-react';
+
+import { UserCircle } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import MobileNavMenu from './mobile-nav-menu';
-import {
-  Box,
-  Collapse,
-  Grow,
-  IconButton,
-  Paper,
-  useMediaQuery,
-} from '@mui/material';
-import Fade from '@mui/material/Fade';
 import { usePathname } from 'next/navigation';
 import SearchBar from './search-bar';
-import Popover from '@mui/material/Popover';
-import Typography from '@mui/material/Typography';
-import { text } from '@/app/styles';
 import ShopDropdown from './shop-dropdown';
 import Cart from '../cart';
 
@@ -42,7 +30,7 @@ const Page = () => {
          ${
            navStyle
              ? ' text-white'
-             : 'text-slate-700 bg-white border-b border-stone-300'
+             : 'text-slate-700 bg-white border-b border-stone-200'
          }
          `}
     >

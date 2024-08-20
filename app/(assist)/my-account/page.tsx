@@ -1,7 +1,6 @@
 'use client';
 
 import { useSession } from '@/client/SessionProvider';
-import { Customer } from '@/graphql';
 
 export default function DashboardPage() {
   const { customer } = useSession();

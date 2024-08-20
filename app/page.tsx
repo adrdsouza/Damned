@@ -1,13 +1,45 @@
 import Image from 'next/image';
-import Shop from './(shop)/shop/page';
+import Shop from './shop/page';
 import Link from 'next/link';
 import Cards from '@/components/dashboard/cards/page';
 import Ticket from '@/components/dashboard/tickets/page';
 import DashboardBack from '@/components/dashboardBack';
 import HeroSection from '@/components/hero-section/hero-section';
 import { text } from './styles';
+import { Metadata } from 'next';
+import moment from 'moment';
+import { getReviews } from '@/lib/graphql';
+
+export const metadata: Metadata = {
+  title: 'Homepage - Damned Designs',
+  description:
+    'We are on a mission to create well designed, high quality products that are effective, reliable yet affordable. We design products that look great but work',
+  openGraph: {
+    type: 'website',
+    url: process.env.OFFICIAL_URL,
+    siteName: 'Damned Designs',
+    locale: 'en_US',
+  },
+};
 
 export default async function Home() {
+  let reviews;
+  const res: any = await getReviews();
+  if (res) {
+    reviews = res?.trustpilotReviews.map((d: any) => {
+      const json = JSON.parse(d?.json_data ?? '');
+      if (json !== '') {
+        return {
+          id: json?.review_id ?? '',
+          text: json?.text ?? '',
+          rating: json?.rating ?? '',
+          name: json?.reviewer?.name ?? '',
+          time: moment(d?.time_stamp ?? '').fromNow(),
+        };
+      }
+    });
+  }
+
   return (
     <main className='flex flex-col'>
       <DashboardBack page='home' />
@@ -51,7 +83,9 @@ export default async function Home() {
               </Link>
             </div>
           </div>
-          <Cards />
+
+          {reviews ? <Cards reviews={reviews} /> : null}
+
           <Ticket />
         </div>
         <Shop />

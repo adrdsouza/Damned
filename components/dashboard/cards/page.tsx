@@ -7,17 +7,13 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { text } from '@/app/styles';
 
-interface CardsProps {
-  className?: string;
-}
-
-const Cards: React.FC<CardsProps> = (props) => {
+const Cards = ({ reviews }: { reviews: any }) => {
   const settings = {
     dots: true,
     infinite: true,
     autoplay: true,
     speed: 500,
-    slidesToShow: 4,
+    slidesToShow: 3,
     slidesToScroll: 1,
     responsive: [
       {
@@ -74,12 +70,10 @@ const Cards: React.FC<CardsProps> = (props) => {
   };
 
   return (
-    <div
-      className={`${props.className} flex flex-col gap-5 py-[1em] md:py-[5em] `}
-    >
+    <div className='flex flex-col gap-6 py-[1em] md:py-[5em]'>
       <p className={`${text.lg} text-center `}>A PROVEN TRACK RECORD!</p>
       <div className='flex flex-col sm:flex-row items-center justify-between '>
-        <div className='flex items-center'>
+        <div className='mb-2 flex items-center'>
           <p className='text-xl px-2 font-semibold text-slate-500'>4.7</p>
           <div className='flex items-center gap-1'>
             <svg
@@ -152,10 +146,10 @@ const Cards: React.FC<CardsProps> = (props) => {
         <Link
           href='https://www.trustpilot.com/review/damneddesigns.com'
           target='_blank'
-          className='px-2 py-2 bg-black text-white rounded hover:text-stone-200 flex jsutify-around items-center'
+          className={`${text.md} px-2 py-2 bg-black text-white gap-2 rounded flex items-center`}
         >
           <svg
-            className='h-8 w-8 text-green-100'
+            className='h-6 w-6 text-green-100'
             viewBox='0 0 24 24'
             strokeWidth='2'
             stroke='currentColor'
@@ -163,41 +157,25 @@ const Cards: React.FC<CardsProps> = (props) => {
             strokeLinecap='round'
             strokeLinejoin='round'
           >
-            {' '}
-            <path stroke='none' d='M0 0h24v24H0z' />{' '}
-            <path d='M9 7 h-3a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-3' />{' '}
-            <path d='M9 15h3l8.5 -8.5a1.5 1.5 0 0 0 -3 -3l-8.5 8.5v3' />{' '}
+            <path stroke='none' d='M0 0h24v24H0z' />
+            <path d='M9 7 h-3a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-3' />
+            <path d='M9 15h3l8.5 -8.5a1.5 1.5 0 0 0 -3 -3l-8.5 8.5v3' />
             <line x1='16' y1='5' x2='19' y2='8' />
           </svg>
           Write a Review
         </Link>
       </div>
-      <div style={{ width: 'calc(100% - 50px)' }} className=' m-auto'>
+      <div style={{ width: 'calc(100% - 40px)' }} className=' m-auto'>
         <Slider {...settings}>
-          <Card
-            name='Gray'
-            className='mx-2 px-2 pt-5 pb-2'
-            time='2 years ago'
-            star={3}
-            text='I have multiple Dammed design Knives and love every one for a different reasons. The last 3 fixed blades I got exceed all expatiations. First quality of the product next the design and last the shipping experience.
-                    The know how to make the customer happy.'
-          />
-          <Card
-            name='Gray'
-            className='mx-2 px-2 pt-5 pb-2'
-            time='2 years ago'
-            star={3}
-            text='I have multiple Dammed design Knives and love every one for a different reasons. The last 3 fixed blades I got exceed all expatiations. First quality of the product next the design and last the shipping experience.
-                    The know how to make the customer happy.'
-          />
-          <Card
-            name='Gray'
-            className='mx-2 px-2 pt-5 pb-2'
-            time='2 years ago'
-            star={3}
-            text='I have multiple Dammed design Knives and love every one for a different reasons. The last 3 fixed blades I got exceed all expatiations. First quality of the product next the design and last the shipping experience.
-                    The know how to make the customer happy.'
-          />
+          {reviews?.map((review: any) => (
+            <Card
+              key={review.id}
+              name={review.name}
+              time={review.time}
+              star={review.rating}
+              text={review.text}
+            />
+          ))}
         </Slider>
       </div>
     </div>

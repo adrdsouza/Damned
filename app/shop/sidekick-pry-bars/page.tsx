@@ -1,9 +1,14 @@
 import { text } from '@/app/styles';
 import ProductsList from '@/components/shop/products-listing';
 import { fetchProducts } from '@/graphql';
+import { Metadata } from 'next';
 import Image from 'next/image';
 
-export default async function SideKid() {
+export const metadata: Metadata = {
+  title: 'Sidekick Pry Bars - Damned Designs',
+};
+
+const Page: React.FC = async () => {
   const { nodes: products } = await fetchProducts({
     first: 30,
     where: { categoryId: 1270 },
@@ -64,4 +69,6 @@ export default async function SideKid() {
       </div>
     </div>
   );
-}
+};
+
+export default Page;

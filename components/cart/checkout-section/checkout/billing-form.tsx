@@ -1,23 +1,15 @@
-import React, { memo, useEffect, useRef } from 'react';
-import { useFormik } from 'formik';
+import React, { useEffect, useRef } from 'react';
 import { Data, sessionContext, useSession } from '@/client/SessionProvider';
 import {
   FormControl,
   FormHelperText,
-  InputLabel,
   MenuItem,
   Select,
   TextField,
 } from '@mui/material';
 import toast from 'react-hot-toast';
-import { useCheckoutDetails } from '@/client/CheckoutProvider';
 import { useCountries } from '@/hooks/useCountries';
-import {
-  AddressFieldsFragment,
-  Cart,
-  CountriesEnum,
-  CountryState,
-} from '@/graphql';
+import { Cart, CountriesEnum } from '@/graphql';
 import { reloadBrowser } from '@/components/utils';
 import { useOtherCartMutations } from '@woographql/react-hooks';
 import { useSelector } from 'react-redux';
@@ -36,6 +28,7 @@ const BillingForm = ({ formik }: any) => {
   );
 
   const billingCountry = formik.values.billing.country as CountriesEnum;
+
   const prevBillingCountry = useRef(billingCountry);
 
   const { countries: billingCountries, states: billingStates } =

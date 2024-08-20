@@ -1,11 +1,6 @@
 import Link from 'next/link';
-import Buket from './bucket';
 
-interface FooterProps {
-  className?: string;
-}
-
-const Footer: React.FC<FooterProps> = (props) => {
+const Footer = () => {
   return (
     <div className=' bg-[#f1f1f1] w-full '>
       <div className='flex flex-col gap-10 m-auto 2xl:w-[1440px] w-full px-[30px] py-[2em] md:py-[5em]'>
@@ -19,15 +14,15 @@ const Footer: React.FC<FooterProps> = (props) => {
             SUBSCRIBE
           </button>
         </div>
-        <div className='flex gap-2 text-center flex-col sm:flex-row  justify-between'>
-          <p className=''>@2017 Damned Design All RightsReserved.</p>
+        <div className='flex gap-2 text-center flex-col sm:flex-row justify-between'>
+          <p className=''>@2017 Damned Design All Rights Reserved.</p>
 
-          <div className='flex gap-2'>
+          <div className='flex gap-2 justify-center'>
             <Link href='/terms-conditions'>T&C</Link>
             <p> | </p>
             <Link href='/privacy-policy'>Privacy Policy</Link>
-            <p> | </p>
-            <Link href='#'>Shipping Information</Link>
+            {/* <p> | </p>
+            <Link href='#'>Shipping Information</Link> */}
           </div>
         </div>
       </div>

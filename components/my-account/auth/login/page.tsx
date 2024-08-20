@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useSession } from '@/client/SessionProvider';
-import { TextField, Button } from '@mui/material';
+import { TextField } from '@mui/material';
 import toast from 'react-hot-toast';
 import { pallete } from '@/app/styles';
 import { LoadingButton } from '@mui/lab';

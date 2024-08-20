@@ -5,7 +5,6 @@ import CartTotal from '../cart-total';
 import { dispatch } from '@/redux/store';
 import { CartItem as CartItemInterface } from '@/graphql';
 import { setCartClose, setCartSection } from '@/redux/slices/cart-slice';
-import { LoadingButton } from '@mui/lab';
 import { Button } from '@mui/material';
 
 const CartItemsSection = () => {

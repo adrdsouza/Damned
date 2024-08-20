@@ -1,4 +1,9 @@
 import FigureItem from '@/components/figureItem';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Shop - Damned Designs',
+};
 
 const data = [
   {
@@ -38,7 +43,7 @@ const data = [
   },
 ];
 
-const Shop = () => {
+const Shop: React.FC = () => {
   return (
     <div
       className='overflow-hidden

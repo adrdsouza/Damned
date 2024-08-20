@@ -32,7 +32,7 @@ const ProductsList = ({
       if (data.length > page * 12) setCount(12);
       else if (page > 1) setCount(data.length - (page - 1) * 12);
       else setCount(data.length);
-  }, [page]);
+  }, [page, data]);
 
   return (
     <div className='grid w-full'>
