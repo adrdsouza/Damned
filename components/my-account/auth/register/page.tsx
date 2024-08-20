@@ -20,7 +20,7 @@ const validationSchema = Yup.object({
 });
 
 const RegisterForm = () => {
-  const { login, fetching } = useSession();
+  const { login } = useSession();
 
   const handleSubmit = async (values: any) => {
     const customer = await login({

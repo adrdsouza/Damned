@@ -10,7 +10,6 @@ import {
 } from '@/graphql';
 
 export async function GET(request: Request) {
-  console.log('\n\nAUTH get ROUTE\n\n');
   try {
     const client = getClient();
 

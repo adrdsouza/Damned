@@ -1,7 +1,6 @@
 'use client';
 
-import { useSession } from '@/client/SessionProvider';
-import { Customer, LineItem, Order } from '@/graphql';
+import { LineItem, Order } from '@/graphql';
 import Link from 'next/link';
 import './styles.css';
 import { useSelector } from 'react-redux';

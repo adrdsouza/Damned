@@ -1,4 +1,4 @@
-import { ArrowLeft, X } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { text } from '@/app/styles';
 import CartTotal from '../cart-total';
 import { dispatch } from '@/redux/store';
@@ -11,15 +11,11 @@ import {
 import { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { setDiffShipAddress } from '@/redux/slices/cart-slice';
-import {
-  CheckoutProvider,
-  useCheckoutDetails,
-} from '@/client/CheckoutProvider';
+import { useCheckoutDetails } from '@/client/CheckoutProvider';
 import { useRouter } from 'next/navigation';
-import { Data, sessionContext, useSession } from '@/client/SessionProvider';
-import { useOtherCartMutations } from '@woographql/react-hooks';
+import { useSession } from '@/client/SessionProvider';
 import { useFormik } from 'formik';
-import { Cart, CountriesEnum } from '@/graphql';
+import { Cart } from '@/graphql';
 import { combinedSchema, onlyBillingSchema } from './checkout/helpers';
 import BillingForm from './checkout/billing-form';
 import ShippingForm from './checkout/shipping-form';
@@ -31,11 +27,17 @@ const CheckoutSection = () => {
   //-------------------->     CONSTANTS & HOOKS
   //-------------------->
   //-------------------->
+
+  const [validnumber, setValidNumber] = useState('');
+  const [validexpiration, setValidExpiration] = useState('');
+  const [validcvv, setValidCvv] = useState('');
+  const [sezzleResult, setSezzleResult] = useState(null);
+
   const cartLoading = useSelector((state: any) => state.cartSlice.cartLoading);
 
   const paymentMethods = [
-    // { value: 'nmi', name: 'Credit Card' },
-    // { value: 'sezzle', name: 'Sezzle' },
+    { value: 'nmi', name: 'NMI' },
+    { value: 'sezzle', name: 'Sezzle' },
     { value: 'cod', name: 'Cash on Delivery' },
   ];
   const { push } = useRouter();
@@ -61,8 +63,11 @@ const CheckoutSection = () => {
   } = useCheckoutDetails();
 
   const initialValues = { billing: billing, shipping: shipping };
-
+  const formikValues = useRef(initialValues);
   //------------------> FUNCTIONS
+  //-------------------->
+  //-------------------->
+  //-------------------->
   //-------------------->
   //-------------------->
 
@@ -70,10 +75,42 @@ const CheckoutSection = () => {
     dispatch(setPaymentMethod(e.target.value));
   };
 
-  const handleSubmit = async (values: any) => {
+  const handleFormikSubmit = () => {
+    //setValues(values);
+    if (paymentMethod === '') {
+      toast.error('Please choose a payment method.');
+      formik.setSubmitting(false);
+    } else if (paymentMethod === 'nmi') {
+      if (typeof window !== 'undefined') {
+        window.CollectJS.startPaymentRequest();
+      }
+    } else if (paymentMethod === 'sezzle') {
+      const button = document.getElementById('sezzle-smart-button');
+      if (button) {
+        button.click();
+      } else {
+        formik.setSubmitting(false);
+      }
+    } else if (paymentMethod === 'cod') {
+      handleSubmit();
+    }
+  };
+
+  const formik = useFormik({
+    initialValues: initialValues,
+    validationSchema: diffShipAddress ? combinedSchema : onlyBillingSchema,
+    onSubmit: (values) => {
+      handleFormikSubmit(values);
+    },
+  });
+
+  const handleSubmit = async () => {
     dispatch(setCartLoading(true));
     try {
+      const values = formikValues.current;
+
       let detialsUpdated;
+
       if (diffShipAddress) {
         detialsUpdated = await updateCheckoutDetails({
           billing: values.billing,
@@ -92,16 +129,33 @@ const CheckoutSection = () => {
         return;
       }
 
-      const order = await createOrder({
+      const selectedPaymentMethod = paymentMethods.find(
+        (item) => item.value === paymentMethod
+      );
+
+      const payload: any = {
         customerId,
-        billing,
-        shipping,
+        billing: values.billing,
+        shipping: diffShipAddress
+          ? values.shipping
+          : {
+              firstName: values.billing.firstName,
+              lastName: values.billing.lastName,
+              address1: values.billing.address1,
+              address2: values.billing.address2,
+              city: values.billing.city,
+              state: values.billing.state,
+              postcode: values.billing.postcode,
+              country: values.billing.country,
+              company: values.billing.company,
+            },
         lineItems,
         shippingLines,
         coupons,
-        paymentMethodTitle: 'Cash on Delivery',
-      });
+        paymentMethodTitle: selectedPaymentMethod?.name ?? '',
+      };
 
+      const order = await createOrder(payload);
       if (!order) {
         console.log(order);
         toast.error('Error while creating order.');
@@ -115,7 +169,7 @@ const CheckoutSection = () => {
         push(`/order-recieved/${order.orderNumber}?key=${order.orderKey}`);
         dispatch(setCartClose());
         dispatch(setCartSection('CART'));
-      }, 5000);
+      }, 3000);
     } catch (error) {
       console.log(error);
       toast.error('Cart Session Expired');
@@ -124,13 +178,157 @@ const CheckoutSection = () => {
     dispatch(setCartLoading(false));
   };
 
-  const formik = useFormik({
-    initialValues: initialValues,
-    validationSchema: diffShipAddress ? combinedSchema : onlyBillingSchema,
-    onSubmit: (values) => {
-      handleSubmit(values);
-    },
-  });
+  //-----------------> USE EFFECTS ------------------------------>
+  //-------------------->
+  //-------------------->
+
+  useEffect(() => {
+    formikValues.current = formik.values;
+  }, [formik.values]);
+
+  useEffect(() => {
+    if (
+      paymentMethod === 'nmi' &&
+      cart?.total &&
+      typeof window !== 'undefined'
+    ) {
+      window.CollectJS.configure({
+        price: cart?.total ?? '',
+        variant: 'inline',
+        currency: 'USD',
+        country: 'US',
+        customCss: {
+          border: '1px solid #d6d3d1',
+          padding: '20px',
+          'border-radius': '4px',
+          'font-size': '20px',
+          'font-family': 'Montserrat',
+        },
+        invalidCss: {
+          border: '1px solid red',
+        },
+        validCss: {
+          'background-color': '#d0ffd0',
+        },
+        // placeholderCss: {
+        //   color: 'green',
+        //   'background-color': '#687C8D',
+        // },
+        // focusCss: {
+        //   border: '1px solid blue',
+        // },
+        fields: {
+          ccnumber: {
+            selector: '#ccnumber',
+            title: 'Card Number',
+            placeholder: '0000 0000 0000 0000',
+          },
+          ccexp: {
+            selector: '#ccexp',
+            title: 'Card Expiration',
+            placeholder: 'MM / YY',
+          },
+          cvv: {
+            // display: 'show',
+            selector: '#cvv',
+            title: 'CVV Code',
+            placeholder: 'CVV',
+          },
+        },
+        validationCallback: (field, status, message) => {
+          if (!status) {
+            //const m = field + ' is invalid: ' + message;
+            if (field === 'ccnumber') {
+              setValidNumber(message);
+            }
+            if (field === 'ccexp') {
+              setValidExpiration(message);
+            }
+            if (field === 'cvv') {
+              setValidCvv(message);
+            }
+          } else {
+            if (field === 'ccnumber') {
+              setValidNumber('');
+            }
+            if (field === 'ccexp') {
+              setValidExpiration('');
+            }
+            if (field === 'cvv') {
+              setValidCvv('');
+            }
+          }
+        },
+
+        // timeoutDuration: 2000,
+        // timeoutCallback: () => {
+        //   console.log('timeout callback');
+        //   formik.setSubmitting(false);
+        //   // console.log(
+        //   //   "The tokenization didn't respond in the expected timeframe.  This could be due to an invalid or incomplete field or poor connectivity"
+        //   // );
+        //   //setAlertMessage(message);
+        // },
+
+        callback: (token: any) => {
+          console.log(token);
+          if (!token) {
+            toast.error('Transaction failed. Please try again.');
+            return;
+          }
+          handleSubmit();
+        },
+      });
+    }
+  }, [paymentMethod, cart?.total]);
+
+  useEffect(() => {
+    if (
+      paymentMethod === 'sezzle' &&
+      cart?.total &&
+      typeof window !== 'undefined' &&
+      window.Checkout
+    ) {
+      const checkout = new Checkout({
+        mode: 'popup',
+        publicKey: 'sz_pub_mHYs860HGQAamnTUWOMfmOOsISn9slaT', // replace with your Sezzle public key
+        apiMode: 'live', // or 'live'
+        apiVersion: 'v2',
+      });
+
+      checkout.renderSezzleButton('sezzle-smart-button-container');
+
+      checkout.init({
+        onClick: () => {
+          checkout.startCheckout({
+            checkout_payload: {
+              order: {
+                intent: 'AUTH',
+                reference_id: 'ord_12345', // replace with your unique order ID
+                description: 'sezzle-store - #12749253509255',
+                order_amount: {
+                  amount_in_cents: Number(cart?.total as string) * 100,
+                  currency: 'USD',
+                },
+              },
+            },
+          });
+        },
+        onComplete: (event) => {
+          console.log(event.data);
+          setSezzleResult(event.data);
+        },
+        onCancel: () => {
+          console.log('checkout canceled');
+          formik.setSubmitting(false);
+        },
+        onFailure: () => {
+          console.log('checkout failed');
+          formik.setSubmitting(false);
+        },
+      });
+    }
+  }, [paymentMethod, cart?.total]);
 
   useEffect(() => {
     formik.setFormikState((prevState) => ({
@@ -141,6 +339,12 @@ const CheckoutSection = () => {
 
   return (
     <>
+      {sezzleResult ? (
+        <div className=' fixed w-[50%] h-[50%] z-[999999] left-0 text-lg p-4 bg-white text-black'>
+          {JSON.stringify(sezzleResult)}
+        </div>
+      ) : null}
+
       <div className='w-full border-b p-2'>
         <div className='flex gap-6 items-center'>
           <ArrowLeft
@@ -150,6 +354,7 @@ const CheckoutSection = () => {
           <p className={`${text.md} font-medium`}>CHECKOUT</p>
         </div>
       </div>
+
       <div className='relative overflow-scroll flex-col no-scrollbar flex flex-1 justify-between '>
         <div className='p-4 flex flex-col gap-8'>
           <BillingForm formik={formik} />
@@ -176,13 +381,89 @@ const CheckoutSection = () => {
               value={paymentMethod}
               onChange={changePaymentMethod}
             >
-              {paymentMethods.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.name}
-                </MenuItem>
-              ))}
+              <MenuItem key={'nmi'} value={'nmi'}>
+                <div className='flex gap-2'>
+                  <img
+                    src='https://admin.damneddesigns.com/wp-content/plugins/woocommerce/assets/images/icons/credit-cards/visa.svg'
+                    alt='Visa'
+                    width='32'
+                  />
+                  <img
+                    src='https://admin.damneddesigns.com/wp-content/plugins/woocommerce/assets/images/icons/credit-cards/mastercard.svg'
+                    alt='Mastercard'
+                    width='32'
+                  />
+                  <img
+                    src='https://admin.damneddesigns.com/wp-content/plugins/woocommerce/assets/images/icons/credit-cards/amex.svg'
+                    alt='Amex'
+                    width='32'
+                  />
+                  <img
+                    src='https://admin.damneddesigns.com/wp-content/plugins/woocommerce/assets/images/icons/credit-cards/discover.svg'
+                    alt='Discover'
+                    width='32'
+                  />
+                  <img
+                    src='https://admin.damneddesigns.com/wp-content/plugins/woocommerce/assets/images/icons/credit-cards/diners.svg'
+                    alt='Diners Club'
+                    width='32'
+                  />
+                  <img
+                    src='https://admin.damneddesigns.com/wp-content/plugins/woocommerce/assets/images/icons/credit-cards/jcb.svg'
+                    alt='JCB'
+                    width='32'
+                  />
+                  <img
+                    src='https://admin.damneddesigns.com/wp-content/plugins/woocommerce/assets/images/icons/credit-cards/maestro.svg'
+                    alt='Maestro'
+                    width='32'
+                  />
+                </div>
+              </MenuItem>
+              <MenuItem key={'sezzle'} value={'sezzle'}>
+                <img
+                  src='https://d34uoa9py2cgca.cloudfront.net/branding/sezzle-logos/png/sezzle-logo-sm-100w.png'
+                  alt='sezzle'
+                />
+              </MenuItem>
+              <MenuItem key={'cod'} value={'cod'}>
+                Cash on Delivery
+              </MenuItem>
             </Select>
           </FormControl>
+
+          {paymentMethod === 'nmi' ? (
+            <div className='mt-4'>
+              <div className='mb-2'>
+                <div id='ccnumber' />
+                {validnumber && (
+                  <div className='text-red-600 text-[12px]'>{validnumber}</div>
+                )}
+              </div>
+
+              <div className='flex justify-between gap-4'>
+                <div className='w-full'>
+                  <div id='ccexp' />
+                  {validexpiration && (
+                    <div className='text-red-600 text-[12px]'>
+                      {validexpiration}
+                    </div>
+                  )}
+                </div>
+
+                <div className='w-full'>
+                  <div id='cvv' />
+                  {validcvv && (
+                    <div className='text-red-600 text-[12px]'>{validcvv}</div>
+                  )}
+                </div>
+              </div>
+            </div>
+          ) : null}
+
+          {paymentMethod === 'sezzle' ? (
+            <div className='hidden' id='sezzle-smart-button-container' />
+          ) : null}
         </div>
 
         <CartTotal showDetails={true} />
@@ -190,7 +471,7 @@ const CheckoutSection = () => {
 
       <Button
         type='submit'
-        disabled={cartLoading}
+        disabled={cartLoading || formik.isSubmitting}
         onClick={() => formik.handleSubmit()}
         className='py-8 bg-stone-500 w-full rounded-none text-white hover:bg-stone-600'
       >
@@ -199,9 +480,9 @@ const CheckoutSection = () => {
 
       {checkoutSuccess ? (
         <div className='absolute bg-white z-[999] h-full w-full flex '>
-          <div className='m-auto'>
-            <p>
-              {`Thank You for your order. We're redirecting to your order page`}
+          <div className='m-auto p-4 text-center'>
+            <p className='mb-2'>
+              {`Thank You. Your order has been recieved. Plese wait. We're redirecting to your order...`}
             </p>
             <Loader />
           </div>

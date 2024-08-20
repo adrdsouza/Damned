@@ -20,30 +20,30 @@ jobs:
         env:
           SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
         run: |
-          sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no spoares@107.174.102.231 << 'EOF'
-            # Install nvm (Node Version Manager)
-            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.2/install.sh | bash
+          # sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no spoares@107.174.102.231 << 'EOF'
+          #   # Install nvm (Node Version Manager)
+          #   curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.2/install.sh | bash
             
-            # Load nvm
-            export NVM_DIR="$HOME/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+          #   # Load nvm
+          #   export NVM_DIR="$HOME/.nvm"
+          #   [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+          #   [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
             
-            # Install Node.js using nvm
-            nvm install 20
-            nvm use 20
+          #   # Install Node.js using nvm
+          #   nvm install 20
+          #   nvm use 20
             
-            # Verify installation
-            node -v
-            npm -v
+          #   # Verify installation
+          #   node -v
+          #   npm -v
 
-            npm install pm2 -g
-            pm2 -v
+          #   npm install pm2 -g
+          #   pm2 -v
 
-            # Navigate to project directory and deploy
-            cd htdocs/www.spoares.com/Damned || { echo "Directory not found"; exit 1; }
-            git pull origin master
-            npm install
-            npm run build
-            pm2 restart Damned
+          #   # Navigate to project directory and deploy
+          #   cd htdocs/www.spoares.com/Damned || { echo "Directory not found"; exit 1; }
+          #   git pull origin master
+          #   npm install
+          #   npm run build
+          #   pm2 restart Damned
           EOF

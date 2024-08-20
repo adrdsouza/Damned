@@ -1,10 +1,12 @@
-'use client';
-
 import { text } from '@/app/styles';
-import { useSession } from '@/client/SessionProvider';
-import Link from 'next/link';
+
 import { Protected } from './protected';
-import { useRouter } from 'next/navigation';
+import AccountMenu from './account-menu';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'My Account - Damned Designs',
+};
 
 const AccountLayout = ({ children }: any) => {
   return (
@@ -17,39 +19,6 @@ const AccountLayout = ({ children }: any) => {
         </div>
       </div>
     </Protected>
-  );
-};
-
-const AccountMenu = () => {
-  const { logout } = useSession();
-  const router = useRouter();
-
-  const handleLogout = async () => {
-    try {
-      await logout();
-    } catch (error) {
-      router.refresh();
-    }
-  };
-
-  return (
-    <div className='font-medium flex flex-row md:flex-col gap-2 w-full md:w-[300px] flex-wrap mb-10 md:mb-0'>
-      <Link className='w-fit' href={'/my-account'}>
-        Dashboard
-      </Link>
-      <Link className='w-fit' href={'/my-account/orders'}>
-        Orders
-      </Link>
-      <Link className='w-fit' href={'/my-account/edit-address'}>
-        Addresses
-      </Link>
-      <Link className='w-fit' href={'/my-account/account-details'}>
-        Account Details
-      </Link>
-      <Link className='w-fit' onClick={handleLogout} href={'/'}>
-        Log Out
-      </Link>
-    </div>
   );
 };
 

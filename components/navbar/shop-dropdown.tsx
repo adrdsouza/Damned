@@ -1,6 +1,6 @@
 import { text } from '@/app/styles';
-import { Box, Popover, useMediaQuery } from '@mui/material';
-import { ChevronDown, Menu } from 'lucide-react';
+import { Box, Popover } from '@mui/material';
+import { ChevronDown } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Popover from '@mui/material/Popover';
-import { Cross, Search, X } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 const SearchBar = () => {

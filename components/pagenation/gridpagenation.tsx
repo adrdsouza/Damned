@@ -1,7 +1,6 @@
 'use client';
 
 import { text } from '@/app/styles';
-import { Product } from '@/lib/graphql/type';
 
 function extractMinPrice(priceStr) {
   // Remove the dollar sign and split by hyphen

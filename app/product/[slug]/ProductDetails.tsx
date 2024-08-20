@@ -4,22 +4,21 @@ import { useEffect, useRef, useState } from 'react';
 import { text } from '@/app/styles';
 import {
   Button,
-  CircularProgress,
   FormControl,
   FormControlLabel,
   Radio,
   RadioGroup,
   TextField,
 } from '@mui/material';
-import { useCartMutations, useProduct } from '@woographql/react-hooks';
+import { useCartMutations } from '@woographql/react-hooks';
 import { sessionContext, useSession } from '@/client/SessionProvider';
-import { getRequiredAttributes } from './helpers';
 import toast from 'react-hot-toast';
 import { LoadingButton } from '@mui/lab';
-import { Cart, CartItem } from '@/graphql';
 import { clearLocalStorage, reloadBrowser } from '@/components/utils';
+import { addToWaitlist } from '@/lib/graphql';
 
 const ProductDetails = ({ product }: any) => {
+  const [waitlist, setWaitlist] = useState('');
   const [selectedVariation, setSelectedVariation] = useState<any>(null);
   const [executing, setExecuting] = useState<any>(false);
 
@@ -34,7 +33,7 @@ const ProductDetails = ({ product }: any) => {
     sessionContext
   );
   const timeoutRef = useRef<any>(null);
-  const { cart } = useSession();
+  const { cart, customer } = useSession();
 
   const cartButtonDisabled =
     executing ||
@@ -73,6 +72,23 @@ const ProductDetails = ({ product }: any) => {
       }
     }
     setExecuting(false);
+  };
+
+  const handleWaitlist = async (e) => {
+    e.preventDefault();
+    let email;
+    if (customer?.id !== 'guest') {
+      email = customer?.email;
+    } else {
+      email = waitlist;
+    }
+    const res = await addToWaitlist(variationId, email);
+    if (res) {
+      toast.success(res);
+    } else {
+      toast.error('Error while adding user to waitlist.');
+    }
+    setWaitlist('');
   };
 
   useEffect(() => {
@@ -134,16 +150,30 @@ const ProductDetails = ({ product }: any) => {
       </FormControl>
 
       {selectedVariation?.stockStatus === 'OUT_OF_STOCK' ? (
-        <div className=' flex flex-col gap-4 items-start'>
+        <form
+          onSubmit={handleWaitlist}
+          className=' flex flex-col gap-4 items-start'
+        >
           <p>Sold Out!</p>
           <p>
             Join the waitlist to be emailed when this product becomes available
           </p>
-          <TextField type='email' size='small' />
-          <Button className='py-2 px-8 bg-stone-400 w-fit text-white hover:bg-stone-600'>
-            ADD TO WISHLIST
+          {customer?.id === 'guest' ? (
+            <TextField
+              value={waitlist}
+              onChange={(e) => setWaitlist(e.target.value)}
+              type='email'
+              required
+              size='small'
+            />
+          ) : null}
+          <Button
+            type='submit'
+            className='py-2 px-8 bg-stone-400 w-fit text-white hover:bg-stone-600'
+          >
+            ADD TO WAITLIST
           </Button>
-        </div>
+        </form>
       ) : null}
 
       <LoadingButton

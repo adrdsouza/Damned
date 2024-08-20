@@ -1,37 +1,21 @@
 'use client';
 
-import React, { memo, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useFormik } from 'formik';
-import { sessionContext, useSession } from '@/client/SessionProvider';
+import { useSession } from '@/client/SessionProvider';
 import {
   FormControl,
   FormHelperText,
-  InputLabel,
   MenuItem,
   Select,
   TextField,
 } from '@mui/material';
 import toast from 'react-hot-toast';
-import { useCheckoutDetails } from '@/client/CheckoutProvider';
 import { useCountries } from '@/hooks/useCountries';
-import {
-  AddressFieldsFragment,
-  Cart,
-  CountriesEnum,
-  CountryState,
-  Customer,
-  CustomerAddress,
-} from '@/graphql';
-
-import { Address } from '@/client/AddressForm';
-
+import { CountriesEnum, Customer } from '@/graphql';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import * as Yup from 'yup';
-import {
-  billingSchema,
-  onlyBillingSchema,
-} from '@/components/cart/checkout-section/checkout/helpers';
+import { onlyBillingSchema } from '@/components/cart/checkout-section/checkout/helpers';
 
 const BillingForm = () => {
   const { push } = useRouter();

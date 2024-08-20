@@ -1,7 +1,7 @@
 'use client';
 
 import { useSession } from '@/client/SessionProvider';
-import { Customer, fetchOrders, Order } from '@/graphql';
+import { fetchOrders, Order } from '@/graphql';
 import { Loader } from '@/components/utils';
 import Link from 'next/link';
 import { useEffect } from 'react';

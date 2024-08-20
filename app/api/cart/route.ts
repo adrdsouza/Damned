@@ -27,7 +27,6 @@ import {
   Cart,
   getClient,
 } from '@/graphql';
-import { isDev } from '@/utils/dev';
 
 type RequestBody = {
   sessionToken: string;

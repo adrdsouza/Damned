@@ -1,10 +1,14 @@
 import { text } from '@/app/styles';
 import DashboardBack from '@/components/dashboardBack';
-import OrisisMain from '@/components/shop/orisis/page';
 import ProductsList from '@/components/shop/products-listing';
-import { Product, fetchProducts } from '@/graphql';
+import { fetchProducts } from '@/graphql';
+import { Metadata } from 'next';
 
-const Orisis = async () => {
+export const metadata: Metadata = {
+  title: 'Osiris Chef Knives - Damned Designs',
+};
+
+const Orisis: React.FC = async () => {
   const { nodes: products } = await fetchProducts({
     first: 30,
     where: { categoryId: 1269 },
@@ -70,7 +74,5 @@ const Orisis = async () => {
     </div>
   );
 };
-
-const Background = () => {};
 
 export default Orisis;

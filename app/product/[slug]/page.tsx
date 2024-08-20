@@ -1,8 +1,40 @@
-import { type Product } from '@woographql/react-hooks';
 import { fetchProduct, ProductIdTypeEnum } from '@/graphql';
 import ProductDetails from './ProductDetails';
-import { ProductProvider } from '@/client/ProductProvider';
 import ImageCarousel from '@/components/carousel/page';
+import { Metadata } from 'next';
+
+export interface ProductPageProps {
+  params: {
+    slug: string;
+  };
+}
+
+export async function generateMetadata({
+  params,
+}: ProductPageProps): Promise<Metadata> {
+  const { slug } = params;
+  const product: any = await fetchProduct(slug, ProductIdTypeEnum.SLUG);
+
+  let images = [
+    product?.image?.sourceUrl ??
+      'https://admin.damneddesigns.com/wp-content/uploads/woocommerce-placeholder-1000x1000.png',
+    ...product?.galleryImages?.nodes?.map(
+      (d: any) =>
+        d.sourceUrl ??
+        'https://admin.damneddesigns.com/wp-content/uploads/woocommerce-placeholder-1000x1000.png'
+    ),
+  ];
+
+  return {
+    title: product?.name
+      ? `${product.name} - Damned Designs`
+      : 'Product not found',
+
+    openGraph: {
+      images: images,
+    },
+  };
+}
 
 export interface ProductPageProps {
   params: {

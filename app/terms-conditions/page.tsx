@@ -1,3 +1,9 @@
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Terms & Conditions - Damned Designs',
+};
+
 const Page = () => {
   return (
     <div className='flex flex-col gap-[3em] w-full px-[30px] py-[2em] md:py-[4em] 2xl:w-[1440px] m-auto'>

@@ -1,6 +1,4 @@
 'use client';
-import { useState } from 'react';
-import { CircularProgress } from '@mui/material';
 
 const urls: any = {
   home: 'https://admin.damneddesigns.com/wp-content/uploads/Hero-2.mp4',

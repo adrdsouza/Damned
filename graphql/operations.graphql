@@ -311,3 +311,13 @@ query orders(
     }
   }
 }
+
+query getTrustPilotReviews($limit: Int, $paged: Int) {
+  trustpilotReviews(limit: $limit, paged: $paged) {
+    id
+    created_on
+    post_content
+    rating
+    provider
+  }
+}

@@ -2,16 +2,19 @@ import { Data, sessionContext, useSession } from '@/client/SessionProvider';
 import { Cart, ShippingRate } from '@/graphql';
 import { Button } from '@mui/material';
 import { useOtherCartMutations } from '@woographql/react-hooks';
-import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-import { Loader, reloadBrowser } from '../utils';
+import { reloadBrowser } from '../utils';
 import { useSelector } from 'react-redux';
 import { dispatch } from '@/redux/store';
-import { setCartLoading, setChangeShipping } from '@/redux/slices/cart-slice';
+import {
+  setCartLoading,
+  setCartSection,
+  setChangeShipping,
+} from '@/redux/slices/cart-slice';
+import { useState } from 'react';
 
 const CartTotal = ({ showDetails }: { showDetails?: Boolean | undefined }) => {
-  const cartLoading = useSelector((state: any) => state.cartSlice.cartLoading);
-  const { cart: cartData, fetching } = useSession();
+  const { cart: cartData } = useSession();
   const cart = cartData as Cart;
   const subTotal = cart?.subtotal;
   const total = cart?.total;
@@ -61,7 +64,7 @@ const CartTotal = ({ showDetails }: { showDetails?: Boolean | undefined }) => {
       {showDetails ? (
         <div className='flex gap-4 justify-between p-4 border-y'>
           <p className=''>Total</p>
-          <p>{total}</p>
+          <p>{`$${total}`}</p>
         </div>
       ) : null}
     </div>
@@ -71,8 +74,12 @@ const CartTotal = ({ showDetails }: { showDetails?: Boolean | undefined }) => {
 const ShippingOptions = () => {
   const { cart: cartData } = useSession();
   const cart = cartData as Cart;
+  const cartSection = useSelector((state: any) => state.cartSlice.cartSection);
 
   const handleClick = () => {
+    if (cartSection !== 'CHECKOUT') {
+      dispatch(setCartSection('CHECKOUT'));
+    }
     dispatch(setChangeShipping(true));
   };
 
@@ -103,8 +110,7 @@ const ShippingOptions = () => {
 const ApplyCoupon = () => {
   const [open, setOpen] = useState(false);
   const [coupon, setCoupon] = useState('');
-  const { applyCoupon, applyingCoupon } =
-    useOtherCartMutations<Data>(sessionContext);
+  const { applyCoupon } = useOtherCartMutations<Data>(sessionContext);
 
   const handleClick = async (e: any) => {
     e.preventDefault();

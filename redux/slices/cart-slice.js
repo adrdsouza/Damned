@@ -8,7 +8,7 @@ const initialState = {
   diffShipAddress: false,
   cartSection: 'CART',
   checkoutSuccess: false,
-  paymentMethod: 'cod',
+  paymentMethod: '',
   changeShipping: true,
 };
 

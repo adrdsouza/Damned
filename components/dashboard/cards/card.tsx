@@ -1,10 +1,10 @@
 'use client';
 
+import { text } from '@/app/styles';
 import Image from 'next/image';
 import { useState } from 'react';
 
 interface CardProps {
-  className?: string;
   name?: string;
   time?: string;
   star?: Number;
@@ -17,18 +17,18 @@ const Card: React.FC<CardProps> = (props) => {
   const starArray = [0, 1, 2, 3, 4];
 
   return (
-    <div className={`${props.className}`}>
+    <div className='min-h-[150px] p-4'>
       <div className='w-full flex justify-between'>
-        <div className='flex items-center'>
+        <div className='flex items-center gap-4'>
           <Image
             src='https://admin.damneddesigns.com/wp-content/plugins/reviews-feed-pro/vendor/smashballoon/customizer/sb-common/sb-customizer/assets/images/avatar.jpg'
-            width={60}
-            height={60}
+            width={50}
+            height={50}
             alt=''
           />
-          <div className='px-2'>
-            <p className='text-xl font-semibold'>{props.name}</p>
-            <p>{props.time}</p>
+          <div>
+            <p className={`${text.md} font-semibold`}>{props.name}</p>
+            <p className={`${text.md}`}>{props.time}</p>
           </div>
         </div>
         <Image
@@ -38,7 +38,7 @@ const Card: React.FC<CardProps> = (props) => {
           alt='star'
         />
       </div>
-      <div className='flex items-center gap-1 py-5'>
+      <div className='flex items-center gap-1 py-4'>
         {starArray.map((value, index) => (
           <span key={index}>
             <svg
@@ -58,9 +58,7 @@ const Card: React.FC<CardProps> = (props) => {
         ))}
       </div>
       <div
-        className={`transition-all my-2 indent-4 cursor-pointer truncate ${
-          wrap && 'text-wrap'
-        }`}
+        className={`${text.md} cursor-pointer truncate ${wrap && 'text-wrap'}`}
         onClick={() => setWrap(!wrap)}
       >
         {props.text}

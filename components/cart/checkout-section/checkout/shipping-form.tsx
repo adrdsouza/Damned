@@ -2,20 +2,14 @@ import React, { memo, useEffect, useRef } from 'react';
 import {
   FormControl,
   FormHelperText,
-  InputLabel,
   MenuItem,
   Select,
   TextField,
 } from '@mui/material';
 import { useCountries } from '@/hooks/useCountries';
 import { Cart, CountriesEnum } from '@/graphql';
-import {
-  setCartLoading,
-  setChangeShipping,
-  setDiffShipAddress,
-} from '@/redux/slices/cart-slice';
+import { setCartLoading, setChangeShipping } from '@/redux/slices/cart-slice';
 import { Data, sessionContext, useSession } from '@/client/SessionProvider';
-import { useCheckoutDetails } from '@/client/CheckoutProvider';
 import { useOtherCartMutations } from '@woographql/react-hooks';
 import { useSelector } from 'react-redux';
 import { dispatch } from '@/redux/store';
@@ -85,7 +79,7 @@ const ShippingForm = ({ formik }: any) => {
     ) {
       updateShippingRate();
     }
-  }, [shippingCountry, diffShipAddress]);
+  }, [shippingCountry, diffShipAddress, updateShippingRate]);
 
   useEffect(() => {
     if (changeShipping) {

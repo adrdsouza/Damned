@@ -1,8 +1,15 @@
 import DashboardBack from '@/components/dashboardBack';
 import ProductsList from '@/components/shop/products-listing';
 import { fetchProducts } from '@/graphql';
+import { Metadata } from 'next';
 
-const Edc = async () => {
+export const metadata: Metadata = {
+  title: 'Every Day Carry: EDC tools and accessories - Damned Designs',
+  description:
+    'EDC tools, expertly crafted with great attention to detail. Damned Designs is where breathtaking aesthetics meets uncompromising functionality.',
+};
+
+const Edc: React.FC = async () => {
   const { nodes: products } = await fetchProducts({
     first: 50,
     where: { categoryId: 1143 },

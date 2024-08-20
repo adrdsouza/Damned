@@ -1,13 +1,10 @@
-import { ArrowLeft, X } from 'lucide-react';
-import { text } from '@/app/styles';
+import { X } from 'lucide-react';
 import { dispatch } from '@/redux/store';
 import { setCartClose, setCartSection } from '@/redux/slices/cart-slice';
 import { useSelector } from 'react-redux';
 import { CircularProgress, IconButton } from '@mui/material';
-import { CheckoutProvider } from '@/client/CheckoutProvider';
 import CartItemsSection from './cart-items-section';
 import CheckoutSection from './checkout-section';
-import PaymentSection from './payment-section';
 
 const CartComponent = () => {
   const cartLoading = useSelector((state: any) => state.cartSlice.cartLoading);
@@ -19,8 +16,6 @@ const CartComponent = () => {
         return <CartItemsSection />;
       case 'CHECKOUT':
         return <CheckoutSection />;
-      case 'PAYMENT':
-        return <PaymentSection />;
       default:
         return null;
     }
