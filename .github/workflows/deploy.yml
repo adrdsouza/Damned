@@ -25,6 +25,8 @@ jobs:
             # Navigate to project directory and deploy
             cd htdocs/www.spoares.com/Damned || { echo "Directory not found"; exit 1; }
             git pull origin master
+            
+            npm -v
             npm install
             npm run build
             pm2 restart
