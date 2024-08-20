@@ -28,12 +28,7 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <head>
-        <link
-          rel='icon'
-          href='/icon_cropped.png'
-          sizes='30x30'
-          type='image/png'
-        />
+        <link rel='icon' href='/icon_cropped.png' type='image/png' />
         <script
           async
           src='https://secure.nmi.com/token/Collect.js'
