@@ -147,9 +147,9 @@ const ShippingForm = ({ formik }: any) => {
         fullWidth
         size='small'
       >
-        <label htmlFor='country' className='mb-2'>
+        {/* <label htmlFor='country' className='mb-2'>
           Country / Region
-        </label>
+        </label> */}
         <Select
           MenuProps={{
             PaperProps: {
@@ -158,6 +158,7 @@ const ShippingForm = ({ formik }: any) => {
               },
             },
           }}
+          displayEmpty
           id='shipping.country'
           name='shipping.country'
           value={formik.values.shipping?.country}
@@ -167,6 +168,9 @@ const ShippingForm = ({ formik }: any) => {
             Boolean(formik.errors.shipping?.country)
           }
         >
+          <MenuItem value=''>
+            <p className='text-gray-400'>Select Country</p>
+          </MenuItem>
           {shippingCountries.map(({ code, name }) => (
             <MenuItem value={code} key={code}>
               {name}
@@ -179,10 +183,11 @@ const ShippingForm = ({ formik }: any) => {
       </FormControl>
 
       <FormControl className='col-span-1' fullWidth size='small'>
-        <label htmlFor='state' className='mb-2'>
+        {/* <label htmlFor='state' className='mb-2'>
           State
-        </label>
+        </label> */}
         <Select
+          displayEmpty
           MenuProps={{
             PaperProps: {
               style: {
@@ -200,6 +205,9 @@ const ShippingForm = ({ formik }: any) => {
             Boolean(formik.errors.shipping?.state)
           }
         >
+          <MenuItem value=''>
+            <p className='text-gray-400'>Select State</p>
+          </MenuItem>
           {shippingStates.map(({ code, name }) => (
             <MenuItem value={code} key={code}>
               {name}
