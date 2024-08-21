@@ -101,6 +101,7 @@ const BillingForm = ({ formik }: any) => {
         {/* <label htmlFor='firstName'>First Name</label> */}
         <TextField
           fullWidth
+          placeholder='First Name'
           size='small'
           variant='outlined'
           name='billing.firstName'
@@ -147,9 +148,9 @@ const BillingForm = ({ formik }: any) => {
         fullWidth
         size='small'
       >
-        <label htmlFor='country' className='mb-2'>
+        {/* <label htmlFor='country' className='mb-2'>
           Country / Region
-        </label>
+        </label> */}
         <Select
           MenuProps={{
             PaperProps: {
@@ -158,6 +159,8 @@ const BillingForm = ({ formik }: any) => {
               },
             },
           }}
+          displayEmpty
+          placeholder='Country'
           id='billing.country'
           name='billing.country'
           value={formik.values.billing?.country}
@@ -167,6 +170,9 @@ const BillingForm = ({ formik }: any) => {
             Boolean(formik.errors.billing?.country)
           }
         >
+          <MenuItem value=''>
+            <p className='text-gray-400'>Select Country</p>
+          </MenuItem>
           {billingCountries.map(({ code, name }) => (
             <MenuItem value={code} key={code}>
               {name}
@@ -179,9 +185,9 @@ const BillingForm = ({ formik }: any) => {
       </FormControl>
 
       <FormControl className='col-span-1' fullWidth size='small'>
-        <label htmlFor='state' className='mb-2'>
+        {/* <label htmlFor='state' className='mb-2'>
           State
-        </label>
+        </label> */}
         <Select
           MenuProps={{
             PaperProps: {
@@ -190,6 +196,7 @@ const BillingForm = ({ formik }: any) => {
               },
             },
           }}
+          displayEmpty
           id='billing.state'
           name='billing.state'
           value={formik.values.billing?.state}
@@ -200,6 +207,9 @@ const BillingForm = ({ formik }: any) => {
             Boolean(formik.errors.billing?.state)
           }
         >
+          <MenuItem value=''>
+            <p className='text-gray-400'>Select State</p>
+          </MenuItem>
           {billingStates.map(({ code, name }) => (
             <MenuItem value={code} key={code}>
               {name}
