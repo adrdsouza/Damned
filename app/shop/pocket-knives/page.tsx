@@ -9,16 +9,25 @@ export const metadata: Metadata = {
 };
 
 const PocketKnives: React.FC = async () => {
-  const { nodes: products } = await fetchProducts({
-    first: 30,
-    where: { categoryId: 1181 },
-  });
+  try {
+    const { nodes: products } = await fetchProducts({
+      first: 30,
+      where: { categoryId: 1181 },
+    });
 
-  return (
-    <div className='flex m-auto px-8 h-full w-full py-4 '>
-      <ProductsList data={products} showPagination={true} />
-    </div>
-  );
+    if (!products) {
+      return <div>No products found</div>;
+    }
+
+    return (
+      <div className='flex m-auto px-8 h-full w-full py-4 '>
+        <ProductsList data={products} showPagination={true} />
+      </div>
+    );
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    return <div>No products found</div>;
+  }
 };
 
 export default PocketKnives;
