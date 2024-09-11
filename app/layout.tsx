@@ -28,7 +28,11 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <head>
-        <link rel='icon' href='/icon_cropped.png' type='image/png' />
+        <link
+          rel='icon'
+          href='https://admin.damneddesigns.com/wp-content/uploads/cropped-Asset-d11-32x32.png'
+          sizes='32x32'
+        />
         <script
           async
           src='https://secure.nmi.com/token/Collect.js'
