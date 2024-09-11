@@ -23,7 +23,7 @@ jobs:
           sshpass -p "N2mmyFm8OQlUUtoVG6Ie" ssh -o StrictHostKeyChecking=no damned@107.174.102.231 << 'EOF'
 
             # Update PATH for the current session
-            export PATH=$PATH:/home/fareedkamal/.nvm/versions/node/v20.16.0/bin
+            export PATH=$PATH:/home/damned/.nvm/versions/node/v20.16.0/bin
 
             # Navigate to project directory and deploy
             cd htdocs/www.damneddesigns.com/Damned || { echo "Directory not found"; exit 1; }
