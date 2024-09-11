@@ -319,8 +319,6 @@ fragment CustomerFields on Customer {
   displayName
   email
   sessionToken
-  checkoutUrl
-  checkoutNonce
   orders {
     nodes {
       ...OrderFields

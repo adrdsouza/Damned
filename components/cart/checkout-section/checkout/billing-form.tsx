@@ -1,5 +1,10 @@
-import React, { useEffect, useRef } from 'react';
-import { Data, sessionContext, useSession } from '@/client/SessionProvider';
+import React, { memo, useEffect, useRef } from 'react';
+import {
+  Data,
+  sessionContext,
+  tokenManager,
+  useSession,
+} from '@/client/SessionProvider';
 import {
   FormControl,
   FormHelperText,
@@ -15,11 +20,15 @@ import { useOtherCartMutations } from '@woographql/react-hooks';
 import { useSelector } from 'react-redux';
 import { setCartLoading, setChangeShipping } from '@/redux/slices/cart-slice';
 import { dispatch } from '@/redux/store';
+import { useCheckoutDetails } from '@/client/CheckoutProvider';
+import { getShippingRate } from '@/lib/graphql';
 
 const BillingForm = ({ formik }: any) => {
   const { cart: cartData, updateCart } = useSession();
   const cart = cartData as Cart;
-  const { setShippingLocale } = useOtherCartMutations<Data>(sessionContext);
+  //const { updateCheckoutDetails } = useCheckoutDetails();
+  //const { setShippingLocale } = useOtherCartMutations<Data>(sessionContext);
+
   const diffShipAddress = useSelector(
     (state: any) => state.cartSlice.diffShipAddress
   );
@@ -37,23 +46,42 @@ const BillingForm = ({ formik }: any) => {
   const updateShippingRate = async () => {
     dispatch(setCartLoading(true));
     try {
-      await setShippingLocale({
-        country: formik.values.billing.country,
-        city: formik.values.billing.city,
-        state: formik.values.billing.state,
-        postcode: formik.values.billing.postcode,
-      });
+      // await setShippingLocale({
+      //   country: formik.values.billing.country,
+      //   city: formik.values.billing.city,
+      //   state: formik.values.billing.state,
+      //   postcode: formik.values.billing.postcode,
+      // });
+
+      const shippingRate = await getShippingRate(formik.values.billing.country);
+
+      if (!shippingRate) {
+        dispatch(setCartLoading(false));
+        return;
+      }
+
+      const updatedCart = {
+        ...cart,
+        chosenShippingMethods: [shippingRate.id],
+        availableShippingMethods: [
+          {
+            packageDetails: cart?.contents?.nodes
+              .map((node) => `${node?.product?.node.name} ×${node.quantity}`)
+              .join(', '),
+            supportsShippingCalculator: true,
+            rates: [shippingRate],
+          },
+        ],
+        shippingTotal: `$${shippingRate.cost}`,
+        total: `${(
+          parseFloat(cart?.subtotal?.replace('$', '') as string) +
+          parseFloat(shippingRate.cost)
+        ).toFixed(2)}`,
+      };
 
       await updateCart({
-        mutation: 'updateItemQuantities',
-        input: {
-          items: [
-            {
-              key: cart?.contents?.nodes[0].key as string,
-              quantity: cart?.contents?.nodes[0].quantity as number,
-            },
-          ],
-        },
+        updateShippingRate: true,
+        cart: updatedCart,
       });
     } catch (error) {
       console.log(error);
@@ -74,14 +102,20 @@ const BillingForm = ({ formik }: any) => {
   }, [billingStates]);
 
   useEffect(() => {
-    if (
-      !diffShipAddress &&
-      (billingCountry as string) !== '' &&
-      prevBillingCountry.current !== billingCountry
-    ) {
+    if (!diffShipAddress && (billingCountry as string) !== '') {
       updateShippingRate();
     }
   }, [billingCountry, diffShipAddress]);
+
+  // useEffect(() => {
+  //   if (
+  //     !diffShipAddress &&
+  //     (billingCountry as string) !== '' &&
+  //     prevBillingCountry.current !== billingCountry
+  //   ) {
+  //     updateShippingRate();
+  //   }
+  // }, [billingCountry, diffShipAddress]);
 
   useEffect(() => {
     if (changeShipping) {
@@ -351,4 +385,4 @@ const BillingForm = ({ formik }: any) => {
   );
 };
 
-export default BillingForm;
+export default memo(BillingForm);

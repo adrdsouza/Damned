@@ -15,12 +15,13 @@ import { useSelector } from 'react-redux';
 import { dispatch } from '@/redux/store';
 import toast from 'react-hot-toast';
 import { reloadBrowser } from '@/components/utils';
+import { getShippingRate } from '@/lib/graphql';
 
 const ShippingForm = ({ formik }: any) => {
   const { cart: cartData, updateCart } = useSession();
   const cart = cartData as Cart;
   //const { updateCheckoutDetails } = useCheckoutDetails();
-  const { setShippingLocale } = useOtherCartMutations<Data>(sessionContext);
+  //const { setShippingLocale } = useOtherCartMutations<Data>(sessionContext);
   const diffShipAddress = useSelector(
     (state: any) => state.cartSlice.diffShipAddress
   );
@@ -35,23 +36,44 @@ const ShippingForm = ({ formik }: any) => {
   const updateShippingRate = async () => {
     dispatch(setCartLoading(true));
     try {
-      await setShippingLocale({
-        country: formik.values.shipping.country,
-        city: formik.values.shipping.city,
-        state: formik.values.shipping.state,
-        postcode: formik.values.shipping.postcode,
-      });
+      // await setShippingLocale({
+      //   country: formik.values.billing.country,
+      //   city: formik.values.billing.city,
+      //   state: formik.values.billing.state,
+      //   postcode: formik.values.billing.postcode,
+      // });
+
+      const shippingRate = await getShippingRate(
+        formik.values.shipping.country
+      );
+
+      if (!shippingRate) {
+        dispatch(setCartLoading(false));
+        return;
+      }
+
+      const updatedCart = {
+        ...cart,
+        chosenShippingMethods: [shippingRate.id],
+        availableShippingMethods: [
+          {
+            packageDetails: cart?.contents?.nodes
+              .map((node) => `${node?.product?.node.name} ×${node.quantity}`)
+              .join(', '),
+            supportsShippingCalculator: true,
+            rates: [shippingRate],
+          },
+        ],
+        shippingTotal: `$${shippingRate.cost}`,
+        total: `${(
+          parseFloat(cart?.subtotal?.replace('$', '') as string) +
+          parseFloat(shippingRate.cost)
+        ).toFixed(2)}`,
+      };
 
       await updateCart({
-        mutation: 'updateItemQuantities',
-        input: {
-          items: [
-            {
-              key: cart?.contents?.nodes[0].key as string,
-              quantity: cart?.contents?.nodes[0].quantity as number,
-            },
-          ],
-        },
+        updateShippingRate: true,
+        cart: updatedCart,
       });
     } catch (error) {
       console.log(error);
@@ -72,14 +94,10 @@ const ShippingForm = ({ formik }: any) => {
   }, [shippingStates]);
 
   useEffect(() => {
-    if (
-      diffShipAddress &&
-      (shippingCountry as string) !== '' &&
-      prevShippingCountry.current !== shippingCountry
-    ) {
+    if (diffShipAddress && (shippingCountry as string) !== '') {
       updateShippingRate();
     }
-  }, [shippingCountry, diffShipAddress, updateShippingRate]);
+  }, [shippingCountry, diffShipAddress]);
 
   useEffect(() => {
     if (changeShipping) {

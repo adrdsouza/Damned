@@ -70,7 +70,9 @@ export async function POST(request: Request) {
     if (body.authToken) {
       headers.Authorization = `Bearer ${body.authToken}`;
     }
+
     const graphQLClient = getClient();
+
     graphQLClient.setHeaders(headers);
 
     if (!body.input) {
@@ -109,7 +111,6 @@ export async function POST(request: Request) {
             print(UpdateCartItemQuantitiesDocument),
             variables as { input: UpdateItemQuantitiesInput }
           );
-
         cart = results.data?.updateItemQuantities?.cart as Cart;
         sessionToken =
           results.headers.get('woocommerce-session') || body.sessionToken;

@@ -31,5 +31,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
   });
 
   const { Provider } = sessionContext;
+
   return <Provider value={store}>{children}</Provider>;
 }
