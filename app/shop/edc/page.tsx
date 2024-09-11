@@ -9,31 +9,41 @@ export const metadata: Metadata = {
     'EDC tools, expertly crafted with great attention to detail. Damned Designs is where breathtaking aesthetics meets uncompromising functionality.',
 };
 
-const Edc: React.FC = async () => {
-  const { nodes: products } = await fetchProducts({
-    first: 50,
-    where: { categoryId: 1143 },
-  });
+const Edc = async () => {
+  try {
+    const { nodes: products } = await fetchProducts({
+      first: 50,
+      where: { categoryId: 1143 },
+    });
 
-  return (
-    <div>
-      <DashboardBack page='edc' />
+    // If products are null or undefined, set it to null
+    if (!products) {
+      return <div>No products found</div>;
+    }
 
-      <div className='flex m-auto px-8 w-full h-[400px] md:h-screen'>
-        <div className='text-white my-auto text-center md:text-left'>
-          <p className='text-2xl md:text-3xl mb-2'>POCKET ART</p>
-          <p className='text-base mb-4'>
-            From knucks to beads from patches to coins. This is where you’ll
-            find them.
-          </p>
+    return (
+      <div>
+        <DashboardBack page='edc' />
+
+        <div className='flex m-auto px-8 w-full h-[400px] md:h-screen'>
+          <div className='text-white my-auto text-center md:text-left'>
+            <p className='text-2xl md:text-3xl mb-2'>POCKET ART</p>
+            <p className='text-base mb-4'>
+              From knucks to beads from patches to coins. This is where you’ll
+              find them.
+            </p>
+          </div>
+        </div>
+
+        <div className='flex m-auto px-8 min-h-[500px] h-full py-8 bg-white w-full'>
+          <ProductsList data={products} showPagination={true} />
         </div>
       </div>
-
-      <div className='flex m-auto px-8 min-h-[500px] h-full py-8 bg-white w-full'>
-        <ProductsList data={products} showPagination={true} />
-      </div>
-    </div>
-  );
+    );
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    return <div>No products found</div>;
+  }
 };
 
 export default Edc;

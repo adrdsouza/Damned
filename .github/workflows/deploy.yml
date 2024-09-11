@@ -1,37 +1,37 @@
-name: Deploy to Ubuntu Server
+# name: Deploy to Ubuntu Server
 
-on:
-  push:
-    branches:
-      - master
+# on:
+#   push:
+#     branches:
+#       - master
 
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
+# jobs:
+#   deploy:
+#     runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v2
 
-      - name: Install sshpass
-        run: sudo apt-get install -y sshpass
+#       - name: Install sshpass
+#         run: sudo apt-get install -y sshpass
 
-      - name: Deploy to server
-        env:
-          SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
-        run: |
-          sshpass -p "N2mmyFm8OQlUUtoVG6Ie" ssh -o StrictHostKeyChecking=no damned@107.174.102.231 << 'EOF'
+#       - name: Deploy to server
+#         env:
+#           SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+#         run: |
+#           sshpass -p "ERC8wzZ4DGSoSUT8wuX0" ssh -o StrictHostKeyChecking=no damned@107.174.102.231 << 'EOF'
 
-            # Update PATH for the current session
-            export PATH=$PATH:/home/damned/.nvm/versions/node/v20.17.0/bin
+#             # Update PATH for the current session
+#             export PATH=$PATH:/home/damned/.nvm/versions/node/v20.17.0/bin
 
-            # Navigate to project directory and deploy
-            cd htdocs/www.damneddesigns.com/Damned || { echo "Directory not found"; exit 1; }
-            git pull origin master
+#             # Navigate to project directory and deploy
+#             cd htdocs/www.damneddesigns.com/Damned || { echo "Directory not found"; exit 1; }
+#             git pull origin master
 
-            npm install
-            npm run build
-            pm2 kill
-            pm2 start "npm run start"
+#             npm install
+#             npm run build
+#             pm2 kill
+#             pm2 start "npm run start"
 
-          EOF
+#           EOF
