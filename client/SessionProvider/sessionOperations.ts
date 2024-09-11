@@ -8,7 +8,7 @@ import type {
 
 import { apiCall } from '@/utils/apiCall';
 import { PaymentTokenCC, Customer as CustomerType } from '@/graphql';
-import getOrders from '@/lib/graphql/orders/query';
+
 import { useRouter } from 'next/navigation';
 
 type LoginResponse = {
@@ -38,6 +38,7 @@ type FetchCustomerResponse = {
 type SuccessResponse = {
   success: boolean;
 };
+
 const generateUrl = createUrlGenerator(
   process.env.BACKEND_URL as string,
   'transfer-session'
@@ -74,6 +75,10 @@ export function createSessionOperations(
     },
     updateCart: (state, dispatch) => async (input) => {
       const tokens = tokenManager.getTokens();
+      if (input?.updateShippingRate) {
+        dispatch({ type: 'UPDATE_STATE', payload: { cart: input?.cart } });
+        return input?.cart;
+      }
       const { sessionToken, cart } = await apiCall<FetchCartResponse>(
         '/api/cart',
         {
@@ -86,10 +91,8 @@ export function createSessionOperations(
           cache: 'no-store',
         }
       );
-
       tokenManager.saveTokens({ sessionToken });
       dispatch({ type: 'UPDATE_STATE', payload: { cart } });
-
       return cart;
     },
     updateCustomer: (state, dispatch) => async (input) => {

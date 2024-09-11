@@ -29,6 +29,39 @@ export const getReviews = async () => {
   }
 };
 
+export const getShippingRate = async (country: string) => {
+  try {
+    const endpoint = process.env.GRAPHQL_ENDPOINT as string;
+    const graphQLClient = new GraphQLClient(endpoint);
+    const query = `
+    query ($country: String) {
+      getShippingRate(country: $country) {
+        rate_cost
+        rate_id
+        rate_label
+        instance_id
+        method_id
+      }
+    }
+  `;
+    const variables = {
+      country: country,
+    };
+    const data: any = await graphQLClient.request(query, variables);
+    if (data?.getShippingRate[0]) {
+      return {
+        id: data?.getShippingRate[0].rate_id,
+        instanceId: data?.getShippingRate[0].instance_id,
+        methodId: data?.getShippingRate[0].method_id,
+        label: data?.getShippingRate[0].rate_label,
+        cost: data?.getShippingRate[0].rate_cost,
+      };
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const addToWaitlist = async (productId, email) => {
   try {
     const endpoint = process.env.GRAPHQL_ENDPOINT as string;

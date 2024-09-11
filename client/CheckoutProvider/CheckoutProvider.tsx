@@ -151,8 +151,6 @@ export function CheckoutProvider({ children }: CheckoutProps) {
     let shippingLines: ShippingLineInput[] = [];
 
     if (shippingTotal) {
-      console.log(chosenShippingMethods);
-      console.log(availableShippingMethods);
       chosenShippingMethods?.forEach((method) => {
         availableShippingMethods?.forEach((availableMethod) => {
           const shippingRate = availableMethod?.rates?.find(
@@ -167,8 +165,6 @@ export function CheckoutProvider({ children }: CheckoutProps) {
         });
       });
     }
-
-    console.log('shipping lines', shippingLines);
 
     let lineItems: LineItemInput[] = [];
     if (cartItems?.length) {

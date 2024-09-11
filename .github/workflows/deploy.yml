@@ -1,37 +1,37 @@
-name: Deploy to Ubuntu Server
+# name: Deploy to Ubuntu Server
 
-on:
-  push:
-    branches:
-      - master
+# on:
+#   push:
+#     branches:
+#       - master
 
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
+# jobs:
+#   deploy:
+#     runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v2
 
-      - name: Install sshpass
-        run: sudo apt-get install -y sshpass
+#       - name: Install sshpass
+#         run: sudo apt-get install -y sshpass
 
-      - name: Deploy to server
-        env:
-          SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
-        run: |
-          sshpass -p "VCt6mP3tjwGIU94RqIAA" ssh -o StrictHostKeyChecking=no fareedkamal@107.174.102.231 << 'EOF'
-            
-            # Update PATH for the current session
-            export PATH=$PATH:/home/fareedkamal/.nvm/versions/node/v20.16.0/bin
-            
-            # Navigate to project directory and deploy
-            cd htdocs/www.spoares.com/Damned || { echo "Directory not found"; exit 1; }
-            git pull origin master
+#       - name: Deploy to server
+#         env:
+#           SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+#         run: |
+#           sshpass -p "VCt6mP3tjwGIU94RqIAA" ssh -o StrictHostKeyChecking=no fareedkamal@107.174.102.231 << 'EOF'
 
-            npm install
-            npm run build
-            pm2 kill
-            pm2 start "npm run start"
+#             # Update PATH for the current session
+#             export PATH=$PATH:/home/fareedkamal/.nvm/versions/node/v20.16.0/bin
 
-          EOF
+#             # Navigate to project directory and deploy
+#             cd htdocs/www.spoares.com/Damned || { echo "Directory not found"; exit 1; }
+#             git pull origin master
+
+#             npm install
+#             npm run build
+#             pm2 kill
+#             pm2 start "npm run start"
+
+#           EOF
