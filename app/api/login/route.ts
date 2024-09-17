@@ -227,8 +227,6 @@ export async function POST(request: Request) {
     const errors: any[] = error?.response?.errors ?? [];
     const errorMessage = errors[0]?.message ?? '';
 
-    console.log('error message\n\n', errorMessage);
-
     let message: string;
 
     let status: number;

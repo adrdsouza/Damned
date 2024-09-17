@@ -63,6 +63,7 @@ const CheckoutSection = () => {
   } = useCheckoutDetails();
 
   const initialValues = { billing: billing, shipping: shipping };
+
   const formikValues = useRef(initialValues);
   //------------------> FUNCTIONS
   //-------------------->

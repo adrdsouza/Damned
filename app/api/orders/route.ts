@@ -15,7 +15,6 @@ type ResponseBody = RootQueryToOrderConnection;
 const NextResponse = BaseResponse<ResponseBody>;
 
 export async function POST(request: Request) {
-  console.log('in orders route \n\n\n');
   try {
     const params = (await request.json()) as RequestBody;
 

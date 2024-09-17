@@ -25,9 +25,9 @@ const ShippingForm = ({ formik }: any) => {
   const diffShipAddress = useSelector(
     (state: any) => state.cartSlice.diffShipAddress
   );
-  const changeShipping = useSelector(
-    (state: any) => state.cartSlice.changeShipping
-  );
+  // const changeShipping = useSelector(
+  //   (state: any) => state.cartSlice.changeShipping
+  // );
   const shippingCountry = formik.values.shipping.country as CountriesEnum;
   const prevShippingCountry = useRef(shippingCountry);
   const { countries: shippingCountries, states: shippingStates } =
@@ -99,16 +99,16 @@ const ShippingForm = ({ formik }: any) => {
     }
   }, [shippingCountry, diffShipAddress]);
 
-  useEffect(() => {
-    if (changeShipping) {
-      formik.setFieldValue('shipping.country', '');
-      dispatch(setChangeShipping(false));
-      const el = document.getElementById('shipping-country-select');
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth' });
-      }
-    }
-  }, [changeShipping]);
+  // useEffect(() => {
+  //   if (changeShipping) {
+  //     formik.setFieldValue('shipping.country', '');
+  //     dispatch(setChangeShipping(false));
+  //     const el = document.getElementById('shipping-country-select');
+  //     if (el) {
+  //       el.scrollIntoView({ behavior: 'smooth' });
+  //     }
+  //   }
+  // }, [changeShipping]);
 
   return (
     <div className='grid grid-cols-2 gap-2'>
