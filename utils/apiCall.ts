@@ -21,7 +21,6 @@ export async function apiCall<T>(url: string, input: globalThis.RequestInit) {
   // Throw if not successful.
   if (response.status !== 200) {
     const { errors = {} } = await response.json();
-    console.log(errors?.message || response.statusText);
     throw new Error(errors?.message || `Failed to fetch: /api/${url}`);
   }
 

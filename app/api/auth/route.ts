@@ -40,7 +40,6 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  console.log('\n\nAUTH POST ROUTE\n\n');
   try {
     const client = getClient();
 

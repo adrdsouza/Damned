@@ -108,7 +108,6 @@ export function CartItem({ item, priority }: CartItemProps) {
   }, [quantityFound]);
 
   useEffect(() => {
-    console.log(quantityLeft);
     if (quantityLeft <= 0) {
       toast.error(
         `Stock Limit reached. ${quantity + quantityLeft} items left in stock.`

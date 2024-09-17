@@ -122,11 +122,8 @@ export function createSessionOperations(
       // If
       const itemCount = state.cart?.contents?.itemCount;
 
-      console.log({ state });
-
       if (itemCount && itemCount > 0) {
         body.sessionToken = tokens.sessionToken;
-        console.log(body);
       }
 
       try {

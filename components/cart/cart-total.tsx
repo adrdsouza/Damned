@@ -76,12 +76,12 @@ const ShippingOptions = () => {
   const cart = cartData as Cart;
   const cartSection = useSelector((state: any) => state.cartSlice.cartSection);
 
-  const handleClick = () => {
-    if (cartSection !== 'CHECKOUT') {
-      dispatch(setCartSection('CHECKOUT'));
-    }
-    dispatch(setChangeShipping(true));
-  };
+  // const handleClick = () => {
+  //   if (cartSection !== 'CHECKOUT') {
+  //     dispatch(setCartSection('CHECKOUT'));
+  //   }
+  //   dispatch(setChangeShipping(true));
+  // };
 
   const availableShippingRates: ShippingRate[] = (
     cart?.availableShippingMethods || []
@@ -95,9 +95,9 @@ const ShippingOptions = () => {
     <div className='p-4'>
       <div className='flex mb-2 gap-2'>
         <p>Shipping</p>
-        <button onClick={handleClick} className='font-medium'>
+        {/* <button onClick={handleClick} className='font-medium'>
           Edit
-        </button>
+        </button> */}
       </div>
       <div className='flex gap-4 justify-between'>
         <p>{availableShippingRates[0]?.label}</p>

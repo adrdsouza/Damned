@@ -32,9 +32,9 @@ const BillingForm = ({ formik }: any) => {
   const diffShipAddress = useSelector(
     (state: any) => state.cartSlice.diffShipAddress
   );
-  const changeShipping = useSelector(
-    (state: any) => state.cartSlice.changeShipping
-  );
+  // const changeShipping = useSelector(
+  //   (state: any) => state.cartSlice.changeShipping
+  // );
 
   const billingCountry = formik.values.billing.country as CountriesEnum;
 
@@ -117,16 +117,16 @@ const BillingForm = ({ formik }: any) => {
   //   }
   // }, [billingCountry, diffShipAddress]);
 
-  useEffect(() => {
-    if (changeShipping) {
-      formik.setFieldValue('billing.country', '');
-      dispatch(setChangeShipping(false));
-      const el = document.getElementById('billing-country-select');
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth' });
-      }
-    }
-  }, [changeShipping]);
+  // useEffect(() => {
+  //   if (changeShipping) {
+  //     formik.setFieldValue('billing.country', '');
+  //     dispatch(setChangeShipping(false));
+  //     const el = document.getElementById('billing-country-select');
+  //     if (el) {
+  //       el.scrollIntoView({ behavior: 'smooth' });
+  //     }
+  //   }
+  // }, [changeShipping]);
 
   return (
     <div className='grid grid-cols-2 gap-2'>

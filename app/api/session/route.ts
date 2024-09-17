@@ -22,7 +22,6 @@ type RequestBody = {
 };
 
 export async function POST(request: Request) {
-  console.log('\n\nSESSION POST ROUTE\n\n');
   try {
     const { input, ...tokens } = (await request.json()) as RequestBody;
 
