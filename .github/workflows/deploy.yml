@@ -20,7 +20,7 @@ jobs:
         env:
           SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
         run: |
-          sshpass -p "ERC8wzZ4DGSoSUT8wuX0" ssh -o StrictHostKeyChecking=no damned@107.174.102.231 << 'EOF'
+          sshpass -p "iPc9RNxnvwEVx9GpPyyX" ssh -o StrictHostKeyChecking=no damned@107.174.102.231 << 'EOF'
 
             # Update PATH for the current session
             export PATH=$PATH:/home/damned/.nvm/versions/node/v20.17.0/bin

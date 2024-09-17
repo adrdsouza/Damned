@@ -29,6 +29,9 @@ const nextConfig = {
     APP_ENV: process.env.APP_ENV,
     OFFICIAL_URL: process.env.OFFICIAL_URL,
   },
+  experimental: {
+    serverActions: true,
+  },
 };
 
 module.exports = nextConfig;

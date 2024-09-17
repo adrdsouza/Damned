@@ -22,6 +22,7 @@ import ShippingForm from './checkout/shipping-form';
 import toast from 'react-hot-toast';
 import { Button, Divider, FormControl, MenuItem, Select } from '@mui/material';
 import { Loader, reloadBrowser } from '@/components/utils';
+import { printError } from '@/app/api/log-error/route';
 
 const CheckoutSection = () => {
   //-------------------->     CONSTANTS & HOOKS
@@ -171,8 +172,16 @@ const CheckoutSection = () => {
         dispatch(setCartClose());
         dispatch(setCartSection('CART'));
       }, 3000);
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
+      const errorDetails = {
+        message: error.message,
+        stack: error.stack,
+        name: error.name,
+      };
+
+      printError(JSON.stringify(errorDetails));
+
       toast.error('Cart Session Expired');
       reloadBrowser();
     }
