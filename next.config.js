@@ -28,6 +28,8 @@ const nextConfig = {
     CREATE_ORDER_PASSWORD: process.env.CREATE_ORDER_PASSWORD,
     APP_ENV: process.env.APP_ENV,
     OFFICIAL_URL: process.env.OFFICIAL_URL,
+    NMI_PUBLIC_KEY: process.env.NMI_PUBLIC_KEY,
+    NMI_PRIVATE_KEY: process.env.NMI_PRIVATE_KEY,
   },
   experimental: {
     serverActions: true,
