@@ -27,6 +27,10 @@ jobs:
 
             # Navigate to project directory and deploy
             cd htdocs/www.damneddesigns.com/Damned || { echo "Directory not found"; exit 1; }
+            
+            git reset --hard
+            git clean -fd
+            
             git pull origin master
             cp env.prod .env
             npm install

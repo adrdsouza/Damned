@@ -1,58 +1,57 @@
 export async function POST(request: Request) {
   try {
     const h: any = request.headers;
-    const { body, headers } = await request.json();
-    const { token, order } = body;
+    const body = await request.json();
+
     console.log(body);
-    console.log(headers);
     console.log(h);
 
-    const billingInfo = {
-      first_name: order.billing.firstName,
-      last_name: order.billing.lastName,
-      address1: order.billing.address1,
-      address2: order.billing.address2,
-      city: order.billing.city,
-      state: order.billing.state,
-      zip: order.billing.postcode,
-      country: order.billing.country,
-      phone: order.billing.phone,
-      email: order.billing.email,
-    };
+    // const billingInfo = {
+    //   first_name: order.billing.firstName,
+    //   last_name: order.billing.lastName,
+    //   address1: order.billing.address1,
+    //   address2: order.billing.address2,
+    //   city: order.billing.city,
+    //   state: order.billing.state,
+    //   zip: order.billing.postcode,
+    //   country: order.billing.country,
+    //   phone: order.billing.phone,
+    //   email: order.billing.email,
+    // };
 
-    const shippingInfo = {
-      shipping_firstname: order.shipping.firstName,
-      shipping_lastname: order.shipping.lastName,
-      shipping_address1: order.shipping.address1,
-      shipping_address2: order.shipping.address2,
-      shipping_city: order.shipping.city,
-      shipping_state: order.shipping.state,
-      shipping_country: order.shipping.country,
-      shipping_zip: order.shipping.postcode,
-      shipping_email: order.shipping.email,
-    };
+    // const shippingInfo = {
+    //   shipping_firstname: order.shipping.firstName,
+    //   shipping_lastname: order.shipping.lastName,
+    //   shipping_address1: order.shipping.address1,
+    //   shipping_address2: order.shipping.address2,
+    //   shipping_city: order.shipping.city,
+    //   shipping_state: order.shipping.state,
+    //   shipping_country: order.shipping.country,
+    //   shipping_zip: order.shipping.postcode,
+    //   shipping_email: order.shipping.email,
+    // };
 
-    const req = {
-      type: 'sale',
-      security_key: process.env.NMI_PRIVATE_KEY,
-      payment_token: token.token,
-      ccnumber: token.card.number,
-      ccexp: token.card.exp,
-      //cvv: token,
-      amount: order.total,
-      curreny: 'USD',
-      orderid: order.databaseId,
+    // const req = {
+    //   type: 'sale',
+    //   security_key: process.env.NMI_PRIVATE_KEY,
+    //   payment_token: token.token,
+    //   ccnumber: token.card.number,
+    //   ccexp: token.card.exp,
+    //   //cvv: token,
+    //   amount: order.total,
+    //   curreny: 'USD',
+    //   orderid: order.databaseId,
 
-      //ipaddress: headers['x-real-ip'],
-      customer_receipt: true,
+    //   //ipaddress: headers['x-real-ip'],
+    //   customer_receipt: true,
 
-      ...billingInfo,
-      ...shippingInfo,
+    //   ...billingInfo,
+    //   ...shippingInfo,
 
-      //
-    };
+    //   //
+    // };
 
-    console.log(req);
+    // console.log(req);
   } catch (error) {
     console.log(error);
   }
