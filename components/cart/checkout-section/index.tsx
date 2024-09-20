@@ -148,7 +148,7 @@ const CheckoutSection = () => {
               state: values.billing.state,
               postcode: values.billing.postcode,
               country: values.billing.country,
-              company: values.billing.company,
+              phone: values.billing.phone,
             },
         lineItems,
         shippingLines,
@@ -164,13 +164,15 @@ const CheckoutSection = () => {
         return;
       }
 
-      setCheckoutSuccess(true);
+      return order;
 
-      setTimeout(() => {
-        push(`/order-recieved/${order.orderNumber}?key=${order.orderKey}`);
-        dispatch(setCartClose());
-        dispatch(setCartSection('CART'));
-      }, 3000);
+      // setCheckoutSuccess(true);
+
+      // setTimeout(() => {
+      //   push(`/order-recieved/${order.orderNumber}?key=${order.orderKey}`);
+      //   dispatch(setCartClose());
+      //   dispatch(setCartSection('CART'));
+      // }, 3000);
     } catch (error: any) {
       console.log(error);
       toast.error('Cart Session Expired');
@@ -181,10 +183,14 @@ const CheckoutSection = () => {
 
   const processNMI = async (token) => {
     try {
+      const order = await handleSubmit();
+      if (!order) return;
+
       const data = {
-        values: formikValues.current,
+        order: order,
         token: token,
       };
+
       const res = await fetch(`${process.env.FRONTEND_URL}/api/process-nmi`, {
         method: 'POST',
         body: JSON.stringify(data),
@@ -193,7 +199,16 @@ const CheckoutSection = () => {
           Accept: 'application/json',
         },
       });
+
       console.log('NMI process res: ', res);
+
+      // setCheckoutSuccess(true);
+
+      // setTimeout(() => {
+      //   push(`/order-recieved/${order.orderNumber}?key=${order.orderKey}`);
+      //   dispatch(setCartClose());
+      //   dispatch(setCartSection('CART'));
+      // }, 3000);
     } catch (error) {}
   };
 
@@ -295,7 +310,7 @@ const CheckoutSection = () => {
             toast.error('Transaction failed. Please try again.');
             return;
           }
-          //processNMI(token);
+          processNMI(token);
           //handleSubmit();
         },
       });
@@ -493,7 +508,7 @@ const CheckoutSection = () => {
         type='submit'
         disabled={cartLoading || formik.isSubmitting}
         onClick={() => formik.handleSubmit()}
-        className='py-8 bg-stone-500 w-full rounded-none text-white hover:bg-stone-600'
+        className='py-8 bg-stone-500 w-full rounded-none text-white hover:bg-stone-600 hidden'
       >
         {`Place Order - $${cart?.total}`}
       </Button>
