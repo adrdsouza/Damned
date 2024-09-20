@@ -55,7 +55,6 @@ export function fetchProducts(variables: GetProductsQueryVariables = {}) {
 }
 
 export function fetchOrders(variables: ordersQueryVariables = {}) {
-  console.log('in fetch ORDERS\n\n\n');
   return apiCall<RootQueryToOrderConnection>(
     `${process.env.FRONTEND_URL}/api/orders`,
     {
