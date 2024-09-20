@@ -22,7 +22,6 @@ import ShippingForm from './checkout/shipping-form';
 import toast from 'react-hot-toast';
 import { Button, Divider, FormControl, MenuItem, Select } from '@mui/material';
 import { Loader, reloadBrowser } from '@/components/utils';
-import { printError } from '@/app/api/log-error/route';
 
 const CheckoutSection = () => {
   //-------------------->     CONSTANTS & HOOKS
@@ -39,7 +38,7 @@ const CheckoutSection = () => {
   const paymentMethods = [
     { value: 'nmi', name: 'NMI' },
     { value: 'sezzle', name: 'Sezzle' },
-    { value: 'cod', name: 'Cash on Delivery' },
+    //{ value: 'cod', name: 'Cash on Delivery' },
   ];
   const { push } = useRouter();
   const [checkoutSuccess, setCheckoutSuccess] = useState<any>(null);
@@ -174,19 +173,31 @@ const CheckoutSection = () => {
       }, 3000);
     } catch (error: any) {
       console.log(error);
-      const errorDetails = {
-        message: error.message,
-        stack: error.stack,
-        name: error.name,
-      };
-
-      printError(JSON.stringify(errorDetails));
-
       toast.error('Cart Session Expired');
       reloadBrowser();
     }
     dispatch(setCartLoading(false));
   };
+
+  const processNMI = async (token) => {
+    try {
+      const data = {
+        values: formikValues.current,
+        token: token,
+      };
+      const res = await fetch(`${process.env.FRONTEND_URL}/api/process-nmi`, {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      });
+      console.log('NMI process res: ', res);
+    } catch (error) {}
+  };
+
+  processNMI('token');
 
   //-----------------> USE EFFECTS ------------------------------>
   //-------------------->
@@ -286,7 +297,8 @@ const CheckoutSection = () => {
             toast.error('Transaction failed. Please try again.');
             return;
           }
-          handleSubmit();
+          processNMI(token);
+          //handleSubmit();
         },
       });
     }
@@ -482,8 +494,9 @@ const CheckoutSection = () => {
       <Button
         type='submit'
         disabled={cartLoading || formik.isSubmitting}
-        onClick={() => formik.handleSubmit()}
-        className='py-8 bg-stone-500 w-full rounded-none text-white hover:bg-stone-600'
+        //onClick={() => formik.handleSubmit()}
+        onClick={processNMI}
+        className='py-8 bg-stone-500 w-full rounded-none text-white hover:bg-stone-600 hidden'
       >
         {`Place Order - $${cart?.total}`}
       </Button>
