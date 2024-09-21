@@ -33,7 +33,7 @@ jobs:
             
             git pull origin master
             cp env.prod .env
-            npm install
+            #npm install
             #npm run build
             pm2 kill
             pm2 start "npm run dev"
