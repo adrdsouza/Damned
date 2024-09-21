@@ -36,7 +36,7 @@ export async function POST(request: Request) {
       shipping_state: order.shipping.state,
       shipping_country: order.shipping.country,
       shipping_zip: order.shipping.postcode,
-      shipping_email: order.shipping.email,
+      shipping_email: order.billing.email,
     };
 
     const req: any = {
