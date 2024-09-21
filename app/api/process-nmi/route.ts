@@ -56,7 +56,7 @@ export async function POST(request: Request) {
       customer_receipt: true,
 
       ...billingInfo,
-      ...shippingInfo,
+      //...shippingInfo,
     };
 
     const reqData: any = new URLSearchParams(req);
