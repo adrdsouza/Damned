@@ -75,6 +75,8 @@ export async function POST(request: Request) {
       }
     );
 
+    console.log(response);
+
     if (response.status !== 200) {
       throw new Error();
     }
