@@ -183,105 +183,105 @@ const CheckoutSection = () => {
 
   const processNMI = async (token) => {
     try {
-      const order = await handleSubmit();
-      if (!order) return;
+      // const order = await handleSubmit();
+      // if (!order) return;
 
-      // const order = {
-      //   id: 'b3JkZXI6NTMwOTA=',
-      //   databaseId: 53090,
-      //   orderKey: 'wc_order_JcqYbdQgFGxiT',
-      //   orderNumber: '53090',
-      //   status: 'PROCESSING',
-      //   date: '2024-08-06T18:39:38+00:00',
-      //   paymentMethodTitle: 'NMI',
-      //   subtotal: '$75.00',
-      //   shippingTotal: '$8.00',
-      //   shippingTax: '$0.00',
-      //   discountTotal: '$0.00',
-      //   discountTax: '$0.00',
-      //   totalTax: '$0.00',
-      //   total: '$83.00',
-      //   billing: {
-      //     firstName: 'test from nextjs',
-      //     lastName: 'Kamal',
-      //     company: null,
-      //     address1: 'Lahore',
-      //     address2: 'Lahore',
-      //     city: 'Lahore',
-      //     state: 'PB',
-      //     postcode: '54000',
-      //     country: 'PK',
-      //     email: 'fareedkamal.dev@gmail.com',
-      //     phone: '77777777777',
-      //   },
-      //   shipping: {
-      //     firstName: null,
-      //     lastName: null,
-      //     company: null,
-      //     address1: null,
-      //     address2: null,
-      //     city: null,
-      //     state: null,
-      //     postcode: null,
-      //     country: null,
-      //     email: null,
-      //     phone: null,
-      //   },
-      //   lineItems: {
-      //     nodes: [
-      //       {
-      //         id: 'b3JkZXJfaXRlbTo1MzA5MCs3MzgxNA==',
-      //         databaseId: 73814,
-      //         product: {
-      //           node: {
-      //             id: 'cHJvZHVjdDo0MTEyNQ==',
-      //             databaseId: 41125,
-      //             name: 'Basilisk Fixed',
-      //             slug: 'basilisk-fixed',
-      //             type: 'VARIABLE',
-      //             image: {
-      //               id: 'cG9zdDo0OTIyNQ==',
-      //               sourceUrl:
-      //                 'https://admin.damneddesigns.com/wp-content/uploads/DSC_0219-01-800x600.png',
-      //               altText: '',
-      //             },
-      //             price: '$75.00',
-      //             regularPrice: '$75.00',
-      //             salePrice: null,
-      //             stockStatus: 'IN_STOCK',
-      //             stockQuantity: null,
-      //             soldIndividually: false,
-      //           },
-      //         },
-      //         variation: {
-      //           node: {
-      //             id: 'cHJvZHVjdF92YXJpYXRpb246NDExNDc=',
-      //             databaseId: 41147,
-      //             name: 'Basilisk Fixed - Black G10, Stonewashed 14c28n',
-      //             slug: 'basilisk-fixed',
-      //             type: 'VARIATION',
-      //             image: {
-      //               id: 'cG9zdDo0OTIyNQ==',
-      //               sourceUrl:
-      //                 'https://admin.damneddesigns.com/wp-content/uploads/DSC_0219-01-800x600.png',
-      //               altText: '',
-      //             },
-      //             price: '$75.00',
-      //             regularPrice: '$75.00',
-      //             salePrice: null,
-      //             stockStatus: 'IN_STOCK',
-      //             stockQuantity: 1,
-      //             soldIndividually: null,
-      //           },
-      //         },
-      //         quantity: 1,
-      //         total: '75',
-      //         subtotal: '75',
-      //         subtotalTax: null,
-      //       },
-      //     ],
-      //   },
-      // };
+      const order = {
+        id: 'b3JkZXI6NTMwOTA=',
+        databaseId: 53090,
+        orderKey: 'wc_order_JcqYbdQgFGxiT',
+        orderNumber: '53090',
+        status: 'PROCESSING',
+        date: '2024-08-06T18:39:38+00:00',
+        paymentMethodTitle: 'NMI',
+        subtotal: '$75.00',
+        shippingTotal: '$8.00',
+        shippingTax: '$0.00',
+        discountTotal: '$0.00',
+        discountTax: '$0.00',
+        totalTax: '$0.00',
+        total: '$83.00',
+        billing: {
+          firstName: 'test from nextjs',
+          lastName: 'Kamal',
+          company: null,
+          address1: 'Lahore',
+          address2: 'Lahore',
+          city: 'Lahore',
+          state: 'PB',
+          postcode: '54000',
+          country: 'PK',
+          email: 'fareedkamal.dev@gmail.com',
+          phone: '77777777777',
+        },
+        shipping: {
+          firstName: null,
+          lastName: null,
+          company: null,
+          address1: null,
+          address2: null,
+          city: null,
+          state: null,
+          postcode: null,
+          country: null,
+          email: null,
+          phone: null,
+        },
+        lineItems: {
+          nodes: [
+            {
+              id: 'b3JkZXJfaXRlbTo1MzA5MCs3MzgxNA==',
+              databaseId: 73814,
+              product: {
+                node: {
+                  id: 'cHJvZHVjdDo0MTEyNQ==',
+                  databaseId: 41125,
+                  name: 'Basilisk Fixed',
+                  slug: 'basilisk-fixed',
+                  type: 'VARIABLE',
+                  image: {
+                    id: 'cG9zdDo0OTIyNQ==',
+                    sourceUrl:
+                      'https://admin.damneddesigns.com/wp-content/uploads/DSC_0219-01-800x600.png',
+                    altText: '',
+                  },
+                  price: '$75.00',
+                  regularPrice: '$75.00',
+                  salePrice: null,
+                  stockStatus: 'IN_STOCK',
+                  stockQuantity: null,
+                  soldIndividually: false,
+                },
+              },
+              variation: {
+                node: {
+                  id: 'cHJvZHVjdF92YXJpYXRpb246NDExNDc=',
+                  databaseId: 41147,
+                  name: 'Basilisk Fixed - Black G10, Stonewashed 14c28n',
+                  slug: 'basilisk-fixed',
+                  type: 'VARIATION',
+                  image: {
+                    id: 'cG9zdDo0OTIyNQ==',
+                    sourceUrl:
+                      'https://admin.damneddesigns.com/wp-content/uploads/DSC_0219-01-800x600.png',
+                    altText: '',
+                  },
+                  price: '$75.00',
+                  regularPrice: '$75.00',
+                  salePrice: null,
+                  stockStatus: 'IN_STOCK',
+                  stockQuantity: 1,
+                  soldIndividually: null,
+                },
+              },
+              quantity: 1,
+              total: '75',
+              subtotal: '75',
+              subtotalTax: null,
+            },
+          ],
+        },
+      };
 
       // const token = {
       //   tokenType: 'inline',
@@ -364,14 +364,15 @@ const CheckoutSection = () => {
         throw new Error();
       }
 
-      setCheckoutSuccess(true);
+      // setCheckoutSuccess(true);
 
-      setTimeout(() => {
-        push(`/order-recieved/${order.orderNumber}?key=${order.orderKey}`);
-        dispatch(setCartClose());
-        dispatch(setCartSection('CART'));
-      }, 3000);
+      // setTimeout(() => {
+      //   push(`/order-recieved/${order.orderNumber}?key=${order.orderKey}`);
+      //   dispatch(setCartClose());
+      //   dispatch(setCartSection('CART'));
+      // }, 3000);
     } catch (error) {
+      console.log('in error block');
       console.log(error);
       toast.error('We were unable to complete transcation. Please try again');
       reloadBrowser();
