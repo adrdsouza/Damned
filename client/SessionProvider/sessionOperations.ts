@@ -79,6 +79,7 @@ export function createSessionOperations(
         dispatch({ type: 'UPDATE_STATE', payload: { cart: input?.cart } });
         return input?.cart;
       }
+      console.log('update Cart from sessison Operations\n');
       const { sessionToken, cart } = await apiCall<FetchCartResponse>(
         '/api/cart',
         {
@@ -88,7 +89,7 @@ export function createSessionOperations(
             authToken: tokens?.authToken,
             input,
           }),
-          cache: 'no-store',
+          cache: 'no-cache',
         }
       );
       tokenManager.saveTokens({ sessionToken });

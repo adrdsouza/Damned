@@ -28,7 +28,7 @@ const BillingForm = ({ formik }: any) => {
   const cart = cartData as Cart;
   //const { updateCheckoutDetails } = useCheckoutDetails();
   //const { setShippingLocale } = useOtherCartMutations<Data>(sessionContext);
-
+  const { removeCoupon } = useOtherCartMutations<Data>(sessionContext);
   const diffShipAddress = useSelector(
     (state: any) => state.cartSlice.diffShipAddress
   );
@@ -60,18 +60,27 @@ const BillingForm = ({ formik }: any) => {
         return;
       }
 
+      // if (cart.appliedCoupons) {
+      //   const coupons = cart.appliedCoupons;
+      //   coupons.forEach(async (coupon) => {
+      //     console.log(coupon);
+      //     await removeCoupon(coupon?.code as string);
+      //   });
+      // }
+
       const updatedCart = {
         ...cart,
         chosenShippingMethods: [shippingRate.id],
         availableShippingMethods: [
           {
             packageDetails: cart?.contents?.nodes
-              .map((node) => `${node?.product?.node.name} ×${node.quantity}`)
+              .map((node) => `${node?.variation?.node.name} ×${node.quantity}`)
               .join(', '),
             supportsShippingCalculator: true,
             rates: [shippingRate],
           },
         ],
+        //discountTotal: '$0.00',
         shippingTotal: `$${shippingRate.cost}`,
         total: `${(
           parseFloat(cart?.subtotal?.replace('$', '') as string) +
