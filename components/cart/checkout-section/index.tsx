@@ -345,10 +345,6 @@ const CheckoutSection = () => {
         },
       });
 
-      if (res.status !== 200) {
-        throw new Error();
-      }
-
       const resData = await res.json();
       console.log('NMI process res: ', resData);
 
