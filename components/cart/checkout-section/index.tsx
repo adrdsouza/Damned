@@ -22,8 +22,6 @@ import ShippingForm from './checkout/shipping-form';
 import toast from 'react-hot-toast';
 import { Button, Divider, FormControl, MenuItem, Select } from '@mui/material';
 import { Loader, reloadBrowser } from '@/components/utils';
-import axios from 'axios';
-import { nmiAction } from '@/app/actions';
 
 const CheckoutSection = () => {
   //-------------------->     CONSTANTS & HOOKS
@@ -338,25 +336,38 @@ const CheckoutSection = () => {
         token: token,
       };
 
-      const actionRes = await nmiAction(data);
+      const res = await fetch(`${process.env.FRONTEND_URL}/api/process-nmi`, {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      });
 
-      console.log(actionRes);
+      const resData = await res.json();
 
-      const dummyRes = {
-        response: '3',
-        responsetext: 'Payment Token does not exist REFID:3129089407',
-        authcode: '',
-        transactionid: '',
-        avsresponse: '',
-        cvvresponse: '',
-        orderid: '53090',
-        type: 'sale',
-        response_code: '300',
-      };
+      if (!resData?.status) {
+        throw new Error();
+      }
 
-      // if (resData.response === '2' || resData.response === '3') {
-      //   throw new Error();
-      // }
+      console.log('NMI process res: ', resData);
+
+      // const dummyRes = {
+      //   response: '3',
+      //   responsetext: 'Payment Token does not exist REFID:3129089407',
+      //   authcode: '',
+      //   transactionid: '',
+      //   avsresponse: '',
+      //   cvvresponse: '',
+      //   orderid: '53090',
+      //   type: 'sale',
+      //   response_code: '300',
+      // };
+
+      if (resData.response === '2' || resData.response === '3') {
+        throw new Error();
+      }
 
       // setCheckoutSuccess(true);
 
