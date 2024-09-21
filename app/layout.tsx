@@ -54,8 +54,9 @@ export default function RootLayout({
               <div className='flex flex-col w-full h-screen'>
                 <div className=' flex rounded-2xl bg-white z-[999] fixed m-auto w-fit p-5 h-fit left-0 right-0 top-[50px] text-center'>
                   <div className='flex m-auto gap-2 items-center'>
-                    <AlertCircle className='h-10 w-10' /> We're under
-                    maintenance. We apologize for inconvenience.
+                    <AlertCircle className='h-10 w-10' />
+                    {`We're under
+                    maintenance. We apologize for inconvenience.`}
                   </div>
                 </div>
 
