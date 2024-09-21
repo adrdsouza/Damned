@@ -64,32 +64,33 @@ export async function POST(request: Request) {
 
     console.log(reqData);
 
-    // const response = await fetch(
-    //   'https://secure.networkmerchants.com/api/transact.php',
-    //   {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/x-www-form-urlencoded',
-    //     },
-    //     body: reqData.toString(),
-    //   }
-    // );
-
-    const response = await axios.post(
+    const response = await fetch(
       'https://secure.networkmerchants.com/api/transact.php',
-      reqData,
       {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
+        body: reqData,
       }
     );
 
+    // const response = await axios.post(
+    //   'https://secure.networkmerchants.com/api/transact.php',
+    //   reqData,
+    //   {
+    //     headers: {
+    //       'Content-Type': 'application/x-www-form-urlencoded',
+    //     },
+    //     timeout: 20000,
+    //   }
+    // );
+
     console.log(response);
 
-    // if (response.status !== 200) {
-    //   throw new Error();
-    // }
+    if (response.status !== 200) {
+      throw new Error();
+    }
 
     const nmiResponse = response.data;
 
