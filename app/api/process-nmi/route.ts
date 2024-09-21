@@ -50,7 +50,7 @@ export async function POST(request: Request) {
       amount: '0.00',
       curreny: 'USD',
       orderid: order.orderNumber,
-      order_description: `Damned Designs - Order ${order.orderNumber} (${orderDesc})`,
+      //order_description: `Damned Designs - Order ${order.orderNumber} (${orderDesc})`,
 
       ipaddress: ip,
       customer_receipt: true,
