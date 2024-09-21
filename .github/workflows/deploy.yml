@@ -35,7 +35,7 @@ jobs:
             cp env.prod .env
             #npm install
             #npm run build
-            pm2 kill
-            pm2 start "npm run dev"
-            pm2 save
+            #pm2 kill
+            #pm2 start "npm run dev"
+            #pm2 save
           EOF

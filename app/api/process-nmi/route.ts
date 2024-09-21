@@ -51,40 +51,40 @@ export async function POST(request: Request) {
       amount: '0.00',
       curreny: 'USD',
       orderid: order.orderNumber,
-      //order_description: `Damned Designs - Order ${order.orderNumber} (${orderDesc})`,
+      order_description: `Damned Designs - Order ${order.orderNumber} (${orderDesc})`,
 
       ipaddress: ip,
       customer_receipt: true,
 
       ...billingInfo,
-      //...shippingInfo,
+      ...shippingInfo,
     };
 
     const reqData: any = new URLSearchParams(req);
 
     console.log(reqData);
 
-    const response = await fetch(
-      'https://secure.networkmerchants.com/api/transact.php',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: reqData,
-      }
-    );
-
-    // const response = await axios.post(
+    // const response = await fetch(
     //   'https://secure.networkmerchants.com/api/transact.php',
-    //   reqData,
     //   {
+    //     method: 'POST',
     //     headers: {
     //       'Content-Type': 'application/x-www-form-urlencoded',
     //     },
-    //     timeout: 20000,
+    //     body: reqData,
     //   }
     // );
+
+    const response = await axios.post(
+      'https://secure.networkmerchants.com/api/transact.php',
+      reqData,
+      {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        timeout: 20000,
+      }
+    );
 
     console.log(response);
 
