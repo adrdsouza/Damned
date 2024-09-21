@@ -27,6 +27,7 @@
     "@woographql/next": "^1.4.9",
     "@woographql/react-hooks": "^0.9.3",
     "@woographql/session-utils": "^1.5.3",
+    "axios": "^1.7.7",
     "deepmerge": "^4.3.1",
     "dotenv-flow": "^4.1.0",
     "eslint-plugin-import": "2",

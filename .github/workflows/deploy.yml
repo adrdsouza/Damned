@@ -33,9 +33,9 @@ jobs:
             
             git pull origin master
             cp env.prod .env
-            # npm install
-            npm run build
+            npm install
+            #npm run build
             pm2 kill
-            pm2 start "npm run start"
+            pm2 start "npm run dev"
             pm2 save
           EOF
