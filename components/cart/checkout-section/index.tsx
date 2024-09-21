@@ -183,8 +183,9 @@ const CheckoutSection = () => {
 
   const processNMI = async (token) => {
     try {
-      //const order = await handleSubmit();
-      //if (!order) return;
+      // const order = await handleSubmit();
+      // if (!order) return;
+
       const order = {
         id: 'b3JkZXI6NTMwOTA=',
         databaseId: 53090,
@@ -281,6 +282,7 @@ const CheckoutSection = () => {
           ],
         },
       };
+
       const token = {
         tokenType: 'inline',
         token: 'gpxE2G97-exjG7C-xAvdqk-f7b5972P88zJ',
@@ -454,7 +456,6 @@ const CheckoutSection = () => {
             return;
           }
           processNMI(token);
-          //handleSubmit();
         },
       });
     }
@@ -652,7 +653,7 @@ const CheckoutSection = () => {
         disabled={cartLoading || formik.isSubmitting}
         //onClick={() => formik.handleSubmit()}
         onClick={processNMI}
-        className='py-8 bg-stone-500 w-full rounded-none text-white hover:bg-stone-600'
+        className='py-8 bg-stone-500 w-full rounded-none text-white hover:bg-stone-600 hidden'
       >
         {`Place Order - $${cart?.total}`}
       </Button>
