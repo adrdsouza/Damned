@@ -58,7 +58,7 @@ const ShippingForm = ({ formik }: any) => {
         availableShippingMethods: [
           {
             packageDetails: cart?.contents?.nodes
-              .map((node) => `${node?.product?.node.name} ×${node.quantity}`)
+              .map((node) => `${node?.variation?.node.name} ×${node.quantity}`)
               .join(', '),
             supportsShippingCalculator: true,
             rates: [shippingRate],

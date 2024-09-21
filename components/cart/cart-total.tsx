@@ -32,7 +32,7 @@ const CartTotal = ({ showDetails }: { showDetails?: Boolean | undefined }) => {
         <Loader className='absolute bg-[#ffffff75] z-[999] w-full h-full' />
       ) : null} */}
 
-      <ApplyCoupon />
+      {/* <ApplyCoupon /> */}
 
       <div className='border-y p-4 flex flex-col gap-2'>
         {showDetails ? (
@@ -57,7 +57,7 @@ const CartTotal = ({ showDetails }: { showDetails?: Boolean | undefined }) => {
         </div>
       </div>
 
-      <AppliedCoupons />
+      {/* <AppliedCoupons /> */}
 
       <ShippingOptions />
 
@@ -129,8 +129,8 @@ const ApplyCoupon = () => {
         toast.error(error.message);
       } else {
         console.log(error);
-        toast.error('Cart session expired');
-        reloadBrowser();
+        toast.error('Error while applying coupon');
+        // reloadBrowser();
       }
     }
     dispatch(setCartLoading(false));

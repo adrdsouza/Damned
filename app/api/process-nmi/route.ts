@@ -10,6 +10,10 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { token, order } = body;
 
+    const orderDesc = order?.lineItems?.nodes
+      .map((node) => `${node?.variation?.node.name} × ${node.quantity}`)
+      .join(', ');
+
     const billingInfo = {
       first_name: order.billing.firstName,
       last_name: order.billing.lastName,
@@ -38,15 +42,16 @@ export async function POST(request: Request) {
     const req: any = {
       type: 'sale',
       security_key: process.env.NMI_PRIVATE_KEY,
-      payment_token: 'gpxE2G97-exjG7C-xAvdqk-f7b5972P88zJ',
+      payment_token: token.token,
 
       ccnumber: token.card.number,
       ccexp: token.card.exp,
 
-      //amount: order.total.replace('$', ''),
-      amount: '0.00',
+      amount: order.total.replace('$', ''),
+      //amount: '0.00',
       curreny: 'USD',
       orderid: order.orderNumber,
+      order_description: `Damned Designs - Order ${order.orderNumber} (${orderDesc})`,
 
       ipaddress: ip,
       customer_receipt: true,
@@ -70,7 +75,9 @@ export async function POST(request: Request) {
       }
     );
 
-    //console.log(await response.json());
+    if (response.status !== 200) {
+      throw new Error();
+    }
 
     const nmiResponse = await response.text();
 
@@ -83,7 +90,7 @@ export async function POST(request: Request) {
 
     console.log(result);
 
-    return NextResponse.json('hello');
+    return NextResponse.json(result);
   } catch (error) {
     console.log(error);
     return NextResponse.json('Error while completing transaction');
