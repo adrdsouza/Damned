@@ -8,6 +8,7 @@ import { Toaster } from 'react-hot-toast';
 import ReduxProvider from '@/redux/provider';
 import { Montserrat } from 'next/font/google';
 import { createTheme, ThemeProvider } from '@mui/material';
+import { AlertCircle, X } from 'lucide-react';
 
 const font = Montserrat({
   subsets: ['latin'],
@@ -51,6 +52,13 @@ export default function RootLayout({
           <ReduxProvider>
             <SessionProvider>
               <div className='flex flex-col w-full h-screen'>
+                <div className=' flex rounded-2xl bg-white z-[999] fixed m-auto w-fit p-5 h-fit left-0 right-0 top-[50px] text-center'>
+                  <div className='flex m-auto gap-2 items-center'>
+                    <AlertCircle className='h-10 w-10' /> We're under
+                    maintenance. We apologize for inconvenience.
+                  </div>
+                </div>
+
                 <Navbar />
                 <div className='flex-1'>{children}</div>
                 <FooterBar />

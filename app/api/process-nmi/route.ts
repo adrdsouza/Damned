@@ -38,10 +38,11 @@ export async function POST(request: Request) {
     const req: any = {
       type: 'sale',
       security_key: process.env.NMI_PRIVATE_KEY,
-      payment_token: token.token,
+      payment_token: 'gpxE2G97-exjG7C-xAvdqk-f7b5972P88zJ',
+
       ccnumber: token.card.number,
       ccexp: token.card.exp,
-      //cvv: token,
+
       //amount: order.total.replace('$', ''),
       amount: '0.00',
       curreny: 'USD',
@@ -58,21 +59,22 @@ export async function POST(request: Request) {
 
     console.log(reqData);
 
-    const response: any = await fetch(
+    const response = await fetch(
       'https://secure.networkmerchants.com/api/transact.php',
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
-          'Content-Length': Buffer.byteLength(reqData),
         },
         body: reqData,
       }
     );
 
-    console.log(response);
+    //console.log(await response.json());
 
-    const params: any = new URLSearchParams(response);
+    const nmiResponse = await response.text();
+
+    const params: any = new URLSearchParams(nmiResponse);
     const result: any = {};
 
     for (const [key, value] of params.entries()) {
@@ -81,7 +83,7 @@ export async function POST(request: Request) {
 
     console.log(result);
 
-    return NextResponse.json(result);
+    return NextResponse.json('hello');
   } catch (error) {
     console.log(error);
     return NextResponse.json('Error while completing transaction');
