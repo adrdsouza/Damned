@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import axios from 'axios';
 
 export async function POST(request: Request) {
   try {
@@ -64,25 +63,14 @@ export async function POST(request: Request) {
 
     console.log(reqData);
 
-    // const response = await fetch(
-    //   'https://secure.networkmerchants.com/api/transact.php',
-    //   {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/x-www-form-urlencoded',
-    //     },
-    //     body: reqData,
-    //   }
-    // );
-
-    const response = await axios.post(
+    const response = await fetch(
       'https://secure.networkmerchants.com/api/transact.php',
-      reqData,
       {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
-        timeout: 20000,
+        body: reqData,
       }
     );
 
@@ -92,22 +80,20 @@ export async function POST(request: Request) {
       throw new Error();
     }
 
-    const nmiResponse = response.data;
+    const nmiResponse = await response.text();
 
-    console.log(nmiResponse);
+    const params: any = new URLSearchParams(nmiResponse);
+    const result: any = {};
 
-    // const params: any = new URLSearchParams(nmiResponse);
-    // const result: any = {};
+    for (const [key, value] of params.entries()) {
+      result[key] = value;
+    }
 
-    // for (const [key, value] of params.entries()) {
-    //   result[key] = value;
-    // }
+    console.log(result);
 
-    // console.log(result);
-
-    return NextResponse.json(nmiResponse);
+    return NextResponse.json({ status: true, data: result });
   } catch (error) {
     console.log(error);
-    return NextResponse.json('Error while completing transaction');
+    return NextResponse.json({ status: false });
   }
 }
