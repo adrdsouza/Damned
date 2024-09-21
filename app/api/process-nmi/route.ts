@@ -47,8 +47,8 @@ export async function POST(request: Request) {
       ccnumber: token.card.number,
       ccexp: token.card.exp,
 
-      amount: order.total.replace('$', ''),
-      //amount: '0.00',
+      //amount: order.total.replace('$', ''),
+      amount: '0.00',
       curreny: 'USD',
       orderid: order.orderNumber,
       order_description: `Damned Designs - Order ${order.orderNumber} (${orderDesc})`,
