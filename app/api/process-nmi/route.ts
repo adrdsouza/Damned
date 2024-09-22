@@ -68,9 +68,17 @@ export async function POST(request: Request) {
       {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
+          accept: 'application/x-www-form-urlencoded',
+          'content-type': 'application/x-www-form-urlencoded',
         },
-        body: reqData,
+        body: new URLSearchParams({
+          type: 'sale',
+          ccnumber: '4111111111111111',
+          ccexp: '1025',
+          cvv: '123',
+          amount: '1',
+          security_key: '6457Thfj624V5r7WUwc5v6a68Zsd6YEm',
+        }),
       }
     );
 
