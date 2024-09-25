@@ -14,6 +14,8 @@ export async function POST(request: Request) {
       .map((node) => `${node?.variation?.node.name} × ${node.quantity}`)
       .join(', ');
 
+    const desc = `Damned Designs - Order ${order.orderNumber} (${orderDesc})`;
+
     const billingInfo = {
       first_name: order.billing.firstName,
       last_name: order.billing.lastName,
@@ -40,21 +42,17 @@ export async function POST(request: Request) {
 
     const req: any = {
       type: 'sale',
-      security_key: process.env.NMI_PRIVATE_KEY,
+      security_key: process.env.NMI_LIVE_PRIVATE_KEY,
       payment_token: token.token,
-
       ccnumber: token.card.number,
       ccexp: token.card.exp,
-
       //amount: order.total.replace('$', ''),
-      amount: '0.00',
+      amount: '1.00',
       curreny: 'USD',
       orderid: order.orderNumber,
-      order_description: `Damned Designs - Order ${order.orderNumber} (${orderDesc})`,
-
+      order_description: desc,
       ipaddress: ip,
       customer_receipt: true,
-
       ...billingInfo,
       ...shippingInfo,
     };
@@ -63,16 +61,13 @@ export async function POST(request: Request) {
 
     console.log(reqData);
 
-    const response = await fetch(
-      'https://secure.networkmerchants.com/api/transact.php',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: reqData,
-      }
-    );
+    const response = await fetch('https://secure.nmi.com/api/transact.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: reqData,
+    });
 
     console.log(response);
 

@@ -31,7 +31,6 @@ const CheckoutSection = () => {
   const [validnumber, setValidNumber] = useState('');
   const [validexpiration, setValidExpiration] = useState('');
   const [validcvv, setValidCvv] = useState('');
-  const [sezzleResult, setSezzleResult] = useState(null);
 
   const cartLoading = useSelector((state: any) => state.cartSlice.cartLoading);
 
@@ -76,36 +75,16 @@ const CheckoutSection = () => {
     dispatch(setPaymentMethod(e.target.value));
   };
 
-  const handleFormikSubmit = () => {
-    //setValues(values);
-    if (paymentMethod === '') {
-      toast.error('Please choose a payment method.');
-      formik.setSubmitting(false);
-    } else if (paymentMethod === 'nmi') {
-      if (typeof window !== 'undefined') {
-        window.CollectJS.startPaymentRequest();
-      }
-    } else if (paymentMethod === 'sezzle') {
-      const button = document.getElementById('sezzle-smart-button');
-      if (button) {
-        button.click();
-      } else {
-        formik.setSubmitting(false);
-      }
-    } else if (paymentMethod === 'cod') {
-      handleSubmit();
-    }
+  const handleCheckoutSuccess = (order) => {
+    setCheckoutSuccess(true);
+    setTimeout(() => {
+      push(`/order-recieved/${order.orderNumber}?key=${order.orderKey}`);
+      dispatch(setCartClose());
+      dispatch(setCartSection('CART'));
+    }, 2000);
   };
 
-  const formik = useFormik({
-    initialValues: initialValues,
-    validationSchema: diffShipAddress ? combinedSchema : onlyBillingSchema,
-    onSubmit: (values) => {
-      handleFormikSubmit(values);
-    },
-  });
-
-  const handleSubmit = async () => {
+  const handleCreateOrder = async () => {
     dispatch(setCartLoading(true));
     try {
       const values = formikValues.current;
@@ -181,12 +160,12 @@ const CheckoutSection = () => {
     dispatch(setCartLoading(false));
   };
 
-  const processNMI = async (token) => {
+  const handleNmiCheckout = async (token) => {
     try {
-      // const order = await handleSubmit();
-      // if (!order) return;
+      const order = await handleCreateOrder();
+      if (!order) return;
 
-      const order = {
+      const dummyOrder = {
         id: 'b3JkZXI6NTMwOTA=',
         databaseId: 53090,
         orderKey: 'wc_order_JcqYbdQgFGxiT',
@@ -365,24 +344,123 @@ const CheckoutSection = () => {
       //   response_code: '300',
       // };
 
-      if (resData.response === '2' || resData.response === '3') {
+      if (resData.data.response === '2' || resData.data.response === '3') {
         throw new Error();
       }
 
-      // setCheckoutSuccess(true);
-
-      // setTimeout(() => {
-      //   push(`/order-recieved/${order.orderNumber}?key=${order.orderKey}`);
-      //   dispatch(setCartClose());
-      //   dispatch(setCartSection('CART'));
-      // }, 3000);
+      if (resData.data.respond === '1') {
+        handleCheckoutSuccess(order);
+      }
     } catch (error) {
       console.log('in error block');
       console.log(error);
       toast.error('We were unable to complete transcation. Please try again');
-      //reloadBrowser();
+      reloadBrowser();
     }
   };
+
+  const handleSezzleCheckout = async () => {
+    const order = await handleCreateOrder();
+    if (!order) {
+      return;
+    }
+    if (
+      paymentMethod === 'sezzle' &&
+      cart?.total &&
+      typeof window !== 'undefined' &&
+      window.Checkout
+    ) {
+      const checkout = new Checkout({
+        mode: 'popup',
+        publicKey: 'sz_pub_IW6NF5ARDHoLxAS4cCzOFKGDLNzJ0g0x', // replace with your Sezzle public key
+        apiMode: 'sandbox', // or 'live'
+        apiVersion: 'v2',
+      });
+
+      checkout.renderSezzleButton('sezzle-smart-button-container');
+
+      const orderDesc = order?.lineItems?.nodes
+        .map((node) => `${node?.variation?.node.name} × ${node.quantity}`)
+        .join(', ');
+
+      const desc = `Damned Designs - Order ${order.orderNumber} (${orderDesc})`;
+
+      checkout.init({
+        onClick: () => {
+          checkout.startCheckout({
+            checkout_payload: {
+              order: {
+                intent: 'AUTH',
+                reference_id: order.orderNumber, // replace with your unique order ID
+                description: desc,
+                order_amount: {
+                  amount_in_cents:
+                    Number(order?.total?.replace('$', '') as string) * 100,
+                  currency: 'USD',
+                },
+              },
+            },
+          });
+        },
+        onComplete: (event) => {
+          console.log('checkout complete');
+          console.log(event.data);
+          const x = {
+            status: 'success',
+            checkout_uuid: 'b88cc575-8587-4063-9d97-8811a84d354b',
+            szl_source: 'checkout',
+            session_uuid: null,
+            order_uuid: null,
+          };
+          if (event.data.status === 'success') {
+            handleCheckoutSuccess(order);
+          } else {
+            toast.error('Error while completing transaction');
+            reloadBrowser();
+          }
+        },
+        onCancel: () => {
+          console.log('checkout canceled');
+          formik.setSubmitting(false);
+        },
+        onFailure: () => {
+          console.log('checkout failed');
+          formik.setSubmitting(false);
+        },
+      });
+    }
+
+    const button = document.getElementById('sezzle-smart-button');
+    if (button) {
+      button.click();
+    } else {
+      formik.setSubmitting(false);
+    }
+  };
+
+  const handleFormikSubmit = async () => {
+    //setValues(values);
+    if (paymentMethod === '') {
+      toast.error('Please choose a payment method.');
+      formik.setSubmitting(false);
+    } else if (paymentMethod === 'nmi') {
+      if (typeof window !== 'undefined') {
+        window.CollectJS.startPaymentRequest();
+      }
+    } else if (paymentMethod === 'sezzle') {
+      handleSezzleCheckout();
+    } else if (paymentMethod === 'cod') {
+      handleCreateOrder();
+    }
+  };
+
+  const formik = useFormik({
+    initialValues: initialValues,
+    validationSchema: diffShipAddress ? combinedSchema : onlyBillingSchema,
+    onSubmit: (values) => {
+      handleFormikSubmit();
+    },
+  });
 
   //-----------------> USE EFFECTS ------------------------------>
   //-------------------->
@@ -482,59 +560,67 @@ const CheckoutSection = () => {
             toast.error('Transaction failed. Please try again.');
             return;
           }
-          processNMI(token);
+          handleNmiCheckout(token);
         },
       });
     }
   }, [paymentMethod, cart?.total]);
 
-  useEffect(() => {
-    if (
-      paymentMethod === 'sezzle' &&
-      cart?.total &&
-      typeof window !== 'undefined' &&
-      window.Checkout
-    ) {
-      const checkout = new Checkout({
-        mode: 'popup',
-        publicKey: 'sz_pub_mHYs860HGQAamnTUWOMfmOOsISn9slaT', // replace with your Sezzle public key
-        apiMode: 'live', // or 'live'
-        apiVersion: 'v2',
-      });
+  // useEffect(() => {
+  //   if (
+  //     paymentMethod === 'sezzle' &&
+  //     cart?.total &&
+  //     typeof window !== 'undefined' &&
+  //     window.Checkout
+  //   ) {
+  //     const checkout = new Checkout({
+  //       mode: 'popup',
+  //       publicKey: 'sz_pub_IW6NF5ARDHoLxAS4cCzOFKGDLNzJ0g0x', // replace with your Sezzle public key
+  //       apiMode: 'sandbox', // or 'live'
+  //       apiVersion: 'v2',
+  //     });
 
-      checkout.renderSezzleButton('sezzle-smart-button-container');
+  //     checkout.renderSezzleButton('sezzle-smart-button-container');
 
-      checkout.init({
-        onClick: () => {
-          checkout.startCheckout({
-            checkout_payload: {
-              order: {
-                intent: 'AUTH',
-                reference_id: 'ord_12345', // replace with your unique order ID
-                description: 'sezzle-store - #12749253509255',
-                order_amount: {
-                  amount_in_cents: Number(cart?.total as string) * 100,
-                  currency: 'USD',
-                },
-              },
-            },
-          });
-        },
-        onComplete: (event) => {
-          console.log(event.data);
-          setSezzleResult(event.data);
-        },
-        onCancel: () => {
-          console.log('checkout canceled');
-          formik.setSubmitting(false);
-        },
-        onFailure: () => {
-          console.log('checkout failed');
-          formik.setSubmitting(false);
-        },
-      });
-    }
-  }, [paymentMethod, cart?.total]);
+  //     checkout.init({
+  //       onClick: () => {
+  //         checkout.startCheckout({
+  //           checkout_payload: {
+  //             order: {
+  //               intent: 'AUTH',
+  //               reference_id: 'ord_12345', // replace with your unique order ID
+  //               description: 'sezzle-store - #12749253509255',
+  //               order_amount: {
+  //                 amount_in_cents: Number(cart?.total as string) * 100,
+  //                 currency: 'USD',
+  //               },
+  //             },
+  //           },
+  //         });
+  //       },
+  //       onComplete: (event) => {
+  //         console.log('checkout complete');
+  //         console.log(event.data);
+  //         const x = {
+  //           status: 'success',
+  //           checkout_uuid: 'b88cc575-8587-4063-9d97-8811a84d354b',
+  //           szl_source: 'checkout',
+  //           session_uuid: null,
+  //           order_uuid: null,
+  //         };
+  //         setSezzleResult(event.data);
+  //       },
+  //       onCancel: () => {
+  //         console.log('checkout canceled');
+  //         formik.setSubmitting(false);
+  //       },
+  //       onFailure: () => {
+  //         console.log('checkout failed');
+  //         formik.setSubmitting(false);
+  //       },
+  //     });
+  //   }
+  // }, [paymentMethod, cart?.total]);
 
   useEffect(() => {
     formik.setFormikState((prevState) => ({
@@ -545,12 +631,6 @@ const CheckoutSection = () => {
 
   return (
     <>
-      {sezzleResult ? (
-        <div className=' fixed w-[50%] h-[50%] z-[999999] left-0 text-lg p-4 bg-white text-black'>
-          {JSON.stringify(sezzleResult)}
-        </div>
-      ) : null}
-
       <div className='w-full border-b p-2'>
         <div className='flex gap-6 items-center'>
           <ArrowLeft
