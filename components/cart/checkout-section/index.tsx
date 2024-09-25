@@ -246,7 +246,7 @@ const CheckoutSection = () => {
     ) {
       const checkout = new Checkout({
         mode: 'popup',
-        publicKey: process.env.SEZZLE_PUBLIC_LIVE_KEY, // replace with your Sezzle public key
+        publicKey: 'sz_pub_mHYs860HGQAamnTUWOMfmOOsISn9slaT', // replace with your Sezzle public key
         apiMode: 'live', // or 'live'
         apiVersion: 'v2',
       });
