@@ -1,4 +1,4 @@
-const nmiResCodes: any = {
+export const nmiResCodes: any = {
   '100': 'Transaction was approved.',
   '200': 'Transaction was declined by processor.',
   '201': 'Do not honor.',

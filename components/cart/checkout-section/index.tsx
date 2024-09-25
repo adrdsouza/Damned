@@ -24,6 +24,7 @@ import { Button, Divider, FormControl, MenuItem, Select } from '@mui/material';
 import { Loader, reloadBrowser } from '@/components/utils';
 import { v4 as uuidv4 } from 'uuid';
 import { addCustomFieldToOrder } from '@/lib/graphql';
+import { nmiResCodes } from './helpers';
 
 const CheckoutSection = () => {
   //-------------------->     CONSTANTS & HOOKS
@@ -226,13 +227,13 @@ const CheckoutSection = () => {
       }
 
       if (resData?.data?.respond === '1') {
-        toast.success('Transcations was successfull');
+        toast.success('Transcation was successfull');
         handleCreateOrder(orderRef);
       }
     } catch (error) {
       console.log(error);
       toast.error('We were unable to complete transcation. Please try again');
-      reloadBrowser();
+      //reloadBrowser();
     }
   };
 
