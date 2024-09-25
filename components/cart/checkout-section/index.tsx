@@ -188,6 +188,8 @@ const CheckoutSection = () => {
         token: token,
       };
 
+      console.log(data);
+
       const res = await fetch(`${process.env.FRONTEND_URL}/api/process-nmi`, {
         method: 'POST',
         body: JSON.stringify(data),
@@ -627,7 +629,7 @@ const CheckoutSection = () => {
         disabled={cartLoading || formik.isSubmitting}
         onClick={() => formik.handleSubmit()}
         //onClick={processNMI}
-        className='py-8 bg-stone-500 w-full rounded-none text-white hover:bg-stone-600 hidden'
+        className='py-8 bg-stone-500 w-full rounded-none text-white hover:bg-stone-600'
       >
         {`Place Order - $${cart?.total}`}
       </Button>
