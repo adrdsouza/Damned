@@ -10,11 +10,6 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { token, order } = body;
     console.log(token);
-    const orderDesc = order?.lineItems?.nodes
-      .map((node) => `${node?.variation?.node.name} × ${node.quantity}`)
-      .join(', ');
-
-    const desc = `Damned Designs - Order ${order.orderNumber} (${orderDesc})`;
 
     const billingInfo = {
       first_name: order.billing.firstName,
@@ -46,11 +41,12 @@ export async function POST(request: Request) {
       payment_token: token.token,
       ccnumber: token.card.number,
       ccexp: token.card.exp,
-      //amount: order.total.replace('$', ''),
-      amount: '1.00',
+      amount: order.total,
+      //amount: '1.00',
       curreny: 'USD',
-      orderid: order.orderNumber,
-      order_description: desc,
+      orderid: order.orderRef,
+
+      order_description: order.orderDesc,
       ipaddress: ip,
       customer_receipt: true,
       ...billingInfo,

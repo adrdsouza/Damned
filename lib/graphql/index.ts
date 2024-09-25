@@ -90,3 +90,37 @@ export const addToWaitlist = async (productId, email) => {
     console.log(error);
   }
 };
+
+export const addCustomFieldToOrder = async (
+  orderId: number,
+  fieldKey: string,
+  fieldValue: string
+) => {
+  try {
+    const endpoint = process.env.GRAPHQL_ENDPOINT as string;
+
+    const graphQLClient = new GraphQLClient(endpoint);
+
+    const mutation = `
+    mutation addCustomFieldToOrder($orderId: Int!, $fieldKey: String!, $fieldValue: String!) {
+      addCustomFieldToOrder(input: {orderId: $orderId, fieldKey: $fieldKey, fieldValue: $fieldValue}) {
+        success
+      }
+    }
+  `;
+
+    const variables = {
+      orderId: orderId,
+      fieldKey: fieldKey,
+      fieldValue: fieldValue,
+    };
+
+    const data: any = await graphQLClient.request(mutation, variables);
+
+    if (data?.addCustomFieldToOrder?.success) {
+      return true; // Return true if the field was successfully added
+    }
+  } catch (error) {
+    console.error('Error adding custom field to order:', error);
+  }
+};

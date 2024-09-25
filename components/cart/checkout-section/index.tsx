@@ -22,6 +22,8 @@ import ShippingForm from './checkout/shipping-form';
 import toast from 'react-hot-toast';
 import { Button, Divider, FormControl, MenuItem, Select } from '@mui/material';
 import { Loader, reloadBrowser } from '@/components/utils';
+import { v4 as uuidv4 } from 'uuid';
+import { addCustomFieldToOrder } from '@/lib/graphql';
 
 const CheckoutSection = () => {
   //-------------------->     CONSTANTS & HOOKS
@@ -75,16 +77,7 @@ const CheckoutSection = () => {
     dispatch(setPaymentMethod(e.target.value));
   };
 
-  const handleCheckoutSuccess = (order) => {
-    setCheckoutSuccess(true);
-    setTimeout(() => {
-      push(`/order-recieved/${order.orderNumber}?key=${order.orderKey}`);
-      dispatch(setCartClose());
-      dispatch(setCartSection('CART'));
-    }, 2000);
-  };
-
-  const handleCreateOrder = async () => {
+  const handleCreateOrder = async (orderRef) => {
     dispatch(setCartLoading(true));
     try {
       const values = formikValues.current;
@@ -143,15 +136,19 @@ const CheckoutSection = () => {
         return;
       }
 
-      return order;
+      await addCustomFieldToOrder(
+        order?.databaseId as number,
+        'reference_order_id',
+        orderRef
+      );
 
-      // setCheckoutSuccess(true);
+      setCheckoutSuccess(true);
 
-      // setTimeout(() => {
-      //   push(`/order-recieved/${order.orderNumber}?key=${order.orderKey}`);
-      //   dispatch(setCartClose());
-      //   dispatch(setCartSection('CART'));
-      // }, 3000);
+      setTimeout(() => {
+        push(`/order-recieved/${order.orderNumber}?key=${order.orderKey}`);
+        dispatch(setCartClose());
+        dispatch(setCartSection('CART'));
+      }, 3000);
     } catch (error: any) {
       console.log(error);
       toast.error('Cart Session Expired');
@@ -162,156 +159,32 @@ const CheckoutSection = () => {
 
   const handleNmiCheckout = async (token) => {
     try {
-      const order = await handleCreateOrder();
-      if (!order) return;
-
-      const dummyOrder = {
-        id: 'b3JkZXI6NTMwOTA=',
-        databaseId: 53090,
-        orderKey: 'wc_order_JcqYbdQgFGxiT',
-        orderNumber: '53090',
-        status: 'PROCESSING',
-        date: '2024-08-06T18:39:38+00:00',
-        paymentMethodTitle: 'NMI',
-        subtotal: '$75.00',
-        shippingTotal: '$8.00',
-        shippingTax: '$0.00',
-        discountTotal: '$0.00',
-        discountTax: '$0.00',
-        totalTax: '$0.00',
-        total: '$83.00',
-        billing: {
-          firstName: 'test from nextjs',
-          lastName: 'Kamal',
-          company: null,
-          address1: 'Lahore',
-          address2: 'Lahore',
-          city: 'Lahore',
-          state: 'PB',
-          postcode: '54000',
-          country: 'PK',
-          email: 'fareedkamal.dev@gmail.com',
-          phone: '77777777777',
-        },
-        shipping: {
-          firstName: null,
-          lastName: null,
-          company: null,
-          address1: null,
-          address2: null,
-          city: null,
-          state: null,
-          postcode: null,
-          country: null,
-          email: null,
-          phone: null,
-        },
-        lineItems: {
-          nodes: [
-            {
-              id: 'b3JkZXJfaXRlbTo1MzA5MCs3MzgxNA==',
-              databaseId: 73814,
-              product: {
-                node: {
-                  id: 'cHJvZHVjdDo0MTEyNQ==',
-                  databaseId: 41125,
-                  name: 'Basilisk Fixed',
-                  slug: 'basilisk-fixed',
-                  type: 'VARIABLE',
-                  image: {
-                    id: 'cG9zdDo0OTIyNQ==',
-                    sourceUrl:
-                      'https://admin.damneddesigns.com/wp-content/uploads/DSC_0219-01-800x600.png',
-                    altText: '',
-                  },
-                  price: '$75.00',
-                  regularPrice: '$75.00',
-                  salePrice: null,
-                  stockStatus: 'IN_STOCK',
-                  stockQuantity: null,
-                  soldIndividually: false,
-                },
-              },
-              variation: {
-                node: {
-                  id: 'cHJvZHVjdF92YXJpYXRpb246NDExNDc=',
-                  databaseId: 41147,
-                  name: 'Basilisk Fixed - Black G10, Stonewashed 14c28n',
-                  slug: 'basilisk-fixed',
-                  type: 'VARIATION',
-                  image: {
-                    id: 'cG9zdDo0OTIyNQ==',
-                    sourceUrl:
-                      'https://admin.damneddesigns.com/wp-content/uploads/DSC_0219-01-800x600.png',
-                    altText: '',
-                  },
-                  price: '$75.00',
-                  regularPrice: '$75.00',
-                  salePrice: null,
-                  stockStatus: 'IN_STOCK',
-                  stockQuantity: 1,
-                  soldIndividually: null,
-                },
-              },
-              quantity: 1,
-              total: '75',
-              subtotal: '75',
-              subtotalTax: null,
-            },
-          ],
-        },
-      };
-
-      // const token = {
-      //   tokenType: 'inline',
-      //   token: 'gpxE2G97-exjG7C-xAvdqk-f7b5972P88zJ',
-      //   card: {
-      //     number: '559049******1142',
-      //     bin: '559049',
-      //     exp: '0628',
-      //     type: 'mastercard',
-      //     hash: '',
-      //   },
-      //   check: {
-      //     name: null,
-      //     account: null,
-      //     aba: null,
-      //     transit: null,
-      //     institution: null,
-      //     hash: null,
-      //   },
-      //   wallet: {
-      //     cardDetails: null,
-      //     cardNetwork: null,
-      //     email: null,
-      //     billingInfo: {
-      //       address1: null,
-      //       address2: null,
-      //       firstName: null,
-      //       lastName: null,
-      //       postalCode: null,
-      //       city: null,
-      //       state: null,
-      //       country: null,
-      //       phone: null,
-      //     },
-      //     shippingInfo: {
-      //       method: null,
-      //       address1: null,
-      //       address2: null,
-      //       firstName: null,
-      //       lastName: null,
-      //       postalCode: null,
-      //       city: null,
-      //       state: null,
-      //       country: null,
-      //       phone: null,
-      //     },
-      //   },
-      // };
+      const orderRef = uuidv4().replace(/-/g, '').substring(0, 16);
+      //@ts-ignore
+      const details = cart?.availableShippingMethods[0]?.packageDetails;
+      const orderDesc = `Damned Designs Order Reference #${orderRef} (${details})`;
+      const { billing, shipping } = formikValues.current;
 
       const data = {
-        order: order,
+        order: {
+          total: cart?.total as string,
+          orderDesc: orderDesc,
+          orderRef: orderRef,
+          billing: billing,
+          shipping: diffShipAddress
+            ? shipping
+            : {
+                firstName: billing.firstName,
+                lastName: billing.lastName,
+                address1: billing.address1,
+                address2: billing.address2,
+                city: billing.city,
+                state: billing.state,
+                postcode: billing.postcode,
+                country: billing.country,
+                phone: billing.phone,
+              },
+        },
         token: token,
       };
 
@@ -344,26 +217,24 @@ const CheckoutSection = () => {
       //   response_code: '300',
       // };
 
-      if (resData.data.response === '2' || resData.data.response === '3') {
-        throw new Error();
+      if (resData?.data?.response === '2' || resData?.data?.response === '3') {
+        const message = nmiResCodes[String(resData.data.response_code)];
+        toast.error(message);
+        return;
       }
 
-      if (resData.data.respond === '1') {
-        handleCheckoutSuccess(order);
+      if (resData?.data?.respond === '1') {
+        toast.success('Transcations was successfull');
+        handleCreateOrder(orderRef);
       }
     } catch (error) {
-      console.log('in error block');
       console.log(error);
       toast.error('We were unable to complete transcation. Please try again');
-      //reloadBrowser();
+      reloadBrowser();
     }
   };
 
   const handleSezzleCheckout = async () => {
-    const order = await handleCreateOrder();
-    if (!order) {
-      return;
-    }
     if (
       paymentMethod === 'sezzle' &&
       cart?.total &&
@@ -372,18 +243,17 @@ const CheckoutSection = () => {
     ) {
       const checkout = new Checkout({
         mode: 'popup',
-        publicKey: 'sz_pub_IW6NF5ARDHoLxAS4cCzOFKGDLNzJ0g0x', // replace with your Sezzle public key
-        apiMode: 'sandbox', // or 'live'
+        publicKey: process.env.SEZZLE_PUBLIC_LIVE_KEY, // replace with your Sezzle public key
+        apiMode: 'live', // or 'live'
         apiVersion: 'v2',
       });
 
       checkout.renderSezzleButton('sezzle-smart-button-container');
 
-      const orderDesc = order?.lineItems?.nodes
-        .map((node) => `${node?.variation?.node.name} × ${node.quantity}`)
-        .join(', ');
-
-      const desc = `Damned Designs - Order ${order.orderNumber} (${orderDesc})`;
+      const orderRef = uuidv4().replace(/-/g, '').substring(0, 16);
+      //@ts-ignore
+      const details = cart?.availableShippingMethods[0]?.packageDetails;
+      const orderDesc = `Damned Designs Order Reference #${orderRef} (${details})`;
 
       checkout.init({
         onClick: () => {
@@ -391,11 +261,10 @@ const CheckoutSection = () => {
             checkout_payload: {
               order: {
                 intent: 'AUTH',
-                reference_id: order.orderNumber, // replace with your unique order ID
-                description: desc,
+                reference_id: orderRef, // replace with your unique order ID
+                description: orderDesc,
                 order_amount: {
-                  amount_in_cents:
-                    Number(order?.total?.replace('$', '') as string) * 100,
+                  amount_in_cents: Number(cart?.total as string) * 100,
                   currency: 'USD',
                 },
               },
@@ -405,17 +274,17 @@ const CheckoutSection = () => {
         onComplete: (event) => {
           console.log('checkout complete');
           console.log(event.data);
-          const x = {
-            status: 'success',
-            checkout_uuid: 'b88cc575-8587-4063-9d97-8811a84d354b',
-            szl_source: 'checkout',
-            session_uuid: null,
-            order_uuid: null,
-          };
+          // const x = {
+          //   status: 'success',
+          //   checkout_uuid: 'b88cc575-8587-4063-9d97-8811a84d354b',
+          //   szl_source: 'checkout',
+          //   session_uuid: null,
+          //   order_uuid: null,
+          // };
           if (event.data.status === 'success') {
-            handleCheckoutSuccess(order);
+            handleCreateOrder(orderRef);
           } else {
-            toast.error('Error while completing transaction');
+            toast.error('Error while completing Sezzle transaction');
             reloadBrowser();
           }
         },
@@ -431,6 +300,7 @@ const CheckoutSection = () => {
     }
 
     const button = document.getElementById('sezzle-smart-button');
+
     if (button) {
       button.click();
     } else {
@@ -439,7 +309,6 @@ const CheckoutSection = () => {
   };
 
   const handleFormikSubmit = async () => {
-    //setValues(values);
     if (paymentMethod === '') {
       toast.error('Please choose a payment method.');
       formik.setSubmitting(false);
@@ -449,8 +318,6 @@ const CheckoutSection = () => {
       }
     } else if (paymentMethod === 'sezzle') {
       handleSezzleCheckout();
-    } else if (paymentMethod === 'cod') {
-      handleCreateOrder();
     }
   };
 
