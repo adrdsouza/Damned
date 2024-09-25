@@ -355,7 +355,7 @@ const CheckoutSection = () => {
       console.log('in error block');
       console.log(error);
       toast.error('We were unable to complete transcation. Please try again');
-      reloadBrowser();
+      //reloadBrowser();
     }
   };
 

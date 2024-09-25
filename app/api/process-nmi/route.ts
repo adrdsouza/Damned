@@ -9,7 +9,7 @@ export async function POST(request: Request) {
 
     const body = await request.json();
     const { token, order } = body;
-
+    console.log(token);
     const orderDesc = order?.lineItems?.nodes
       .map((node) => `${node?.variation?.node.name} × ${node.quantity}`)
       .join(', ');
