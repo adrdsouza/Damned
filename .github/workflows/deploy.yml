@@ -23,7 +23,7 @@ jobs:
           sshpass -p "JbXD6zIAqxPQ0vQyJ63X" ssh -o StrictHostKeyChecking=no damneddesignsnext@172.245.105.195 << 'EOF'
 
             # Update PATH for the current session
-            export PATH=$PATH:/home/damneddesignsnext/.nvm/versions/node/v20.17.0/bin
+            export PATH=$PATH:/home/damneddesignsnext/.nvm/versions/node/v22.9.0/bin
 
             # Navigate to project directory and deploy
             cd htdocs/damneddesigns.com/Damned || { echo "Directory not found"; exit 1; }
@@ -37,4 +37,5 @@ jobs:
             pm2 kill
             pm2 start "npm run start"
             pm2 save
+            
           EOF
