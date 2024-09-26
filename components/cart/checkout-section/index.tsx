@@ -582,9 +582,6 @@ const CheckoutSection = () => {
                   alt='sezzle'
                 />
               </MenuItem>
-              <MenuItem key={'cod'} value={'cod'}>
-                Cash on Delivery
-              </MenuItem>
             </Select>
           </FormControl>
 

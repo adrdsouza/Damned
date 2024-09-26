@@ -1,40 +1,40 @@
-# name: Deploy to Ubuntu Server
+name: Deploy to Ubuntu Server
 
-# on:
-#   push:
-#     branches:
-#       - master
+on:
+  push:
+    branches:
+      - testing-sezzle
 
-# jobs:
-#   deploy:
-#     runs-on: ubuntu-latest
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
 
-#     steps:
-#       - name: Checkout code
-#         uses: actions/checkout@v2
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-#       - name: Install sshpass
-#         run: sudo apt-get install -y sshpass
+      - name: Install sshpass
+        run: sudo apt-get install -y sshpass
 
-#       - name: Deploy to server
-#         env:
-#           SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
-#         run: |
-#           sshpass -p "iPc9RNxnvwEVx9GpPyyX" ssh -o StrictHostKeyChecking=no damned@107.174.102.231 << 'EOF'
+      - name: Deploy to server
+        env:
+          SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+        run: |
+          sshpass -p "JbXD6zIAqxPQ0vQyJ63X" ssh -o StrictHostKeyChecking=no damneddesignsnext@172.245.105.195 << 'EOF'
 
-#             # Update PATH for the current session
-#             export PATH=$PATH:/home/damned/.nvm/versions/node/v20.17.0/bin
+            # Update PATH for the current session
+            export PATH=$PATH:/home/damneddesignsnext/.nvm/versions/node/v20.17.0/bin
 
-#             # Navigate to project directory and deploy
-#             cd htdocs/www.damneddesigns.com/Damned || { echo "Directory not found"; exit 1; }
+            # Navigate to project directory and deploy
+            cd htdocs/damneddesigns.com/Damned || { echo "Directory not found"; exit 1; }
 
-#             git reset --hard
-#             git clean -fd
-#             git pull origin master
-#             cp env.prod .env
-#             #npm install
-#             npm run build
-#             pm2 kill
-#             pm2 start "npm run start"
-#             pm2 save
-#           EOF
+            git reset --hard
+            git clean -fd
+            git pull origin testing-sezzle
+            cp env.prod .env
+            npm install
+            npm run build
+            pm2 kill
+            pm2 start "npm run start"
+            pm2 save
+          EOF
