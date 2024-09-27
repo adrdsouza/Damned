@@ -5,6 +5,7 @@ import { dispatch } from '@/redux/store';
 import {
   setCartClose,
   setCartLoading,
+  setCartOpen,
   setCartSection,
   setPaymentMethod,
 } from '@/redux/slices/cart-slice';
@@ -159,6 +160,7 @@ const CheckoutSection = () => {
   };
 
   const handleNmiCheckout = async (token) => {
+    dispatch(setCartLoading(true));
     try {
       const orderRef = uuidv4().replace(/-/g, '').substring(0, 16);
       //@ts-ignore
@@ -226,13 +228,14 @@ const CheckoutSection = () => {
         return;
       }
 
-      if (resData?.data?.respond === '1') {
+      if (resData?.data?.response === '1') {
         toast.success('Transcation was successfull');
         handleCreateOrder(orderRef);
       }
     } catch (error) {
       console.log(error);
       toast.error('We were unable to complete transcation. Please try again');
+      dispatch(setCartLoading(false));
       //reloadBrowser();
     }
   };
