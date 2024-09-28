@@ -41,7 +41,7 @@ const CheckoutSection = () => {
   const paymentMethods = [
     { value: 'nmi', name: 'NMI' },
     { value: 'sezzlepay', name: 'Sezzle' },
-    { value: 'cod', name: 'Cash on Delivery' },
+    //{ value: 'cod', name: 'Cash on Delivery' },
   ];
   const { push } = useRouter();
   const [checkoutSuccess, setCheckoutSuccess] = useState<any>(null);
@@ -365,9 +365,10 @@ const CheckoutSection = () => {
       }
     } else if (paymentMethod === 'sezzlepay') {
       handleSezzleCheckout();
-    } else if (paymentMethod === 'cod') {
-      handleCreateOrder([]);
     }
+    //else if (paymentMethod === 'cod') {
+    //   handleCreateOrder([]);
+    // }
   };
 
   const formik = useFormik({
@@ -628,9 +629,9 @@ const CheckoutSection = () => {
                   alt='sezzle'
                 />
               </MenuItem>
-              <MenuItem key={'cod'} value={'cod'}>
+              {/* <MenuItem key={'cod'} value={'cod'}>
                 Cash on Delivery
-              </MenuItem>
+              </MenuItem> */}
             </Select>
           </FormControl>
 
