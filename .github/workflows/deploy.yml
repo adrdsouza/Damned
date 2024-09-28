@@ -1,43 +1,43 @@
-# name: Deploy to Ubuntu Server
+name: Deploy to Ubuntu Server
 
-# on:
-#   push:
-#     branches:
-#       - fixing-order-data-recieved-in-wp
+on:
+  push:
+    branches:
+      - fixing-order-data-recieved-in-wp
 
-# jobs:
-#   deploy:
-#     runs-on: ubuntu-latest
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
 
-#     steps:
-#       - name: Checkout code
-#         uses: actions/checkout@v2
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-#       - name: Install sshpass
-#         run: sudo apt-get install -y sshpass
+      - name: Install sshpass
+        run: sudo apt-get install -y sshpass
 
-#       - name: Deploy to server
-#         env:
-#           SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
-#         run: |
-#           sshpass -p "JbXD6zIAqxPQ0vQyJ63X" ssh -o StrictHostKeyChecking=no damneddesignsnext@172.245.105.195 << 'EOF'
+      - name: Deploy to server
+        env:
+          SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+        run: |
+          sshpass -p "JbXD6zIAqxPQ0vQyJ63X" ssh -o StrictHostKeyChecking=no damneddesignsnext@172.245.105.195 << 'EOF'
 
-#             # Update PATH for the current session
-#             export PATH=$PATH:/home/damneddesignsnext/.nvm/versions/node/v22.9.0/bin
+            # Update PATH for the current session
+            export PATH=$PATH:/home/damneddesignsnext/.nvm/versions/node/v22.9.0/bin
 
-#             # Navigate to project directory and deploy
-#             cd htdocs/damneddesigns.com/Damned || { echo "Directory not found"; exit 1; }
+            # Navigate to project directory and deploy
+            cd htdocs/damneddesigns.com/Damned || { echo "Directory not found"; exit 1; }
 
-#             git fetch --all
-#             git checkout fixing-order-data-recieved-in-wp
-#             git reset --hard
-#             git clean -fd
-#             git pull origin fixing-order-data-recieved-in-wp
-#             cp env.prod .env
-#             npm install
-#             npm run build
-#             pm2 kill
-#             pm2 start "npm run start"
-#             pm2 save
+            git fetch --all
+            git checkout fixing-order-data-recieved-in-wp
+            git reset --hard
+            git clean -fd
+            git pull origin fixing-order-data-recieved-in-wp
+            cp env.prod .env
+            npm install
+            npm run build
+            pm2 kill
+            pm2 start "npm run start"
+            pm2 save
 
-#           EOF
+          EOF
