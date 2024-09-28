@@ -41,7 +41,7 @@ const CheckoutSection = () => {
   const paymentMethods = [
     { value: 'nmi', name: 'NMI' },
     { value: 'sezzlepay', name: 'Sezzle' },
-    //{ value: 'cod', name: 'Cash on Delivery' },
+    { value: 'cod', name: 'Cash on Delivery' },
   ];
   const { push } = useRouter();
   const [checkoutSuccess, setCheckoutSuccess] = useState<any>(null);
@@ -64,8 +64,6 @@ const CheckoutSection = () => {
     createOrder,
     updateCheckoutDetails,
   } = useCheckoutDetails();
-
-  console.log(cart);
 
   const initialValues = { billing: billing, shipping: shipping };
 
@@ -153,6 +151,7 @@ const CheckoutSection = () => {
         coupons,
         paymentMethod: selectedPaymentMethod?.value ?? '',
         paymentMethodTitle: selectedPaymentMethod?.name ?? '',
+        status: 'PROCESSING',
       };
 
       //console.log(payload);
@@ -258,6 +257,8 @@ const CheckoutSection = () => {
         const message = nmiResCodes[String(resData.data.response_code)];
         toast.error(message);
         dispatch(setCartLoading(false));
+        dispatch(setCartClose());
+        dispatch(setCartSection('CART'));
         return;
       }
 
@@ -364,6 +365,8 @@ const CheckoutSection = () => {
       }
     } else if (paymentMethod === 'sezzlepay') {
       handleSezzleCheckout();
+    } else if (paymentMethod === 'cod') {
+      handleCreateOrder([]);
     }
   };
 
@@ -625,9 +628,9 @@ const CheckoutSection = () => {
                   alt='sezzle'
                 />
               </MenuItem>
-              {/* <MenuItem key={'cod'} value={'cod'}>
+              <MenuItem key={'cod'} value={'cod'}>
                 Cash on Delivery
-              </MenuItem> */}
+              </MenuItem>
             </Select>
           </FormControl>
 
