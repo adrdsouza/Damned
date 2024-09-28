@@ -266,7 +266,7 @@ const CheckoutSection = () => {
         toast.success('Transcation was successfull');
         handleCreateOrder([
           { key: 'Reference Order ID', value: orderRef },
-          { key: 'Sezzle Checkout ID', value: resData?.data?.transcationid },
+          { key: 'NMI Transaction ID', value: resData?.data?.transactionid },
         ]);
       }
     } catch (error) {
