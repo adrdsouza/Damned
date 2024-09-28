@@ -1,4 +1,4 @@
-const Help: React.FC = () => {
+const Help = async () => {
   return (
     <div className='2xl:w-[1440px] w-full px-[30px] m-auto py-[2em] md:py-[5em]'>
       <p className='text-4xl  bold-semibold'>HELP</p>

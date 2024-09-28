@@ -40,7 +40,7 @@ const CheckoutSection = () => {
 
   const paymentMethods = [
     { value: 'nmi', name: 'NMI' },
-    { value: 'sezzle', name: 'Sezzle' },
+    { value: 'sezzlepay', name: 'Sezzle' },
     //{ value: 'cod', name: 'Cash on Delivery' },
   ];
   const { push } = useRouter();
@@ -65,6 +65,8 @@ const CheckoutSection = () => {
     updateCheckoutDetails,
   } = useCheckoutDetails();
 
+  console.log(cart);
+
   const initialValues = { billing: billing, shipping: shipping };
 
   const formikValues = useRef(initialValues);
@@ -79,7 +81,7 @@ const CheckoutSection = () => {
     dispatch(setPaymentMethod(e.target.value));
   };
 
-  const handleCreateOrder = async (orderRef) => {
+  const handleCreateOrder = async (customFields) => {
     dispatch(setCartLoading(true));
     try {
       const values = formikValues.current;
@@ -108,6 +110,28 @@ const CheckoutSection = () => {
         (item) => item.value === paymentMethod
       );
 
+      const lineItemsData = cart?.contents?.nodes.map((item) => {
+        const typeAttribute = item.variation?.attributes?.find(
+          (a) => a?.name === 'type'
+        );
+
+        return {
+          name: item.variation?.node.name,
+          productId: item.product?.node.databaseId,
+          variationId: item.variation?.node.databaseId,
+          quantity: item.quantity,
+          metaData: typeAttribute
+            ? [
+                {
+                  id: typeAttribute.id,
+                  key: typeAttribute.name,
+                  value: typeAttribute.value,
+                },
+              ]
+            : [],
+        };
+      });
+
       const payload: any = {
         customerId,
         billing: values.billing,
@@ -124,11 +148,14 @@ const CheckoutSection = () => {
               country: values.billing.country,
               phone: values.billing.phone,
             },
-        lineItems,
+        lineItems: lineItemsData,
         shippingLines,
         coupons,
+        paymentMethod: selectedPaymentMethod?.value ?? '',
         paymentMethodTitle: selectedPaymentMethod?.name ?? '',
       };
+
+      //console.log(payload);
 
       const order = await createOrder(payload);
       if (!order) {
@@ -138,10 +165,15 @@ const CheckoutSection = () => {
         return;
       }
 
-      await addCustomFieldToOrder(
-        order?.databaseId as number,
-        'reference_order_id',
-        orderRef
+      await Promise.all(
+        customFields.map(
+          async (field) =>
+            await addCustomFieldToOrder(
+              order?.databaseId as number,
+              field.key,
+              field.value
+            )
+        )
       );
 
       setCheckoutSuccess(true);
@@ -150,7 +182,7 @@ const CheckoutSection = () => {
         push(`/order-recieved/${order.orderNumber}?key=${order.orderKey}`);
         dispatch(setCartClose());
         dispatch(setCartSection('CART'));
-      }, 3000);
+      }, 2000);
     } catch (error: any) {
       console.log(error);
       toast.error('Cart Session Expired');
@@ -191,7 +223,7 @@ const CheckoutSection = () => {
         token: token,
       };
 
-      console.log(data);
+      //console.log(data);
 
       const res = await fetch(`${process.env.FRONTEND_URL}/api/process-nmi`, {
         method: 'POST',
@@ -208,7 +240,7 @@ const CheckoutSection = () => {
         throw new Error();
       }
 
-      console.log('NMI process res: ', resData);
+      //console.log('NMI process res: ', resData);
 
       // const dummyRes = {
       //   response: '3',
@@ -230,7 +262,10 @@ const CheckoutSection = () => {
 
       if (resData?.data?.response === '1') {
         toast.success('Transcation was successfull');
-        handleCreateOrder(orderRef);
+        handleCreateOrder([
+          { key: 'Reference Order ID', value: orderRef },
+          { key: 'Sezzle Checkout ID', value: resData?.data?.transcationid },
+        ]);
       }
     } catch (error) {
       console.log(error);
@@ -242,7 +277,7 @@ const CheckoutSection = () => {
 
   const handleSezzleCheckout = async () => {
     if (
-      paymentMethod === 'sezzle' &&
+      paymentMethod === 'sezzlepay' &&
       cart?.total &&
       typeof window !== 'undefined' &&
       window.Checkout
@@ -287,8 +322,12 @@ const CheckoutSection = () => {
           //   session_uuid: null,
           //   order_uuid: null,
           // };
+
           if (event.data.status === 'success') {
-            handleCreateOrder(orderRef);
+            handleCreateOrder([
+              { key: 'Reference Order ID', value: orderRef },
+              { key: 'Sezzle Checkout ID', value: event.data.checkout_uuid },
+            ]);
           } else {
             toast.error('Error while completing Sezzle transaction');
             reloadBrowser();
@@ -322,7 +361,7 @@ const CheckoutSection = () => {
       if (typeof window !== 'undefined') {
         window.CollectJS.startPaymentRequest();
       }
-    } else if (paymentMethod === 'sezzle') {
+    } else if (paymentMethod === 'sezzlepay') {
       handleSezzleCheckout();
     }
   };
@@ -579,12 +618,15 @@ const CheckoutSection = () => {
                   />
                 </div>
               </MenuItem>
-              <MenuItem key={'sezzle'} value={'sezzle'}>
+              <MenuItem key={'sezzlepay'} value={'sezzlepay'}>
                 <img
                   src='https://d34uoa9py2cgca.cloudfront.net/branding/sezzle-logos/png/sezzle-logo-sm-100w.png'
                   alt='sezzle'
                 />
               </MenuItem>
+              {/* <MenuItem key={'cod'} value={'cod'}>
+                Cash on Delivery
+              </MenuItem> */}
             </Select>
           </FormControl>
 
@@ -617,7 +659,7 @@ const CheckoutSection = () => {
             </div>
           ) : null}
 
-          {paymentMethod === 'sezzle' ? (
+          {paymentMethod === 'sezzlepay' ? (
             <div className='hidden' id='sezzle-smart-button-container' />
           ) : null}
         </div>
@@ -629,8 +671,7 @@ const CheckoutSection = () => {
         type='submit'
         disabled={cartLoading || formik.isSubmitting}
         onClick={() => formik.handleSubmit()}
-        //onClick={processNMI}
-        className='py-8 bg-stone-500 w-full rounded-none text-white hover:bg-stone-600 hidden'
+        className='py-8 bg-stone-500 w-full rounded-none text-white hover:bg-stone-600'
       >
         {`Place Order - $${cart?.total}`}
       </Button>
