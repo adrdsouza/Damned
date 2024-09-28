@@ -257,6 +257,7 @@ const CheckoutSection = () => {
       if (resData?.data?.response === '2' || resData?.data?.response === '3') {
         const message = nmiResCodes[String(resData.data.response_code)];
         toast.error(message);
+        dispatch(setCartLoading(false));
         return;
       }
 
