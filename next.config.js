@@ -31,9 +31,6 @@ const nextConfig = {
     NMI_PUBLIC_KEY: process.env.NMI_PUBLIC_KEY,
     NMI_PRIVATE_KEY: process.env.NMI_PRIVATE_KEY,
   },
-  experimental: {
-    serverActions: true,
-  },
 };
 
 module.exports = nextConfig;
