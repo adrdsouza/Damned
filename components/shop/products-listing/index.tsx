@@ -16,12 +16,12 @@ const ProductsList = ({
   data: VariableProduct[];
   showPagination?: Boolean | undefined;
 }) => {
-  const cols = data.length >= 4 ? 4 : data.length;
+  //const cols = data.length >= 4 ? 4 : data.length;
 
   const pathname = usePathname();
   const [sort, setSort] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 12;
+  const itemsPerPage = 9;
 
   const pageCount = Math.ceil(data.length / itemsPerPage);
 
@@ -41,7 +41,7 @@ const ProductsList = ({
   return (
     <div className='w-full'>
       {showPagination === true ? (
-        <div className='flex gap-2 items-center ml-auto my-4'>
+        <div className='flex gap-2 items-center justify-end my-4'>
           <p>Sort By</p>
           <Select
             size='small'
@@ -70,7 +70,7 @@ const ProductsList = ({
       ) : null}
 
       <div
-        className={`lg:mt-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-${cols} gap-2`}
+        className={`lg:mt-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2`}
       >
         {paginatedData.map((p) => (
           <PocketItem
@@ -87,7 +87,7 @@ const ProductsList = ({
       </div>
 
       {/* Show pagination only if the data length is greater than 5 */}
-      {showPagination && data.length > 12 && (
+      {showPagination && data.length > 9 && (
         <div className='flex justify-center mt-4'>
           <Pagination
             count={pageCount}
