@@ -10,6 +10,7 @@ import { setCartClose, setCartLoading } from '@/redux/slices/cart-slice';
 import toast from 'react-hot-toast';
 import { IconButton } from '@mui/material';
 import { reloadBrowser } from '@/components/utils';
+import { text } from '@/app/styles';
 
 export interface CartItemProps {
   item: CartItemInterface;
@@ -117,7 +118,7 @@ export function CartItem({ item, priority }: CartItemProps) {
   }, [quantityLeft]);
 
   return (
-    <div className='flex h-[150px] p-4 gap-4 '>
+    <div className='flex h-[150px] p-4 gap-4'>
       <div className='h-full w-[30%]'>
         <Link
           href={`/product/${slug}`}
@@ -133,48 +134,46 @@ export function CartItem({ item, priority }: CartItemProps) {
         </Link>
       </div>
 
-      <div className='w-[70%] h-full relative'>
-        <div className=' absolute top-0 right-0'>
-          <p>{productPrice}</p>
-        </div>
-        <IconButton
-          onClick={removeCartItem}
-          className='absolute  bottom-0 right-0'
-        >
-          <Trash2 className='h-5 w-5 hover:text-red-600' />
-        </IconButton>
-        <div>
+      <div className='w-[70%] h-full'>
+        <div className='flex  justify-between items-center'>
           <Link
             onClick={() => dispatch(setCartClose())}
             href={`/product/${slug}`}
           >
             <p>{productName}</p>
+            <p>{productVariation}</p>
           </Link>
-          <p>{productVariation}</p>
+          <p>{productPrice}</p>
         </div>
 
-        <div className='absolute h-10 bottom-0 left-0 flex w-fit border border-stone-300'>
-          <IconButton onClick={decreaseQuantity} className='rounded-none'>
-            <Minus className='h-5 w-5 m-auto' />
-          </IconButton>
+        <div className='flex  justify-between items-center'>
+          <div className='h-10 bottom-0 left-0 flex w-fit border border-stone-300'>
+            <IconButton onClick={decreaseQuantity} className='rounded-none'>
+              <Minus className='h-5 w-5 m-auto' />
+            </IconButton>
 
-          <input
-            min={1}
-            value={value}
-            disabled={fetching}
-            className='h-full w-14 border-x border-stone-300 text-center focus:outline-none'
-            onChange={(e) => {
-              setValue(Number(e.target.value));
-            }}
-            onBlur={handleChange}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') handleChange(e);
-            }}
-            type='number'
-          />
+            <input
+              min={1}
+              value={value}
+              disabled={fetching}
+              className='h-full w-14 border-x border-stone-300 text-center focus:outline-none'
+              onChange={(e) => {
+                setValue(Number(e.target.value));
+              }}
+              onBlur={handleChange}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') handleChange(e);
+              }}
+              type='number'
+            />
 
-          <IconButton onClick={increaseQuantity} className='rounded-none'>
-            <Plus className='h-5 w-5 m-auto' />
+            <IconButton onClick={increaseQuantity} className='rounded-none'>
+              <Plus className='h-5 w-5 m-auto' />
+            </IconButton>
+          </div>
+
+          <IconButton onClick={removeCartItem} className=''>
+            <Trash2 className='h-5 w-5 hover:text-red-600' />
           </IconButton>
         </div>
       </div>

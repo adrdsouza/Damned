@@ -5,7 +5,7 @@ import ProductsList from '@/components/shop/products-listing';
 const SearchPage = async ({ searchParams }: any) => {
   const { query } = searchParams;
   const { nodes: products } = await fetchProducts({
-    first: 30,
+    first: 99,
     where: { search: query ?? '' },
   });
 
@@ -14,7 +14,7 @@ const SearchPage = async ({ searchParams }: any) => {
       <p
         className={`${text.md} font-medium`}
       >{`Search results for "${query}"`}</p>
-      <ProductsList data={products} showPagination={true} />
+      <ProductsList data={products} showPagination={false} />
     </div>
   );
 };

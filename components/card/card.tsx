@@ -7,7 +7,7 @@ interface PocketItemProps {
   className?: string;
   productId?: string;
   name?: string;
-  price?: number;
+  price?: string;
   slug?: string;
   img?: any;
   star?: Number;

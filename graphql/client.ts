@@ -19,6 +19,9 @@ import {
   RootQueryToOrderConnectionWhereArgs,
   ordersQueryVariables,
   RootQueryToOrderConnection,
+  getSingleorderQueryVariables,
+  OrderIdTypeEnum,
+  getSingleorderQuery,
 } from './generated';
 
 export function getClient() {
@@ -63,6 +66,24 @@ export function fetchOrders(variables: ordersQueryVariables = {}) {
       next: { revalidate: 24 * HOUR_IN_SECONDS },
     }
   );
+}
+
+// single order function
+
+export function fetchSingleOrder(id: any, idType: OrderIdTypeEnum) {
+  return apiCall<getSingleorderQuery>(`${process.env.FRONTEND_URL}/api/order`, {
+    method: 'POST',
+    body: JSON.stringify({ id, idType }),
+    next: { revalidate: 24 * HOUR_IN_SECONDS },
+  });
+}
+
+export async function fetchProduct(id: string, idType: ProductIdTypeEnum) {
+  return apiCall<Product>(`${process.env.FRONTEND_URL}/api/product`, {
+    method: 'POST',
+    body: JSON.stringify({ id, idType }),
+    next: { revalidate: 24 * HOUR_IN_SECONDS },
+  });
 }
 
 export async function fetchProductsCount(
@@ -135,12 +156,4 @@ export async function fetchCategories(
   } catch (err) {
     console.log(err || 'Failed to fetch product categories!!!');
   }
-}
-
-export async function fetchProduct(id: string, idType: ProductIdTypeEnum) {
-  return apiCall<Product>(`${process.env.FRONTEND_URL}/api/product`, {
-    method: 'POST',
-    body: JSON.stringify({ id, idType }),
-    next: { revalidate: 24 * HOUR_IN_SECONDS },
-  });
 }

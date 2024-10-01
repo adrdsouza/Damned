@@ -26,7 +26,7 @@ const CartItemsSection = () => {
             <Button
               variant='outlined'
               onClick={() => dispatch(setCartClose())}
-              className='border-stone-500 hover:border-stone-600 hover:bg-stone-200 text-stone-500'
+              className='border-stone-500 xsm hover:border-stone-600 hover:bg-stone-200 text-stone-500'
             >
               RETURN TO SHOP
             </Button>

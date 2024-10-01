@@ -321,3 +321,9 @@ query getTrustPilotReviews($limit: Int, $paged: Int) {
     provider
   }
 }
+
+query getSingleorder($id: ID, $idType: OrderIdTypeEnum) {
+  order(id: $id, idType: $idType) {
+    ...OrderFields
+  }
+}

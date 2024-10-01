@@ -1,6 +1,6 @@
 import { text } from '@/app/styles';
 import ProductsList from '@/components/shop/products-listing';
-import { fetchProducts } from '@/graphql';
+import { fetchProducts, OrderEnum, ProductsOrderByEnum } from '@/graphql';
 import { Metadata } from 'next';
 import Image from 'next/image';
 
@@ -10,10 +10,30 @@ export const metadata: Metadata = {
   title: 'Sidekick Pry Bars - Damned Designs',
 };
 
-const Page: React.FC = async () => {
+const Page: React.FC = async ({ searchParams }: any) => {
+  const { field, order } = searchParams;
+
+  let orderby: {
+    field: ProductsOrderByEnum | null;
+    order: OrderEnum | null;
+  }[] = [];
+
+  if (field && order) {
+    const fieldEnum =
+      ProductsOrderByEnum[field as keyof typeof ProductsOrderByEnum] ?? null;
+    const orderEnum = OrderEnum[order as keyof typeof OrderEnum] ?? null;
+
+    if (fieldEnum && orderEnum) {
+      orderby.push({ field: fieldEnum, order: orderEnum });
+    }
+  }
+
   const { nodes: products } = await fetchProducts({
-    first: 30,
-    where: { categoryId: 1270 },
+    first: 99,
+    where: {
+      categoryId: 1270,
+      orderby: orderby as any,
+    },
   });
 
   return (
@@ -38,7 +58,7 @@ const Page: React.FC = async () => {
         </div>
       </div>
       <div className='w-full min-h-[500px] px-8 py-8 m-auto'>
-        <ProductsList data={products} showPagination={false} />
+        <ProductsList data={products as any} showPagination={false} />
       </div>
       <div
         className='flex flex-col md:flex-row w-full'

@@ -61,6 +61,11 @@ export const OrderDetails = ({ order }: { order: Order }) => {
           </tr>
 
           <tr className='border-b border-stone-300'>
+            <td className='font-medium'>Status</td>
+            <td>{order.status}</td>
+          </tr>
+
+          <tr className='border-b border-stone-300'>
             <td>Total</td>
             <td>{order.total}</td>
           </tr>

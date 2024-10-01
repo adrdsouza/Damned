@@ -1,6 +1,6 @@
 import DashboardBack from '@/components/dashboardBack';
 import ProductsList from '@/components/shop/products-listing';
-import { fetchProducts } from '@/graphql';
+import { fetchProducts, OrderEnum, ProductsOrderByEnum } from '@/graphql';
 import { Metadata } from 'next';
 
 export const dynamic = 'force-dynamic';
@@ -11,10 +11,30 @@ export const metadata: Metadata = {
     'EDC tools, expertly crafted with great attention to detail. Damned Designs is where breathtaking aesthetics meets uncompromising functionality.',
 };
 
-const Edc = async () => {
+const Edc = async ({ searchParams }: any) => {
+  const { field, order } = searchParams;
+
+  let orderby: {
+    field: ProductsOrderByEnum | null;
+    order: OrderEnum | null;
+  }[] = [];
+
+  if (field && order) {
+    const fieldEnum =
+      ProductsOrderByEnum[field as keyof typeof ProductsOrderByEnum] ?? null;
+    const orderEnum = OrderEnum[order as keyof typeof OrderEnum] ?? null;
+
+    if (fieldEnum && orderEnum) {
+      orderby.push({ field: fieldEnum, order: orderEnum });
+    }
+  }
+
   const { nodes: products } = await fetchProducts({
-    first: 50,
-    where: { categoryId: 1143 },
+    first: 99,
+    where: {
+      categoryId: 1143,
+      orderby: orderby as any,
+    },
   });
 
   return (
@@ -32,7 +52,7 @@ const Edc = async () => {
       </div>
 
       <div className='flex m-auto px-8 min-h-[500px] h-full py-8 bg-white w-full'>
-        <ProductsList data={products} showPagination={true} />
+        <ProductsList data={products as any} showPagination={true} />
       </div>
     </div>
   );
