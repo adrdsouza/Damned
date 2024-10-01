@@ -186,6 +186,7 @@ export async function POST(request: Request) {
     }
 
     const getOrdersClient = getClient();
+
     if (!process.env.CREATE_ORDER_PASSWORD) {
       return NextResponse.json(
         {
@@ -238,6 +239,10 @@ export async function POST(request: Request) {
         break;
       case errorMessage.includes('incorrect_password'):
         message = 'Invalid username or password. Please try again.';
+        status = 401;
+        break;
+      case errorMessage.includes('already registered'):
+        message = 'An account is already registered with your email address.';
         status = 401;
         break;
       default:
