@@ -28,7 +28,7 @@ jobs:
             # Navigate to project directory and deploy
             cd htdocs/damneddesigns.com/Damned || { echo "Directory not found"; exit 1; }
 
-            git checkout fixing-order-payment-details-recieved-in-wp
+            
             git reset --hard
             git clean -fd
             git pull origin fixing-order-payment-details-recieved-in-wp

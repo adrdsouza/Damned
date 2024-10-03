@@ -65,8 +65,6 @@ const CheckoutSection = () => {
     updateCheckoutDetails,
   } = useCheckoutDetails();
 
-  console.log(shippingLines);
-
   const initialValues = { billing: billing, shipping: shipping };
 
   const formikValues = useRef(initialValues);
@@ -105,10 +103,6 @@ const CheckoutSection = () => {
         reloadBrowser();
         return;
       }
-
-      const selectedPaymentMethod = paymentMethods.find(
-        (item) => item.value === paymentMethod
-      );
 
       const lineItemsData = cart?.contents?.nodes.map((item) => {
         const attributesList: any =
@@ -152,7 +146,18 @@ const CheckoutSection = () => {
         },
       ];
 
-      console.log(shippingLinesData);
+      let transactionId;
+
+      if (paymentMethod === 'nmi') {
+        transactionId = customFields?.find(
+          (field) => field.key === '_nmi_charge_id'
+        );
+      }
+      if (paymentMethod === 'nmi') {
+        transactionId = customFields?.find(
+          (field) => field.key === 'order_reference_id'
+        );
+      }
 
       const payload: any = {
         customerId,
@@ -173,13 +178,13 @@ const CheckoutSection = () => {
         lineItems: lineItemsData,
         shippingLines: shippingLinesData,
         coupons,
-        paymentMethod: selectedPaymentMethod?.value ?? '',
+        paymentMethod: paymentMethod,
         //paymentMethodTitle: selectedPaymentMethod?.name ?? '',
         status: 'PROCESSING',
-        transactionId: customFields[1].value,
+        transactionId: transactionId.value,
       };
 
-      //console.log(payload);
+      console.log(payload);
 
       const order = await createOrder(payload);
       if (!order) {
@@ -291,7 +296,12 @@ const CheckoutSection = () => {
         toast.success('Transcation was successfull');
         handleCreateOrder([
           { key: 'Reference Order ID', value: orderRef },
-          { key: 'NMI Transaction ID', value: resData?.data?.transactionid },
+          { key: 'NMI Transcation ID', value: resData?.data?.transactionid },
+          { key: '_nmi_charge_id', value: resData?.data?.transactionid },
+          { key: '_nmi_authorization_code', value: resData?.data?.authcode },
+          { key: '_nmi_card_last4', value: token.card.number.slice(-4) },
+          { key: '_nmi_card_type', value: token.card.type },
+          { key: '_nmi_charge_captured', value: 'yes' },
         ]);
       }
     } catch (error) {
@@ -352,7 +362,7 @@ const CheckoutSection = () => {
 
           if (event.data.status === 'success') {
             handleCreateOrder([
-              { key: 'Reference Order ID', value: orderRef },
+              { key: 'order_reference_id', value: orderRef },
               { key: 'Sezzle Checkout ID', value: event.data.checkout_uuid },
             ]);
           } else {

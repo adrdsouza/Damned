@@ -41,8 +41,8 @@ export async function POST(request: Request) {
       payment_token: token.token,
       ccnumber: token.card.number,
       ccexp: token.card.exp,
-      amount: order.total,
-      //amount: '1.00',
+      //amount: order.total,
+      amount: '1.00',
       curreny: 'USD',
       orderid: order.orderRef,
 
