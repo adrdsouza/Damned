@@ -83,8 +83,6 @@ const ShippingOptions = () => {
   //   dispatch(setChangeShipping(true));
   // };
 
-  console.log('from shipping component: ', cart);
-
   const availableShippingRates: ShippingRate[] = (
     cart?.availableShippingMethods || []
   ).reduce<ShippingRate[]>((rates, nextPackage) => {

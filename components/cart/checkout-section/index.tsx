@@ -41,7 +41,7 @@ const CheckoutSection = () => {
   const paymentMethods = [
     { value: 'nmi', name: 'NMI' },
     { value: 'sezzlepay', name: 'Sezzle' },
-    { value: 'cod', name: 'Cash on Delivery' },
+    //{ value: 'cod', name: 'Cash on Delivery' },
   ];
   const { push } = useRouter();
   const [checkoutSuccess, setCheckoutSuccess] = useState<any>(null);
@@ -79,7 +79,7 @@ const CheckoutSection = () => {
     dispatch(setPaymentMethod(e.target.value));
   };
 
-  const handleCreateOrder = async (customFields) => {
+  const handleCreateOrder = async (customFields: any) => {
     dispatch(setCartLoading(true));
     try {
       const values = formikValues.current;
@@ -153,11 +153,15 @@ const CheckoutSection = () => {
           (field) => field.key === '_nmi_charge_id'
         );
       }
-      if (paymentMethod === 'nmi') {
+      if (paymentMethod === 'sezzlepay') {
         transactionId = customFields?.find(
-          (field) => field.key === 'order_reference_id'
+          (field) => field.key === 'Sezzle Checkout ID'
         );
       }
+
+      const selectedPaymentMethod = paymentMethods.find(
+        (d) => d.value === paymentMethod
+      );
 
       const payload: any = {
         customerId,
@@ -179,12 +183,11 @@ const CheckoutSection = () => {
         shippingLines: shippingLinesData,
         coupons,
         paymentMethod: paymentMethod,
-        //paymentMethodTitle: selectedPaymentMethod?.name ?? '',
-        status: 'PROCESSING',
-        transactionId: transactionId.value,
+        paymentMethodTitle: selectedPaymentMethod?.value ?? '',
+        //status: 'PROCESSING',
+        isPaid: true,
+        transactionId: transactionId?.value ?? '',
       };
-
-      console.log(payload);
 
       const order = await createOrder(payload);
       if (!order) {
@@ -195,7 +198,7 @@ const CheckoutSection = () => {
       }
 
       await Promise.all(
-        customFields.map(
+        customFields?.map(
           async (field) =>
             await addCustomFieldToOrder(
               order?.databaseId as number,
@@ -268,8 +271,6 @@ const CheckoutSection = () => {
       if (!resData?.status) {
         throw new Error();
       }
-
-      //console.log('NMI process res: ', resData);
 
       // const dummyRes = {
       //   response: '3',
@@ -350,8 +351,8 @@ const CheckoutSection = () => {
           });
         },
         onComplete: (event) => {
-          console.log('checkout complete');
-          console.log(event.data);
+          //console.log('checkout complete');
+          //console.log(event.data);
           // const x = {
           //   status: 'success',
           //   checkout_uuid: 'b88cc575-8587-4063-9d97-8811a84d354b',
@@ -362,20 +363,20 @@ const CheckoutSection = () => {
 
           if (event.data.status === 'success') {
             handleCreateOrder([
-              { key: 'order_reference_id', value: orderRef },
+              { key: 'Reference Order ID', value: orderRef },
               { key: 'Sezzle Checkout ID', value: event.data.checkout_uuid },
             ]);
           } else {
             toast.error('Error while completing Sezzle transaction');
-            reloadBrowser();
+            //reloadBrowser();
           }
         },
         onCancel: () => {
-          console.log('checkout canceled');
+          //console.log('checkout canceled');
           formik.setSubmitting(false);
         },
         onFailure: () => {
-          console.log('checkout failed');
+          //console.log('checkout failed');
           formik.setSubmitting(false);
         },
       });
@@ -663,9 +664,9 @@ const CheckoutSection = () => {
                   alt='sezzle'
                 />
               </MenuItem>
-              <MenuItem key={'cod'} value={'cod'}>
+              {/* <MenuItem key={'cod'} value={'cod'}>
                 Cash on Delivery
-              </MenuItem>
+              </MenuItem> */}
             </Select>
           </FormControl>
 
@@ -710,7 +711,7 @@ const CheckoutSection = () => {
         type='submit'
         disabled={cartLoading || formik.isSubmitting}
         onClick={() => formik.handleSubmit()}
-        className='py-8 bg-stone-500 w-full rounded-none text-white hover:bg-stone-600 hidden'
+        className='py-8 bg-stone-500 w-full rounded-none text-white hover:bg-stone-600'
       >
         {`Place Order - $${cart?.total}`}
       </Button>
