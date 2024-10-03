@@ -5,11 +5,8 @@ import type {
   Customer,
   Cart,
 } from '@woographql/react-hooks';
-
 import { apiCall } from '@/utils/apiCall';
 import { PaymentTokenCC, Customer as CustomerType } from '@/graphql';
-
-import { useRouter } from 'next/navigation';
 
 type LoginResponse = {
   authToken: string;
@@ -79,7 +76,7 @@ export function createSessionOperations(
         dispatch({ type: 'UPDATE_STATE', payload: { cart: input?.cart } });
         return input?.cart;
       }
-      console.log('update Cart from sessison Operations\n');
+      console.log('updating Cart...');
       const { sessionToken, cart } = await apiCall<FetchCartResponse>(
         '/api/cart',
         {
@@ -92,6 +89,7 @@ export function createSessionOperations(
           cache: 'no-cache',
         }
       );
+      console.log(cart);
       tokenManager.saveTokens({ sessionToken });
       dispatch({ type: 'UPDATE_STATE', payload: { cart } });
       return cart;

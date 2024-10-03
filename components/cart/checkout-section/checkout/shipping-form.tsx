@@ -43,6 +43,13 @@ const ShippingForm = ({ formik }: any) => {
       //   postcode: formik.values.billing.postcode,
       // });
 
+      //@ts-ignore
+      const currentShippingMethod = cart?.chosenShippingMethods[0];
+      if (currentShippingMethod === 'free_shipping:14') {
+        dispatch(setCartLoading(false));
+        return;
+      }
+
       const shippingRate = await getShippingRate(
         formik.values.shipping.country
       );

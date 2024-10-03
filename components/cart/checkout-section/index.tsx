@@ -41,7 +41,7 @@ const CheckoutSection = () => {
   const paymentMethods = [
     { value: 'nmi', name: 'NMI' },
     { value: 'sezzlepay', name: 'Sezzle' },
-    //{ value: 'cod', name: 'Cash on Delivery' },
+    { value: 'cod', name: 'Cash on Delivery' },
   ];
   const { push } = useRouter();
   const [checkoutSuccess, setCheckoutSuccess] = useState<any>(null);
@@ -64,6 +64,8 @@ const CheckoutSection = () => {
     createOrder,
     updateCheckoutDetails,
   } = useCheckoutDetails();
+
+  console.log(shippingLines);
 
   const initialValues = { billing: billing, shipping: shipping };
 
@@ -109,26 +111,48 @@ const CheckoutSection = () => {
       );
 
       const lineItemsData = cart?.contents?.nodes.map((item) => {
-        const typeAttribute = item.variation?.attributes?.find(
-          (a) => a?.name === 'type'
-        );
+        const attributesList: any =
+          item.variation?.attributes?.map((attr) => ({
+            id: attr?.id,
+            key: attr?.label,
+            value: attr?.value,
+          })) || [];
+
+        // attributesList?.push({
+        //   key: '_reduced_stock',
+        //   value: String(item.quantity),
+        // });
 
         return {
           name: item.variation?.node.name,
           productId: item.product?.node.databaseId,
           variationId: item.variation?.node.databaseId,
           quantity: item.quantity,
-          metaData: typeAttribute
-            ? [
-                {
-                  id: typeAttribute.id,
-                  key: typeAttribute.name,
-                  value: typeAttribute.value,
-                },
-              ]
-            : [],
+          metaData: attributesList,
+          total: item?.total,
         };
       });
+
+      //@ts-ignore
+      const shippingMethod = cart?.availableShippingMethods[0]?.rates[0];
+      const shippingLinesData = [
+        {
+          //id: String(shippingMethod?.id),
+          //instanceId: String(shippingMethod?.instanceId),
+          methodTitle: shippingMethod?.label,
+          methodId: shippingMethod?.methodId,
+          total: shippingMethod?.cost,
+          metaData: [
+            {
+              key: 'Items',
+              //@ts-ignore
+              value: cart?.availableShippingMethods[0]?.packageDetails,
+            },
+          ],
+        },
+      ];
+
+      console.log(shippingLinesData);
 
       const payload: any = {
         customerId,
@@ -147,11 +171,12 @@ const CheckoutSection = () => {
               phone: values.billing.phone,
             },
         lineItems: lineItemsData,
-        shippingLines,
+        shippingLines: shippingLinesData,
         coupons,
         paymentMethod: selectedPaymentMethod?.value ?? '',
-        paymentMethodTitle: selectedPaymentMethod?.name ?? '',
+        //paymentMethodTitle: selectedPaymentMethod?.name ?? '',
         status: 'PROCESSING',
+        transactionId: customFields[1].value,
       };
 
       //console.log(payload);
@@ -178,7 +203,7 @@ const CheckoutSection = () => {
       setCheckoutSuccess(true);
 
       setTimeout(() => {
-        push(`/order-recieved/${order.orderNumber}?key=${order.orderKey}`);
+        push(`/order-recieved/?id=${order.orderNumber}&key=${order.orderKey}`);
         dispatch(setCartClose());
         dispatch(setCartSection('CART'));
       }, 2000);
@@ -365,10 +390,9 @@ const CheckoutSection = () => {
       }
     } else if (paymentMethod === 'sezzlepay') {
       handleSezzleCheckout();
+    } else if (paymentMethod === 'cod') {
+      handleCreateOrder([]);
     }
-    //else if (paymentMethod === 'cod') {
-    //   handleCreateOrder([]);
-    // }
   };
 
   const formik = useFormik({
@@ -629,9 +653,9 @@ const CheckoutSection = () => {
                   alt='sezzle'
                 />
               </MenuItem>
-              {/* <MenuItem key={'cod'} value={'cod'}>
+              <MenuItem key={'cod'} value={'cod'}>
                 Cash on Delivery
-              </MenuItem> */}
+              </MenuItem>
             </Select>
           </FormControl>
 
