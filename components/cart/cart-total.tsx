@@ -32,7 +32,7 @@ const CartTotal = ({ showDetails }: { showDetails?: Boolean | undefined }) => {
         <Loader className='absolute bg-[#ffffff75] z-[999] w-full h-full' />
       ) : null} */}
 
-      {/* <ApplyCoupon /> */}
+      <ApplyCoupon />
 
       <div className='border-y p-4 flex flex-col gap-2'>
         {showDetails ? (
@@ -57,7 +57,7 @@ const CartTotal = ({ showDetails }: { showDetails?: Boolean | undefined }) => {
         </div>
       </div>
 
-      {/* <AppliedCoupons /> */}
+      <AppliedCoupons />
 
       <ShippingOptions />
 

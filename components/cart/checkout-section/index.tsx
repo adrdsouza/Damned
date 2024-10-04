@@ -711,7 +711,7 @@ const CheckoutSection = () => {
         type='submit'
         disabled={cartLoading || formik.isSubmitting}
         onClick={() => formik.handleSubmit()}
-        className='py-8 bg-stone-500 w-full rounded-none text-white hover:bg-stone-600 hidden'
+        className='py-8 bg-stone-500 w-full rounded-none text-white hover:bg-stone-600'
       >
         {`Place Order - $${cart?.total}`}
       </Button>

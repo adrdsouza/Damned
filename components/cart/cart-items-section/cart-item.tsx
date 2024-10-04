@@ -43,15 +43,14 @@ export function CartItem({ item, priority }: CartItemProps) {
     dispatch(setCartLoading(true));
     try {
       const res = await mutate('updateItemQuantities', { quantity });
+      console.log(res);
       if (!res) {
         reloadBrowser();
       }
     } catch (error) {
       toast.error('Cart Session Expired.');
       console.log(error);
-      setTimeout(() => {
-        reloadBrowser();
-      }, 2000);
+      reloadBrowser();
     }
     dispatch(setCartLoading(false));
   };

@@ -14,7 +14,7 @@ import { useOtherCartMutations } from '@woographql/react-hooks';
 import { useSelector } from 'react-redux';
 import { dispatch } from '@/redux/store';
 import toast from 'react-hot-toast';
-import { reloadBrowser } from '@/components/utils';
+import { reloadBrowser, setLocalStorageItem } from '@/components/utils';
 import { getShippingRate } from '@/lib/graphql';
 
 const ShippingForm = ({ formik }: any) => {
@@ -43,45 +43,58 @@ const ShippingForm = ({ formik }: any) => {
       //   postcode: formik.values.billing.postcode,
       // });
 
-      //@ts-ignore
-      const currentShippingMethod = cart?.chosenShippingMethods[0];
-      if (currentShippingMethod === 'free_shipping:14') {
-        dispatch(setCartLoading(false));
-        return;
-      }
-
-      const shippingRate = await getShippingRate(
-        formik.values.shipping.country
-      );
-
-      if (!shippingRate) {
-        dispatch(setCartLoading(false));
-        return;
-      }
-
-      const updatedCart = {
-        ...cart,
-        chosenShippingMethods: [shippingRate.id],
-        availableShippingMethods: [
-          {
-            packageDetails: cart?.contents?.nodes
-              .map((node) => `${node?.variation?.node.name} ×${node.quantity}`)
-              .join(', '),
-            supportsShippingCalculator: true,
-            rates: [shippingRate],
-          },
-        ],
-        shippingTotal: `$${shippingRate.cost}`,
-        total: `${(
-          parseFloat(cart?.subtotal?.replace('$', '') as string) +
-          parseFloat(shippingRate.cost)
-        ).toFixed(2)}`,
-      };
+      setLocalStorageItem('currentCountry', shippingCountry);
 
       await updateCart({
-        updateShippingRate: true,
-        cart: updatedCart,
+        mutation: 'updateItemQuantities',
+        input: {
+          items:
+            cart?.contents?.nodes?.map((item) => ({
+              key: item.key as string,
+              quantity: item.quantity as number,
+            })) || [],
+        },
       });
+
+      //@ts-ignore
+      // const currentShippingMethod = cart?.chosenShippingMethods[0];
+      // if (currentShippingMethod === 'free_shipping:14') {
+      //   dispatch(setCartLoading(false));
+      //   return;
+      // }
+
+      // const shippingRate = await getShippingRate(
+      //   formik.values.shipping.country
+      // );
+
+      // if (!shippingRate) {
+      //   dispatch(setCartLoading(false));
+      //   return;
+      // }
+
+      // const updatedCart = {
+      //   ...cart,
+      //   chosenShippingMethods: [shippingRate.id],
+      //   availableShippingMethods: [
+      //     {
+      //       packageDetails: cart?.contents?.nodes
+      //         .map((node) => `${node?.variation?.node.name} ×${node.quantity}`)
+      //         .join(', '),
+      //       supportsShippingCalculator: true,
+      //       rates: [shippingRate],
+      //     },
+      //   ],
+      //   shippingTotal: `$${shippingRate.cost}`,
+      //   total: `${(
+      //     parseFloat(cart?.subtotal?.replace('$', '') as string) +
+      //     parseFloat(shippingRate.cost)
+      //   ).toFixed(2)}`,
+      // };
+
+      // await updateCart({
+      //   updateShippingRate: true,
+      //   cart: updatedCart,
+      // });
     } catch (error) {
       console.log(error);
       toast.error('Cart Session Expired');

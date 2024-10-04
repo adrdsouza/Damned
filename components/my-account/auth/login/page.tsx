@@ -6,6 +6,7 @@ import { TextField } from '@mui/material';
 import toast from 'react-hot-toast';
 import { pallete } from '@/app/styles';
 import { LoadingButton } from '@mui/lab';
+import { setLocalStorageItem } from '@/components/utils';
 const validationSchema = Yup.object({
   email: Yup.string()
     .email('Invalid email address')
@@ -31,6 +32,8 @@ const LoginForm = () => {
     console.log(customer);
 
     if (!!customer?.id && customer.id !== 'guest') {
+      const currentCountry = customer.billing?.country ?? '';
+      setLocalStorageItem('currentCountry', currentCountry);
       toast.success(`Welcome Back! ${customer.firstName}`);
     } else {
       toast.error((customer || 'Login failed. Please try again.') as string);

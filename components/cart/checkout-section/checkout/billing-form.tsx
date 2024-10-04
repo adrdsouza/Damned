@@ -15,7 +15,7 @@ import {
 import toast from 'react-hot-toast';
 import { useCountries } from '@/hooks/useCountries';
 import { Cart, CountriesEnum } from '@/graphql';
-import { reloadBrowser } from '@/components/utils';
+import { reloadBrowser, setLocalStorageItem } from '@/components/utils';
 import { useOtherCartMutations } from '@woographql/react-hooks';
 import { useSelector } from 'react-redux';
 import { setCartLoading, setChangeShipping } from '@/redux/slices/cart-slice';
@@ -27,7 +27,7 @@ const BillingForm = ({ formik }: any) => {
   const { cart: cartData, updateCart } = useSession();
   const cart = cartData as Cart;
   //const { updateCheckoutDetails } = useCheckoutDetails();
-  //const { setShippingLocale } = useOtherCartMutations<Data>(sessionContext);
+  const { setShippingLocale } = useOtherCartMutations<Data>(sessionContext);
   const { removeCoupon } = useOtherCartMutations<Data>(sessionContext);
   const diffShipAddress = useSelector(
     (state: any) => state.cartSlice.diffShipAddress
@@ -53,52 +53,54 @@ const BillingForm = ({ formik }: any) => {
       //   postcode: formik.values.billing.postcode,
       // });
 
-      //@ts-ignore
-      const currentShippingMethod = cart?.chosenShippingMethods[0];
-      if (currentShippingMethod === 'free_shipping:14') {
-        dispatch(setCartLoading(false));
-        return;
-      }
-
-      const shippingRate = await getShippingRate(formik.values.billing.country);
-
-      if (!shippingRate) {
-        dispatch(setCartLoading(false));
-        return;
-      }
-
-      // if (cart.appliedCoupons) {
-      //   const coupons = cart.appliedCoupons;
-      //   coupons.forEach(async (coupon) => {
-      //     console.log(coupon);
-      //     await removeCoupon(coupon?.code as string);
-      //   });
-      // }
-
-      const updatedCart = {
-        ...cart,
-        chosenShippingMethods: [shippingRate.id],
-        availableShippingMethods: [
-          {
-            packageDetails: cart?.contents?.nodes
-              .map((node) => `${node?.variation?.node.name} ×${node.quantity}`)
-              .join(', '),
-            supportsShippingCalculator: true,
-            rates: [shippingRate],
-          },
-        ],
-        //discountTotal: '$0.00',
-        shippingTotal: `$${shippingRate.cost}`,
-        total: `${(
-          parseFloat(cart?.subtotal?.replace('$', '') as string) +
-          parseFloat(shippingRate.cost)
-        ).toFixed(2)}`,
-      };
-
+      setLocalStorageItem('currentCountry', billingCountry);
       await updateCart({
-        updateShippingRate: true,
-        cart: updatedCart,
+        mutation: 'updateItemQuantities',
+        input: {
+          items:
+            cart?.contents?.nodes?.map((item) => ({
+              key: item.key as string,
+              quantity: item.quantity as number,
+            })) || [],
+        },
       });
+
+      //@ts-ignore
+      // const currentShippingMethod = cart?.chosenShippingMethods[0];
+      // if (currentShippingMethod === 'free_shipping:14') {
+      //   dispatch(setCartLoading(false));
+      //   return;
+      // }
+      // const shippingRate = await getShippingRate(formik.values.billing.country);
+      // if (!shippingRate) {
+      //   dispatch(setCartLoading(false));
+      //   return;
+      // }
+      // const updatedCart = {
+      //   ...cart,
+      //   chosenShippingMethods: [shippingRate.id],
+      //   availableShippingMethods: [
+      //     {
+      //       packageDetails: cart?.contents?.nodes
+      //         .map((node) => `${node?.variation?.node.name} ×${node.quantity}`)
+      //         .join(', '),
+      //       supportsShippingCalculator: true,
+      //       rates: [shippingRate],
+      //     },
+      //   ],
+      //   //discountTotal: '$0.00',
+      //   shippingTotal: `$${shippingRate.cost}`,
+      //   total: `${(
+      //     parseFloat(cart?.subtotal?.replace('$', '') as string) +
+      //     parseFloat(shippingRate.cost)
+      //   ).toFixed(2)}`,
+      // };
+
+      // await updateCart({
+      //   //@ts-ignore
+      //   updateShippingRate: true,
+      //   cart,
+      // });
     } catch (error) {
       console.log(error);
       toast.error('Cart Session Expired');
