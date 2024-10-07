@@ -334,7 +334,7 @@ const CheckoutSection = () => {
           checkout.startCheckout({
             checkout_payload: {
               order: {
-                intent: 'AUTH',
+                intent: 'CAPTURE',
                 reference_id: orderRef, // replace with your unique order ID
                 description: orderDesc,
                 order_amount: {
