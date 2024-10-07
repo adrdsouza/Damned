@@ -185,45 +185,46 @@ export async function POST(request: Request) {
       );
     }
 
-    const getOrdersClient = getClient();
+    // const getOrdersClient = getClient();
 
-    if (!process.env.CREATE_ORDER_PASSWORD) {
-      return NextResponse.json(
-        {
-          errors: {
-            message:
-              'System credentials missing. Please contact the administrator.',
-          },
-        },
-        { status: 500 }
-      );
-    }
+    // if (!process.env.CREATE_ORDER_PASSWORD) {
+    //   return NextResponse.json(
+    //     {
+    //       errors: {
+    //         message:
+    //           'System credentials missing. Please contact the administrator.',
+    //       },
+    //     },
+    //     { status: 500 }
+    //   );
+    // }
 
-    getOrdersClient.setHeaders({
-      Authorization: `Basic ${process.env.CREATE_ORDER_PASSWORD}`,
-    });
+    // getOrdersClient.setHeaders({
+    //   Authorization: `Basic ${process.env.CREATE_ORDER_PASSWORD}`,
+    // });
 
-    const { orders } = await getOrdersClient.request<ordersQuery>(
-      ordersDocument,
-      {
-        where: { customerId: customer?.databaseId as number },
-      }
-    );
+    // const { orders } = await getOrdersClient.request<ordersQuery>(
+    //   ordersDocument,
+    //   {
+    //     where: { customerId: customer?.databaseId as number },
+    //   }
+    // );
 
-    const customerWithOrders = {
-      ...customer,
-      orders: orders,
-    } as Customer;
+    // const customerWithOrders = {
+    //   ...customer,
+    //   orders: orders,
+    // } as Customer;
 
     return NextResponse.json({
       authToken,
       refreshToken,
       sessionToken,
-      customer: customerWithOrders,
+      customer,
       cart,
     });
   } catch (err) {
     const error = err as any;
+    console.log(err);
 
     const errors: any[] = error?.response?.errors ?? [];
     const errorMessage = errors[0]?.message ?? '';

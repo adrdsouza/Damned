@@ -319,11 +319,6 @@ fragment CustomerFields on Customer {
   displayName
   email
   sessionToken
-  orders {
-    nodes {
-      ...OrderFields
-    }
-  }
   billing {
     ...AddressFields
   }

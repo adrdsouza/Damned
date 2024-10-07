@@ -275,328 +275,328 @@ export function createSessionOperations(
   };
 }
 
-const dummyCart = {
-  contents: {
-    itemCount: 1,
-    nodes: [
-      {
-        key: '55d60e3a0cb335e1c645d85c5c175c07',
-        product: {
-          node: {
-            id: 'cHJvZHVjdDo0OTM4Ng==',
-            databaseId: 49386,
-            name: 'Osiris cleaver',
-            slug: 'osiris-cleaver',
-            type: 'VARIABLE',
-            image: {
-              id: 'cG9zdDo0OTM4Mw==',
-              sourceUrl:
-                'https://admin.damneddesigns.com/wp-content/uploads/DSC_3389-01-01-800x600.jpeg',
-              altText: '',
-            },
-            price: '$70.00',
-            regularPrice: '$70.00',
-            salePrice: null,
-            stockStatus: 'IN_STOCK',
-            stockQuantity: null,
-            soldIndividually: false,
-          },
-        },
-        variation: {
-          attributes: [
-            {
-              id: 'NTE2NzB8fHR5cGV8fFZHMTAsIEZSTiBzY2FsZXM=',
-              label: 'Type',
-              name: 'type',
-              value: 'VG10, FRN scales',
-            },
-          ],
-          node: {
-            id: 'cHJvZHVjdF92YXJpYXRpb246NTE2NzA=',
-            databaseId: 51670,
-            name: 'Osiris cleaver - VG10, FRN scales',
-            slug: 'osiris-cleaver-vg10-frn-scales',
-            type: 'VARIATION',
-            image: {
-              id: 'cG9zdDo0OTM4Mw==',
-              sourceUrl:
-                'https://admin.damneddesigns.com/wp-content/uploads/DSC_3389-01-01-800x600.jpeg',
-              altText: '',
-            },
-            price: '$70.00',
-            regularPrice: '$70.00',
-            salePrice: null,
-            stockStatus: 'IN_STOCK',
-            stockQuantity: 336,
-            soldIndividually: null,
-          },
-        },
-        quantity: 1,
-        total: '$70.00',
-        subtotal: '$70.00',
-        subtotalTax: '$0.00',
-        extraData: [
-          {
-            key: 'csr_expire_time',
-            value: '1727998022',
-          },
-          {
-            key: 'csr_expire_time_text',
-            value: '30 minutes',
-          },
-        ],
-      },
-    ],
-  },
-  appliedCoupons: null,
-  needsShippingAddress: true,
-  chosenShippingMethods: ['flat_rate:36'],
-  availableShippingMethods: [
-    {
-      packageDetails: 'Osiris cleaver - VG10, FRN scales ×1',
-      supportsShippingCalculator: true,
-      rates: [
-        {
-          id: 'flat_rate:36',
-          instanceId: 36,
-          methodId: 'flat_rate',
-          label: 'USPS Ground advantage (or equivalent)',
-          cost: '8.00',
-        },
-      ],
-    },
-  ],
-  subtotal: '$70.00',
-  subtotalTax: '$0.00',
-  shippingTax: '$0.00',
-  shippingTotal: '$8.00',
-  total: '78.00',
-  totalTax: '$0.00',
-  feeTax: '$0.00',
-  feeTotal: '$0.00',
-  discountTax: '$0.00',
-  discountTotal: '$0.00',
-};
+// const dummyCart = {
+//   contents: {
+//     itemCount: 1,
+//     nodes: [
+//       {
+//         key: '55d60e3a0cb335e1c645d85c5c175c07',
+//         product: {
+//           node: {
+//             id: 'cHJvZHVjdDo0OTM4Ng==',
+//             databaseId: 49386,
+//             name: 'Osiris cleaver',
+//             slug: 'osiris-cleaver',
+//             type: 'VARIABLE',
+//             image: {
+//               id: 'cG9zdDo0OTM4Mw==',
+//               sourceUrl:
+//                 'https://admin.damneddesigns.com/wp-content/uploads/DSC_3389-01-01-800x600.jpeg',
+//               altText: '',
+//             },
+//             price: '$70.00',
+//             regularPrice: '$70.00',
+//             salePrice: null,
+//             stockStatus: 'IN_STOCK',
+//             stockQuantity: null,
+//             soldIndividually: false,
+//           },
+//         },
+//         variation: {
+//           attributes: [
+//             {
+//               id: 'NTE2NzB8fHR5cGV8fFZHMTAsIEZSTiBzY2FsZXM=',
+//               label: 'Type',
+//               name: 'type',
+//               value: 'VG10, FRN scales',
+//             },
+//           ],
+//           node: {
+//             id: 'cHJvZHVjdF92YXJpYXRpb246NTE2NzA=',
+//             databaseId: 51670,
+//             name: 'Osiris cleaver - VG10, FRN scales',
+//             slug: 'osiris-cleaver-vg10-frn-scales',
+//             type: 'VARIATION',
+//             image: {
+//               id: 'cG9zdDo0OTM4Mw==',
+//               sourceUrl:
+//                 'https://admin.damneddesigns.com/wp-content/uploads/DSC_3389-01-01-800x600.jpeg',
+//               altText: '',
+//             },
+//             price: '$70.00',
+//             regularPrice: '$70.00',
+//             salePrice: null,
+//             stockStatus: 'IN_STOCK',
+//             stockQuantity: 336,
+//             soldIndividually: null,
+//           },
+//         },
+//         quantity: 1,
+//         total: '$70.00',
+//         subtotal: '$70.00',
+//         subtotalTax: '$0.00',
+//         extraData: [
+//           {
+//             key: 'csr_expire_time',
+//             value: '1727998022',
+//           },
+//           {
+//             key: 'csr_expire_time_text',
+//             value: '30 minutes',
+//           },
+//         ],
+//       },
+//     ],
+//   },
+//   appliedCoupons: null,
+//   needsShippingAddress: true,
+//   chosenShippingMethods: ['flat_rate:36'],
+//   availableShippingMethods: [
+//     {
+//       packageDetails: 'Osiris cleaver - VG10, FRN scales ×1',
+//       supportsShippingCalculator: true,
+//       rates: [
+//         {
+//           id: 'flat_rate:36',
+//           instanceId: 36,
+//           methodId: 'flat_rate',
+//           label: 'USPS Ground advantage (or equivalent)',
+//           cost: '8.00',
+//         },
+//       ],
+//     },
+//   ],
+//   subtotal: '$70.00',
+//   subtotalTax: '$0.00',
+//   shippingTax: '$0.00',
+//   shippingTotal: '$8.00',
+//   total: '78.00',
+//   totalTax: '$0.00',
+//   feeTax: '$0.00',
+//   feeTotal: '$0.00',
+//   discountTax: '$0.00',
+//   discountTotal: '$0.00',
+// };
 
-const couponCart = {
-  contents: {
-    itemCount: 1,
-    nodes: [
-      {
-        key: '55d60e3a0cb335e1c645d85c5c175c07',
-        product: {
-          node: {
-            id: 'cHJvZHVjdDo0OTM4Ng==',
-            databaseId: 49386,
-            name: 'Osiris cleaver',
-            slug: 'osiris-cleaver',
-            type: 'VARIABLE',
-            image: {
-              id: 'cG9zdDo0OTM4Mw==',
-              sourceUrl:
-                'https://admin.damneddesigns.com/wp-content/uploads/DSC_3389-01-01-800x600.jpeg',
-              altText: '',
-            },
-            price: '$70.00',
-            regularPrice: '$70.00',
-            salePrice: null,
-            stockStatus: 'IN_STOCK',
-            stockQuantity: null,
-            soldIndividually: false,
-          },
-        },
-        variation: {
-          attributes: [
-            {
-              id: 'NTE2NzB8fHR5cGV8fFZHMTAsIEZSTiBzY2FsZXM=',
-              label: 'Type',
-              name: 'type',
-              value: 'VG10, FRN scales',
-            },
-          ],
-          node: {
-            id: 'cHJvZHVjdF92YXJpYXRpb246NTE2NzA=',
-            databaseId: 51670,
-            name: 'Osiris cleaver - VG10, FRN scales',
-            slug: 'osiris-cleaver-vg10-frn-scales',
-            type: 'VARIATION',
-            image: {
-              id: 'cG9zdDo0OTM4Mw==',
-              sourceUrl:
-                'https://admin.damneddesigns.com/wp-content/uploads/DSC_3389-01-01-800x600.jpeg',
-              altText: '',
-            },
-            price: '$70.00',
-            regularPrice: '$70.00',
-            salePrice: null,
-            stockStatus: 'IN_STOCK',
-            stockQuantity: 336,
-            soldIndividually: null,
-          },
-        },
-        quantity: 1,
-        total: '$56.00',
-        subtotal: '$70.00',
-        subtotalTax: '$0.00',
-        extraData: [
-          {
-            key: 'csr_expire_time',
-            value: '1728000898',
-          },
-          {
-            key: 'csr_expire_time_text',
-            value: '30 minutes',
-          },
-        ],
-      },
-    ],
-  },
-  appliedCoupons: [
-    {
-      code: 'kickstarter',
-      discountAmount: '$14.00',
-      discountTax: '$0.00',
-    },
-  ],
-  needsShippingAddress: true,
-  chosenShippingMethods: ['flat_rate:36'],
-  availableShippingMethods: [
-    {
-      packageDetails: 'Osiris cleaver - VG10, FRN scales ×1',
-      supportsShippingCalculator: true,
-      rates: [
-        {
-          id: 'flat_rate:36',
-          instanceId: 36,
-          methodId: 'flat_rate',
-          label: 'USPS Ground advantage (or equivalent)',
-          cost: '8.00',
-        },
-      ],
-    },
-  ],
-  subtotal: '$70.00',
-  subtotalTax: '$0.00',
-  shippingTax: '$0.00',
-  shippingTotal: '$8.00',
-  total: '64.00',
-  totalTax: '$0.00',
-  feeTax: '$0.00',
-  feeTotal: '$0.00',
-  discountTax: '$0.00',
-  discountTotal: '$14.00',
-};
+// const couponCart = {
+//   contents: {
+//     itemCount: 1,
+//     nodes: [
+//       {
+//         key: '55d60e3a0cb335e1c645d85c5c175c07',
+//         product: {
+//           node: {
+//             id: 'cHJvZHVjdDo0OTM4Ng==',
+//             databaseId: 49386,
+//             name: 'Osiris cleaver',
+//             slug: 'osiris-cleaver',
+//             type: 'VARIABLE',
+//             image: {
+//               id: 'cG9zdDo0OTM4Mw==',
+//               sourceUrl:
+//                 'https://admin.damneddesigns.com/wp-content/uploads/DSC_3389-01-01-800x600.jpeg',
+//               altText: '',
+//             },
+//             price: '$70.00',
+//             regularPrice: '$70.00',
+//             salePrice: null,
+//             stockStatus: 'IN_STOCK',
+//             stockQuantity: null,
+//             soldIndividually: false,
+//           },
+//         },
+//         variation: {
+//           attributes: [
+//             {
+//               id: 'NTE2NzB8fHR5cGV8fFZHMTAsIEZSTiBzY2FsZXM=',
+//               label: 'Type',
+//               name: 'type',
+//               value: 'VG10, FRN scales',
+//             },
+//           ],
+//           node: {
+//             id: 'cHJvZHVjdF92YXJpYXRpb246NTE2NzA=',
+//             databaseId: 51670,
+//             name: 'Osiris cleaver - VG10, FRN scales',
+//             slug: 'osiris-cleaver-vg10-frn-scales',
+//             type: 'VARIATION',
+//             image: {
+//               id: 'cG9zdDo0OTM4Mw==',
+//               sourceUrl:
+//                 'https://admin.damneddesigns.com/wp-content/uploads/DSC_3389-01-01-800x600.jpeg',
+//               altText: '',
+//             },
+//             price: '$70.00',
+//             regularPrice: '$70.00',
+//             salePrice: null,
+//             stockStatus: 'IN_STOCK',
+//             stockQuantity: 336,
+//             soldIndividually: null,
+//           },
+//         },
+//         quantity: 1,
+//         total: '$56.00',
+//         subtotal: '$70.00',
+//         subtotalTax: '$0.00',
+//         extraData: [
+//           {
+//             key: 'csr_expire_time',
+//             value: '1728000898',
+//           },
+//           {
+//             key: 'csr_expire_time_text',
+//             value: '30 minutes',
+//           },
+//         ],
+//       },
+//     ],
+//   },
+//   appliedCoupons: [
+//     {
+//       code: 'kickstarter',
+//       discountAmount: '$14.00',
+//       discountTax: '$0.00',
+//     },
+//   ],
+//   needsShippingAddress: true,
+//   chosenShippingMethods: ['flat_rate:36'],
+//   availableShippingMethods: [
+//     {
+//       packageDetails: 'Osiris cleaver - VG10, FRN scales ×1',
+//       supportsShippingCalculator: true,
+//       rates: [
+//         {
+//           id: 'flat_rate:36',
+//           instanceId: 36,
+//           methodId: 'flat_rate',
+//           label: 'USPS Ground advantage (or equivalent)',
+//           cost: '8.00',
+//         },
+//       ],
+//     },
+//   ],
+//   subtotal: '$70.00',
+//   subtotalTax: '$0.00',
+//   shippingTax: '$0.00',
+//   shippingTotal: '$8.00',
+//   total: '64.00',
+//   totalTax: '$0.00',
+//   feeTax: '$0.00',
+//   feeTotal: '$0.00',
+//   discountTax: '$0.00',
+//   discountTotal: '$14.00',
+// };
 
-const multipleCouponCart = {
-  contents: {
-    itemCount: 3,
-    nodes: [
-      {
-        key: '55d60e3a0cb335e1c645d85c5c175c07',
-        product: {
-          node: {
-            id: 'cHJvZHVjdDo0OTM4Ng==',
-            databaseId: 49386,
-            name: 'Osiris cleaver',
-            slug: 'osiris-cleaver',
-            type: 'VARIABLE',
-            image: {
-              id: 'cG9zdDo0OTM4Mw==',
-              sourceUrl:
-                'https://admin.damneddesigns.com/wp-content/uploads/DSC_3389-01-01-800x600.jpeg',
-              altText: '',
-            },
-            price: '$70.00',
-            regularPrice: '$70.00',
-            salePrice: null,
-            stockStatus: 'IN_STOCK',
-            stockQuantity: null,
-            soldIndividually: false,
-          },
-        },
-        variation: {
-          attributes: [
-            {
-              id: 'NTE2NzB8fHR5cGV8fFZHMTAsIEZSTiBzY2FsZXM=',
-              label: 'Type',
-              name: 'type',
-              value: 'VG10, FRN scales',
-            },
-          ],
-          node: {
-            id: 'cHJvZHVjdF92YXJpYXRpb246NTE2NzA=',
-            databaseId: 51670,
-            name: 'Osiris cleaver - VG10, FRN scales',
-            slug: 'osiris-cleaver-vg10-frn-scales',
-            type: 'VARIATION',
-            image: {
-              id: 'cG9zdDo0OTM4Mw==',
-              sourceUrl:
-                'https://admin.damneddesigns.com/wp-content/uploads/DSC_3389-01-01-800x600.jpeg',
-              altText: '',
-            },
-            price: '$70.00',
-            regularPrice: '$70.00',
-            salePrice: null,
-            stockStatus: 'IN_STOCK',
-            stockQuantity: 334,
-            soldIndividually: null,
-          },
-        },
-        quantity: 3,
-        total: '$0.00',
-        subtotal: '$210.00',
-        subtotalTax: '$0.00',
-        extraData: [
-          {
-            key: 'csr_expire_time',
-            value: '1728030264',
-          },
-          {
-            key: 'csr_expire_time_text',
-            value: '30 minutes',
-          },
-        ],
-      },
-    ],
-  },
-  appliedCoupons: [
-    {
-      code: 'kickstarter',
-      discountAmount: '$42.00',
-      discountTax: '$0.00',
-    },
-    {
-      code: 'tim',
-      discountAmount: '$168.00',
-      discountTax: '$0.00',
-    },
-  ],
-  needsShippingAddress: true,
-  chosenShippingMethods: ['flat_rate:36'],
-  availableShippingMethods: [
-    {
-      packageDetails: 'Osiris cleaver - VG10, FRN scales ×3',
-      supportsShippingCalculator: true,
-      rates: [
-        {
-          id: 'flat_rate:36',
-          instanceId: 36,
-          methodId: 'flat_rate',
-          label: 'USPS Ground advantage (or equivalent)',
-          cost: '8.00',
-        },
-      ],
-    },
-  ],
-  subtotal: '$210.00',
-  subtotalTax: '$0.00',
-  shippingTax: '$0.00',
-  shippingTotal: '$8.00',
-  total: '8.00',
-  totalTax: '$0.00',
-  feeTax: '$0.00',
-  feeTotal: '$0.00',
-  discountTax: '$0.00',
-  discountTotal: '$210.00',
-};
+// const multipleCouponCart = {
+//   contents: {
+//     itemCount: 3,
+//     nodes: [
+//       {
+//         key: '55d60e3a0cb335e1c645d85c5c175c07',
+//         product: {
+//           node: {
+//             id: 'cHJvZHVjdDo0OTM4Ng==',
+//             databaseId: 49386,
+//             name: 'Osiris cleaver',
+//             slug: 'osiris-cleaver',
+//             type: 'VARIABLE',
+//             image: {
+//               id: 'cG9zdDo0OTM4Mw==',
+//               sourceUrl:
+//                 'https://admin.damneddesigns.com/wp-content/uploads/DSC_3389-01-01-800x600.jpeg',
+//               altText: '',
+//             },
+//             price: '$70.00',
+//             regularPrice: '$70.00',
+//             salePrice: null,
+//             stockStatus: 'IN_STOCK',
+//             stockQuantity: null,
+//             soldIndividually: false,
+//           },
+//         },
+//         variation: {
+//           attributes: [
+//             {
+//               id: 'NTE2NzB8fHR5cGV8fFZHMTAsIEZSTiBzY2FsZXM=',
+//               label: 'Type',
+//               name: 'type',
+//               value: 'VG10, FRN scales',
+//             },
+//           ],
+//           node: {
+//             id: 'cHJvZHVjdF92YXJpYXRpb246NTE2NzA=',
+//             databaseId: 51670,
+//             name: 'Osiris cleaver - VG10, FRN scales',
+//             slug: 'osiris-cleaver-vg10-frn-scales',
+//             type: 'VARIATION',
+//             image: {
+//               id: 'cG9zdDo0OTM4Mw==',
+//               sourceUrl:
+//                 'https://admin.damneddesigns.com/wp-content/uploads/DSC_3389-01-01-800x600.jpeg',
+//               altText: '',
+//             },
+//             price: '$70.00',
+//             regularPrice: '$70.00',
+//             salePrice: null,
+//             stockStatus: 'IN_STOCK',
+//             stockQuantity: 334,
+//             soldIndividually: null,
+//           },
+//         },
+//         quantity: 3,
+//         total: '$0.00',
+//         subtotal: '$210.00',
+//         subtotalTax: '$0.00',
+//         extraData: [
+//           {
+//             key: 'csr_expire_time',
+//             value: '1728030264',
+//           },
+//           {
+//             key: 'csr_expire_time_text',
+//             value: '30 minutes',
+//           },
+//         ],
+//       },
+//     ],
+//   },
+//   appliedCoupons: [
+//     {
+//       code: 'kickstarter',
+//       discountAmount: '$42.00',
+//       discountTax: '$0.00',
+//     },
+//     {
+//       code: 'tim',
+//       discountAmount: '$168.00',
+//       discountTax: '$0.00',
+//     },
+//   ],
+//   needsShippingAddress: true,
+//   chosenShippingMethods: ['flat_rate:36'],
+//   availableShippingMethods: [
+//     {
+//       packageDetails: 'Osiris cleaver - VG10, FRN scales ×3',
+//       supportsShippingCalculator: true,
+//       rates: [
+//         {
+//           id: 'flat_rate:36',
+//           instanceId: 36,
+//           methodId: 'flat_rate',
+//           label: 'USPS Ground advantage (or equivalent)',
+//           cost: '8.00',
+//         },
+//       ],
+//     },
+//   ],
+//   subtotal: '$210.00',
+//   subtotalTax: '$0.00',
+//   shippingTax: '$0.00',
+//   shippingTotal: '$8.00',
+//   total: '8.00',
+//   totalTax: '$0.00',
+//   feeTax: '$0.00',
+//   feeTotal: '$0.00',
+//   discountTax: '$0.00',
+//   discountTotal: '$210.00',
+// };

@@ -95,37 +95,37 @@ export async function POST(request: Request) {
       return NextResponse.json({ errors: { message } }, { status: 500 });
     }
 
-    const getOrdersClient = getClient();
-    if (!process.env.CREATE_ORDER_PASSWORD) {
-      return NextResponse.json(
-        {
-          errors: {
-            message:
-              'System credentials missing. Please contact the administrator.',
-          },
-        },
-        { status: 500 }
-      );
-    }
+    // const getOrdersClient = getClient();
+    // if (!process.env.CREATE_ORDER_PASSWORD) {
+    //   return NextResponse.json(
+    //     {
+    //       errors: {
+    //         message:
+    //           'System credentials missing. Please contact the administrator.',
+    //       },
+    //     },
+    //     { status: 500 }
+    //   );
+    // }
 
-    getOrdersClient.setHeaders({
-      Authorization: `Basic ${process.env.CREATE_ORDER_PASSWORD}`,
-    });
+    // getOrdersClient.setHeaders({
+    //   Authorization: `Basic ${process.env.CREATE_ORDER_PASSWORD}`,
+    // });
 
-    const { orders } = await getOrdersClient.request<ordersQuery>(
-      ordersDocument,
-      {
-        where: { customerId: customer?.databaseId as number },
-      }
-    );
+    // const { orders } = await getOrdersClient.request<ordersQuery>(
+    //   ordersDocument,
+    //   {
+    //     where: { customerId: customer?.databaseId as number },
+    //   }
+    // );
 
-    const customerWithOrders = {
-      ...customer,
-      orders: orders,
-    } as Customer;
-
+    // const customerWithOrders = {
+    //   ...customer,
+    //   orders: orders,
+    // } as Customer;
+    console.log(customer);
     return NextResponse.json({
-      customer: customerWithOrders,
+      customer,
       cart,
       sessionToken,
     });

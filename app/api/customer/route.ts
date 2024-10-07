@@ -15,16 +15,19 @@ type RequestBody = {
   input: {
     mutation: 'updateCustomer';
     input: UpdateCustomerInput;
-  }
-}
+  };
+};
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json() as RequestBody;
+    const body = (await request.json()) as RequestBody;
     const { mutation, ...variables } = body.input;
 
     if (!body.sessionToken) {
-      return NextResponse.json({ errors: { message: 'Missing credentials' } }, { status: 500 });
+      return NextResponse.json(
+        { errors: { message: 'Missing credentials' } },
+        { status: 500 }
+      );
     }
 
     const headers: Record<string, string> = {
@@ -38,7 +41,7 @@ export async function POST(request: Request) {
 
     const results = await client.rawRequest<UpdateCustomerMutation>(
       print(UpdateCustomerDocument),
-      variables,
+      variables
     );
 
     const customer = results?.data?.updateCustomer?.customer as Customer;
@@ -47,11 +50,15 @@ export async function POST(request: Request) {
       return NextResponse.json({ errors: { message } }, { status: 500 });
     }
 
-    let sessionToken = results.headers.get('woocommerce-session') || body.sessionToken;
+    let sessionToken =
+      results.headers.get('woocommerce-session') || body.sessionToken;
 
     return NextResponse.json({ customer, sessionToken });
   } catch (err) {
     console.log(err);
-    return NextResponse.json({ errors: { message: 'Sorry, something went wrong' } }, { status: 500 });
+    return NextResponse.json(
+      { errors: { message: 'Sorry, something went wrong' } },
+      { status: 500 }
+    );
   }
 }

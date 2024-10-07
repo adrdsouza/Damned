@@ -22,7 +22,7 @@ import BillingForm from './checkout/billing-form';
 import ShippingForm from './checkout/shipping-form';
 import toast from 'react-hot-toast';
 import { Button, Divider, FormControl, MenuItem, Select } from '@mui/material';
-import { Loader, reloadBrowser } from '@/components/utils';
+import { getLocalStorageItem, Loader, reloadBrowser } from '@/components/utils';
 import { v4 as uuidv4 } from 'uuid';
 import { addCustomFieldToOrder } from '@/lib/graphql';
 import { nmiResCodes } from './helpers';
@@ -41,7 +41,7 @@ const CheckoutSection = () => {
   const paymentMethods = [
     { value: 'nmi', name: 'NMI' },
     { value: 'sezzlepay', name: 'Sezzle' },
-    //{ value: 'cod', name: 'Cash on Delivery' },
+    { value: 'cod', name: 'Cash on Delivery' },
   ];
   const { push } = useRouter();
   const [checkoutSuccess, setCheckoutSuccess] = useState<any>(null);
@@ -51,7 +51,7 @@ const CheckoutSection = () => {
   const paymentMethod = useSelector(
     (state: any) => state.cartSlice.paymentMethod
   );
-  const { cart: cartData } = useSession();
+  const { cart: cartData, customer } = useSession();
   const cart = cartData as Cart;
 
   const {
@@ -81,28 +81,20 @@ const CheckoutSection = () => {
 
   const handleCreateOrder = async (customFields: any) => {
     dispatch(setCartLoading(true));
+    const values = formikValues.current;
     try {
-      const values = formikValues.current;
-
-      let detialsUpdated;
-
-      if (diffShipAddress) {
-        detialsUpdated = await updateCheckoutDetails({
-          billing: values.billing,
-          shipping: values.shipping,
-        });
-      } else {
-        detialsUpdated = await updateCheckoutDetails({
-          billing: values.billing,
-        });
-      }
-
-      if (!detialsUpdated) {
-        console.log(detialsUpdated);
-        toast.error('Error while updating checkout details.');
-        reloadBrowser();
-        return;
-      }
+      try {
+        if (diffShipAddress) {
+          await updateCheckoutDetails({
+            billing: values.billing,
+            shipping: values.shipping,
+          });
+        } else {
+          await updateCheckoutDetails({
+            billing: values.billing,
+          });
+        }
+      } catch (error) {}
 
       const lineItemsData = cart?.contents?.nodes.map((item) => {
         const attributesList: any =
@@ -163,8 +155,10 @@ const CheckoutSection = () => {
         (d) => d.value === paymentMethod
       );
 
+      const cid = getLocalStorageItem('customerId');
+
       const payload: any = {
-        customerId,
+        customerId: customer?.databaseId ?? cid,
         billing: values.billing,
         shipping: diffShipAddress
           ? values.shipping
@@ -190,6 +184,7 @@ const CheckoutSection = () => {
       };
 
       const order = await createOrder(payload);
+
       if (!order) {
         console.log(order);
         toast.error('Error while creating order.');
@@ -711,7 +706,7 @@ const CheckoutSection = () => {
         type='submit'
         disabled={cartLoading || formik.isSubmitting}
         onClick={() => formik.handleSubmit()}
-        className='py-8 bg-stone-500 w-full rounded-none text-white hover:bg-stone-600 hidden'
+        className='py-8 bg-stone-500 w-full rounded-none text-white hover:bg-stone-600 '
       >
         {`Place Order - $${cart?.total}`}
       </Button>
