@@ -61,7 +61,7 @@ export default function RootLayout({
                 </div> */}
 
                 <Navbar />
-                <div className='flex-1'>{children}</div>
+                <div className='flex-1 mt-[40px]'>{children}</div>
                 <FooterBar />
               </div>
             </SessionProvider>

@@ -41,7 +41,6 @@ const CheckoutSection = () => {
   const paymentMethods = [
     { value: 'nmi', name: 'NMI' },
     { value: 'sezzlepay', name: 'Sezzle' },
-    { value: 'cod', name: 'Cash on Delivery' },
   ];
   const { push } = useRouter();
   const [checkoutSuccess, setCheckoutSuccess] = useState<any>(null);
@@ -151,6 +150,8 @@ const CheckoutSection = () => {
         );
       }
 
+      const paymentMethodValue =
+        paymentMethod === 'discount' ? '' : paymentMethod;
       const selectedPaymentMethod = paymentMethods.find(
         (d) => d.value === paymentMethod
       );
@@ -176,7 +177,7 @@ const CheckoutSection = () => {
         lineItems: lineItemsData,
         shippingLines: shippingLinesData,
         coupons,
-        paymentMethod: paymentMethod,
+        paymentMethod: paymentMethodValue,
         paymentMethodTitle: selectedPaymentMethod?.value ?? '',
         //status: 'PROCESSING',
         isPaid: true,
@@ -396,8 +397,8 @@ const CheckoutSection = () => {
       }
     } else if (paymentMethod === 'sezzlepay') {
       handleSezzleCheckout();
-    } else if (paymentMethod === 'cod') {
-      handleCreateOrder([]);
+    } else if (paymentMethod === 'discount') {
+      handleCreateOrder([{ key: 'payment_method', value: 'full discount' }]);
     }
   };
 
@@ -513,6 +514,14 @@ const CheckoutSection = () => {
     }
   }, [paymentMethod, cart?.total]);
 
+  useEffect(() => {
+    if (cart?.appliedCoupons !== null && cart?.total === '0.00') {
+      dispatch(setPaymentMethod('discount'));
+    } else {
+      dispatch(setPaymentMethod(''));
+    }
+  }, [cart]);
+
   // useEffect(() => {
   //   if (
   //     paymentMethod === 'sezzle' &&
@@ -607,63 +616,67 @@ const CheckoutSection = () => {
         <Divider sx={{ my: 1 }} />
 
         <div className='p-4'>
-          <p className='mb-2 font-bold'>Select Payment Method</p>
-          <FormControl fullWidth>
-            <Select
-              size='small'
-              value={paymentMethod}
-              onChange={changePaymentMethod}
-            >
-              <MenuItem key={'nmi'} value={'nmi'}>
-                <div className='flex gap-2'>
-                  <img
-                    src='https://admin.damneddesigns.com/wp-content/plugins/woocommerce/assets/images/icons/credit-cards/visa.svg'
-                    alt='Visa'
-                    width='32'
-                  />
-                  <img
-                    src='https://admin.damneddesigns.com/wp-content/plugins/woocommerce/assets/images/icons/credit-cards/mastercard.svg'
-                    alt='Mastercard'
-                    width='32'
-                  />
-                  <img
-                    src='https://admin.damneddesigns.com/wp-content/plugins/woocommerce/assets/images/icons/credit-cards/amex.svg'
-                    alt='Amex'
-                    width='32'
-                  />
-                  <img
-                    src='https://admin.damneddesigns.com/wp-content/plugins/woocommerce/assets/images/icons/credit-cards/discover.svg'
-                    alt='Discover'
-                    width='32'
-                  />
-                  <img
-                    src='https://admin.damneddesigns.com/wp-content/plugins/woocommerce/assets/images/icons/credit-cards/diners.svg'
-                    alt='Diners Club'
-                    width='32'
-                  />
-                  <img
-                    src='https://admin.damneddesigns.com/wp-content/plugins/woocommerce/assets/images/icons/credit-cards/jcb.svg'
-                    alt='JCB'
-                    width='32'
-                  />
-                  <img
-                    src='https://admin.damneddesigns.com/wp-content/plugins/woocommerce/assets/images/icons/credit-cards/maestro.svg'
-                    alt='Maestro'
-                    width='32'
-                  />
-                </div>
-              </MenuItem>
-              <MenuItem key={'sezzlepay'} value={'sezzlepay'}>
-                <img
-                  src='https://d34uoa9py2cgca.cloudfront.net/branding/sezzle-logos/png/sezzle-logo-sm-100w.png'
-                  alt='sezzle'
-                />
-              </MenuItem>
-              {/* <MenuItem key={'cod'} value={'cod'}>
-                Cash on Delivery
-              </MenuItem> */}
-            </Select>
-          </FormControl>
+          {paymentMethod !== 'discount' ? (
+            <>
+              <p className='mb-2 font-bold'>Select Payment Method</p>
+              <FormControl fullWidth>
+                <Select
+                  size='small'
+                  value={paymentMethod}
+                  onChange={changePaymentMethod}
+                >
+                  <MenuItem key={'nmi'} value={'nmi'}>
+                    <div className='flex gap-2'>
+                      <img
+                        src='https://admin.damneddesigns.com/wp-content/plugins/woocommerce/assets/images/icons/credit-cards/visa.svg'
+                        alt='Visa'
+                        width='32'
+                      />
+                      <img
+                        src='https://admin.damneddesigns.com/wp-content/plugins/woocommerce/assets/images/icons/credit-cards/mastercard.svg'
+                        alt='Mastercard'
+                        width='32'
+                      />
+                      <img
+                        src='https://admin.damneddesigns.com/wp-content/plugins/woocommerce/assets/images/icons/credit-cards/amex.svg'
+                        alt='Amex'
+                        width='32'
+                      />
+                      <img
+                        src='https://admin.damneddesigns.com/wp-content/plugins/woocommerce/assets/images/icons/credit-cards/discover.svg'
+                        alt='Discover'
+                        width='32'
+                      />
+                      <img
+                        src='https://admin.damneddesigns.com/wp-content/plugins/woocommerce/assets/images/icons/credit-cards/diners.svg'
+                        alt='Diners Club'
+                        width='32'
+                      />
+                      <img
+                        src='https://admin.damneddesigns.com/wp-content/plugins/woocommerce/assets/images/icons/credit-cards/jcb.svg'
+                        alt='JCB'
+                        width='32'
+                      />
+                      <img
+                        src='https://admin.damneddesigns.com/wp-content/plugins/woocommerce/assets/images/icons/credit-cards/maestro.svg'
+                        alt='Maestro'
+                        width='32'
+                      />
+                    </div>
+                  </MenuItem>
+                  <MenuItem key={'sezzlepay'} value={'sezzlepay'}>
+                    <img
+                      src='https://d34uoa9py2cgca.cloudfront.net/branding/sezzle-logos/png/sezzle-logo-sm-100w.png'
+                      alt='sezzle'
+                    />
+                  </MenuItem>
+                  {/* <MenuItem key={'cod'} value={'cod'}>
+            Cash on Delivery
+          </MenuItem> */}
+                </Select>
+              </FormControl>
+            </>
+          ) : null}
 
           {paymentMethod === 'nmi' ? (
             <div className='mt-4'>

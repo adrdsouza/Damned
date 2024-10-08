@@ -12,10 +12,15 @@ import Cart from '../cart';
 const Page = () => {
   const path = usePathname();
 
-  const [navStyle, setNavStyle] = useState<Boolean>(
+  // State for navbar style based on path
+  const [navStyle, setNavStyle] = useState<boolean>(
     path === '/' || path === '/shop/osiris-chef-knives' || path === '/shop/edc'
   );
 
+  // State for scroll detection
+  const [scrolled, setScrolled] = useState<boolean>(false);
+
+  // Update navStyle based on path
   useEffect(() => {
     setNavStyle(
       path === '/' ||
@@ -24,18 +29,35 @@ const Page = () => {
     );
   }, [path]);
 
+  // Scroll event listener to update scrolled state
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   return (
     <div
-      className={`flex w-full transition-all duration-300 justify-between items-end py-4 px-8
+      className={`fixed top-0 z-[5] flex w-full transition-all duration-300 ease-in justify-between items-end py-4 px-8
+         ${scrolled ? 'bg-white text-slate-700' : ''}
          ${
-           navStyle
-             ? ' text-white'
-             : 'text-slate-700 bg-white border-b border-stone-200'
+           navStyle && !scrolled
+             ? 'text-white'
+             : 'text-slate-700 bg-white border-b border-stone-100'
          }
          `}
     >
       <Link href='/'>
-        {navStyle ? (
+        {navStyle && !scrolled ? (
           <Image
             src='https://admin.damneddesigns.com/wp-content/uploads/Asset-12.png'
             width={100}
@@ -53,13 +75,12 @@ const Page = () => {
           />
         )}
       </Link>
+
       <div className='flex items-center gap-4'>
         <ShopDropdown />
-
         <Link href='/help' className='hidden sm:block hover:text-slate-400'>
           HELP
         </Link>
-
         <SearchBar />
       </div>
 

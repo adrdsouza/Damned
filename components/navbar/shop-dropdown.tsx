@@ -104,6 +104,13 @@ const ShopDropdown = () => {
           >
             SIDEKICK PRY BARS
           </Link>
+          <Link
+            href='/help'
+            onClick={() => setAnchorEl(null)}
+            className={`${text.md} text-white font-medium hover:opacity-50 block sm:hidden`}
+          >
+            HELP
+          </Link>
         </div>
       </Popover>
     </>

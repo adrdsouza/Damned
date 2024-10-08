@@ -68,13 +68,12 @@ const fixCart = async (cart: Cart) => {
       label: 'DHL Packet or equivalent (7-30 days)',
     };
 
-    const correctMinOrder =
-      Number(cart?.total?.replace('$', '') as string) >= 100 &&
+    if (
+      cart?.total === '0.00' &&
       //@ts-ignore
       cart?.chosenShippingMethods[0] === 'free_shipping:14' &&
-      cart?.appliedCoupons !== null;
-
-    if (correctMinOrder) {
+      cart?.appliedCoupons !== null
+    ) {
       return cart;
     }
 
