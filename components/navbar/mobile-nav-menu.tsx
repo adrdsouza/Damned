@@ -30,9 +30,12 @@ const MobileNavMenu: React.FC = () => {
           <Link href='/shop/edc' className='hover:text-slate-200'>
             POCKET ART
           </Link>
-          {/* <Link href='/shop/fidget' className='hover:text-slate-200'>
+          <Link href='/shop/fidget' className='hover:text-slate-200'>
             FIDGET
-          </Link> */}
+          </Link>
+          <Link href='/shop/apparel' className='hover:text-slate-200'>
+            APPAREL
+          </Link>
           <Link href='/shop/sidekick-pry-bars' className='hover:text-slate-200'>
             SIDEKICK PRY BARS
           </Link>

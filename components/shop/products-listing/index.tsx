@@ -12,9 +12,11 @@ import { usePathname } from 'next/navigation';
 const ProductsList = ({
   data,
   showPagination,
+  title,
 }: {
   data: VariableProduct[];
   showPagination?: Boolean | undefined;
+  title: string;
 }) => {
   //const cols = data.length >= 4 ? 4 : data.length;
 
@@ -40,34 +42,45 @@ const ProductsList = ({
 
   return (
     <div className='w-full'>
-      {showPagination === true ? (
-        <div className='flex gap-2 items-center justify-end my-4'>
-          <p>Sort By</p>
-          <Select
-            size='small'
-            value={sort}
-            onChange={(e) => {
-              setSort(e.target.value);
-            }}
-          >
-            <MenuItem value={0}>
-              <Link scroll={false} href={`${pathname}?field=&order=`}>
-                Default
-              </Link>
-            </MenuItem>
-            <MenuItem value={1}>
-              <Link scroll={false} href={`${pathname}?field=PRICE&order=ASC`}>
-                Price (Low - High)
-              </Link>
-            </MenuItem>
-            <MenuItem value={2}>
-              <Link scroll={false} href={`${pathname}?field=PRICE&order=DESC`}>
-                Price (High - Low)
-              </Link>
-            </MenuItem>
-          </Select>
+      <div className='my-4 flex-col sm:flex-row justify-between items-center'>
+        <div className='flex gap-2'>
+          <Link href={'/'}>Home</Link>
+          <p>/</p>
+          <p>{title}</p>
         </div>
-      ) : null}
+
+        {showPagination === true ? (
+          <div className='flex gap-2 items-center'>
+            <p>Sort By</p>
+            <Select
+              size='small'
+              value={sort}
+              onChange={(e) => {
+                setSort(e.target.value);
+              }}
+            >
+              <MenuItem value={0}>
+                <Link scroll={false} href={`${pathname}?field=&order=`}>
+                  Default
+                </Link>
+              </MenuItem>
+              <MenuItem value={1}>
+                <Link scroll={false} href={`${pathname}?field=PRICE&order=ASC`}>
+                  Price (Low - High)
+                </Link>
+              </MenuItem>
+              <MenuItem value={2}>
+                <Link
+                  scroll={false}
+                  href={`${pathname}?field=PRICE&order=DESC`}
+                >
+                  Price (High - Low)
+                </Link>
+              </MenuItem>
+            </Select>
+          </div>
+        ) : null}
+      </div>
 
       <div
         className={`lg:mt-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2`}

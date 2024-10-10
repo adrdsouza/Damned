@@ -7,6 +7,7 @@ import { useSession } from '@/client/SessionProvider';
 import { TextField } from '@mui/material';
 import toast from 'react-hot-toast';
 import { Customer } from '@/graphql';
+import PasswordField from '@/utils/password-field';
 
 const validationSchema = Yup.object({
   email: Yup.string()
@@ -138,7 +139,7 @@ const AccountDetails = () => {
         </div>
 
         <div className='col-span-2'>
-          <TextField
+          {/* <TextField
             fullWidth
             variant='outlined'
             type='password'
@@ -150,12 +151,22 @@ const AccountDetails = () => {
             onBlur={formik.handleBlur}
             error={formik.touched.password && Boolean(formik.errors.password)}
             helperText={formik.touched.password && formik.errors.password}
+          /> */}
+          <PasswordField
+            label=''
+            id='password'
+            placeholder='Password'
+            onBlur={formik.handleBlur}
+            value={formik.values.password}
+            onChange={formik.handleChange}
+            error={formik.touched.password && Boolean(formik.errors.password)}
+            helperText={formik.touched.password && formik.errors.password}
           />
           <p>Leave blank to keep unchanged</p>
         </div>
 
         <div className='col-span-2'>
-          <TextField
+          {/* <TextField
             fullWidth
             variant='outlined'
             name='confirmPassword'
@@ -165,6 +176,21 @@ const AccountDetails = () => {
             value={formik.values.confirmPassword}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
+            error={
+              formik.touched.confirmPassword &&
+              Boolean(formik.errors.confirmPassword)
+            }
+            helperText={
+              formik.touched.confirmPassword && formik.errors.confirmPassword
+            }
+          /> */}
+          <PasswordField
+            label=''
+            id='confirmPassword'
+            placeholder='Confirm Password'
+            onBlur={formik.handleBlur}
+            value={formik.values.confirmPassword}
+            onChange={formik.handleChange}
             error={
               formik.touched.confirmPassword &&
               Boolean(formik.errors.confirmPassword)

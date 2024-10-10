@@ -13,7 +13,6 @@ import {
   ordersQuery,
   ordersDocument,
 } from '@/graphql';
-import { isDev } from '@/utils/dev';
 
 type RequestBody = {
   sessionToken: string;
@@ -123,7 +122,7 @@ export async function POST(request: Request) {
     //   ...customer,
     //   orders: orders,
     // } as Customer;
-    console.log(customer);
+
     return NextResponse.json({
       customer,
       cart,

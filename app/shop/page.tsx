@@ -29,7 +29,7 @@ const data = [
   {
     src: 'https://admin.damneddesigns.com/wp-content/uploads/IMG_3284.png',
     title: 'APPAREL',
-    href: '/',
+    href: '/shop/apparel',
   },
   {
     src: 'https://admin.damneddesigns.com/wp-content/uploads/IMG_23fh38.png',
@@ -38,7 +38,7 @@ const data = [
   },
   {
     src: 'https://admin.damneddesigns.com/wp-content/uploads/DSCF7042-scaled.jpg',
-    title: 'POCKET FIDGET',
+    title: 'FIDGET',
     href: '/shop/fidget',
   },
 ];

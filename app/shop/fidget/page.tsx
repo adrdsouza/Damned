@@ -1,22 +1,14 @@
 import ProductsList from '@/components/shop/products-listing';
-import {
-  fetchProducts,
-  OrderEnum,
-  OrdersOrderByEnum,
-  ProductsOrderByEnum,
-} from '@/graphql';
-import { VariableProduct } from '@woographql/react-hooks';
+import { fetchProducts, OrderEnum, ProductsOrderByEnum } from '@/graphql';
 import { Metadata } from 'next';
 
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Premium Folding Pocket Knives for All Occasions - Damned Designs',
-  description:
-    'Damned Designs offers expertly crafted folding knives that are both beautiful to look at and tremendously functional. Affordable yet substantial.',
+  title: 'Fidget Spinners, Clickers & Sliders - Damned Designs',
 };
 
-const PocketKnives: React.FC = async ({ searchParams }: any) => {
+const FixedBladeKnives: React.FC = async ({ searchParams }: any) => {
   const { field, order } = searchParams;
 
   let orderby: {
@@ -37,20 +29,20 @@ const PocketKnives: React.FC = async ({ searchParams }: any) => {
   const { nodes: products } = await fetchProducts({
     first: 99,
     where: {
-      categoryId: 1181,
+      categoryId: 840,
       orderby: orderby as any,
     },
   });
 
   return (
-    <div className='flex m-auto px-8 h-full w-full py-4 '>
+    <div className='w-full h-full min-h-[500px] px-8 py-4 m-auto'>
       <ProductsList
         data={products as any}
         showPagination={true}
-        title={'Pocket Knives'}
+        title={'Fidget'}
       />
     </div>
   );
 };
 
-export default PocketKnives;
+export default FixedBladeKnives;

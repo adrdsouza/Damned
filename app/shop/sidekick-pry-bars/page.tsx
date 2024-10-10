@@ -58,7 +58,11 @@ const Page: React.FC = async ({ searchParams }: any) => {
         </div>
       </div>
       <div className='w-full min-h-[500px] px-8 py-8 m-auto'>
-        <ProductsList data={products as any} showPagination={false} />
+        <ProductsList
+          data={products as any}
+          showPagination={false}
+          title={'Sidekick Pry Bars'}
+        />
       </div>
       <div
         className='flex flex-col md:flex-row w-full'

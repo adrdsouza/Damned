@@ -52,7 +52,11 @@ const Edc = async ({ searchParams }: any) => {
       </div>
 
       <div className='flex m-auto px-8 min-h-[500px] h-full py-8 bg-white w-full'>
-        <ProductsList data={products as any} showPagination={true} />
+        <ProductsList
+          data={products as any}
+          showPagination={true}
+          title={'Pocket Art'}
+        />
       </div>
     </div>
   );

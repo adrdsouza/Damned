@@ -58,7 +58,9 @@ const Card: React.FC<CardProps> = (props) => {
         ))}
       </div>
       <div
-        className={`${text.md} cursor-pointer truncate ${wrap && 'text-wrap'}`}
+        className={`${text.md} cursor-pointer h-fit ${
+          wrap ? '' : 'line-clamp-2'
+        } ${wrap && 'text-wrap'}`}
         onClick={() => setWrap(!wrap)}
       >
         {props.text}

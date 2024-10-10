@@ -124,10 +124,29 @@ export async function POST(request: Request) {
         );
       }
 
+      // const newClient = getClient();
+
+      // if (!process.env.CREATE_ORDER_PASSWORD) {
+      //   return NextResponse.json(
+      //     {
+      //       errors: {
+      //         message:
+      //           'System credentials missing. Please contact the administrator.',
+      //       },
+      //     },
+      //     { status: 500 }
+      //   );
+      // }
+
+      // newClient.setHeaders({
+      //   Authorization: `Basic ${process.env.CREATE_ORDER_PASSWORD}`,
+      // });
+
       const { data, headers } = await client.rawRequest<RegisterMutation>(
         print(RegisterDocument),
         { input }
       );
+
       if (!data?.registerCustomer) {
         return NextResponse.json(
           { errors: { message: 'Registration failed.' } },

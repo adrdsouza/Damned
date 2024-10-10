@@ -62,7 +62,11 @@ const Orisis: React.FC = async ({ searchParams }: any) => {
 
       <div className=' m-auto px-8 w-full bg-white '>
         <div className='py-[2em] md:py-[5em]'>
-          <ProductsList data={products as any} showPagination={false} />
+          <ProductsList
+            data={products as any}
+            showPagination={false}
+            title='Osiris Chef Knives'
+          />
         </div>
         <div className='h-auto lg:h-screen flex flex-col lg:flex-row py-[2em] md:py-[5em]'>
           <img

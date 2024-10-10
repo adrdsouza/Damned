@@ -98,6 +98,22 @@ const ShopDropdown = () => {
           </Link>
 
           <Link
+            href='/shop/fidget'
+            onClick={() => setAnchorEl(null)}
+            className={`${text.md} text-white font-medium hover:opacity-50`}
+          >
+            FIDGET
+          </Link>
+
+          <Link
+            href='/shop/apparel'
+            onClick={() => setAnchorEl(null)}
+            className={`${text.md} text-white font-medium hover:opacity-50`}
+          >
+            APPAREL
+          </Link>
+
+          <Link
             href='/shop/sidekick-pry-bars'
             onClick={() => setAnchorEl(null)}
             className={`${text.md} text-white font-medium hover:opacity-50`}

@@ -36,7 +36,11 @@ const FixedBladeKnives: React.FC = async ({ searchParams }: any) => {
 
   return (
     <div className='w-full h-full min-h-[500px] px-8 py-4 m-auto'>
-      <ProductsList data={products as any} showPagination={true} />
+      <ProductsList
+        data={products as any}
+        showPagination={true}
+        title={'Fixed Blade Knives'}
+      />
     </div>
   );
 };

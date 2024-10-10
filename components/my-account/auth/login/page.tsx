@@ -7,6 +7,7 @@ import toast from 'react-hot-toast';
 import { pallete } from '@/app/styles';
 import { LoadingButton } from '@mui/lab';
 import { setLocalStorageItem } from '@/components/utils';
+import PasswordField from '@/utils/password-field';
 const validationSchema = Yup.object({
   email: Yup.string()
     .email('Invalid email address')
@@ -71,7 +72,7 @@ const LoginForm = () => {
       </div>
 
       <div>
-        <TextField
+        {/* <TextField
           fullWidth
           variant='outlined'
           type='password'
@@ -81,6 +82,16 @@ const LoginForm = () => {
           value={formik.values.password}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
+          error={formik.touched.password && Boolean(formik.errors.password)}
+          helperText={formik.touched.password && formik.errors.password}
+        /> */}
+        <PasswordField
+          label=''
+          id='password'
+          placeholder='Password'
+          onBlur={formik.handleBlur}
+          value={formik.values.password}
+          onChange={formik.handleChange}
           error={formik.touched.password && Boolean(formik.errors.password)}
           helperText={formik.touched.password && formik.errors.password}
         />
