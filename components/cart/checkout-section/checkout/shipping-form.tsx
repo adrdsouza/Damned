@@ -28,6 +28,7 @@ const ShippingForm = ({ formik }: any) => {
   // const changeShipping = useSelector(
   //   (state: any) => state.cartSlice.changeShipping
   // );
+
   const shippingCountry = formik.values.shipping.country as CountriesEnum;
   const prevShippingCountry = useRef(shippingCountry);
   const { countries: shippingCountries, states: shippingStates } =
@@ -55,46 +56,6 @@ const ShippingForm = ({ formik }: any) => {
             })) || [],
         },
       });
-
-      //@ts-ignore
-      // const currentShippingMethod = cart?.chosenShippingMethods[0];
-      // if (currentShippingMethod === 'free_shipping:14') {
-      //   dispatch(setCartLoading(false));
-      //   return;
-      // }
-
-      // const shippingRate = await getShippingRate(
-      //   formik.values.shipping.country
-      // );
-
-      // if (!shippingRate) {
-      //   dispatch(setCartLoading(false));
-      //   return;
-      // }
-
-      // const updatedCart = {
-      //   ...cart,
-      //   chosenShippingMethods: [shippingRate.id],
-      //   availableShippingMethods: [
-      //     {
-      //       packageDetails: cart?.contents?.nodes
-      //         .map((node) => `${node?.variation?.node.name} ×${node.quantity}`)
-      //         .join(', '),
-      //       supportsShippingCalculator: true,
-      //       rates: [shippingRate],
-      //     },
-      //   ],
-      //   shippingTotal: `$${shippingRate.cost}`,
-      //   total: `${(
-      //     parseFloat(cart?.subtotal?.replace('$', '') as string) +
-      //     parseFloat(shippingRate.cost)
-      //   ).toFixed(2)}`,
-      // };
-
-      // await updateCart({
-      //   updateShippingRate: true,
-      //   cart: updatedCart,
-      // });
     } catch (error) {
       console.log(error);
       toast.error('Cart Session Expired');
@@ -118,17 +79,6 @@ const ShippingForm = ({ formik }: any) => {
       updateShippingRate();
     }
   }, [shippingCountry, diffShipAddress]);
-
-  // useEffect(() => {
-  //   if (changeShipping) {
-  //     formik.setFieldValue('shipping.country', '');
-  //     dispatch(setChangeShipping(false));
-  //     const el = document.getElementById('shipping-country-select');
-  //     if (el) {
-  //       el.scrollIntoView({ behavior: 'smooth' });
-  //     }
-  //   }
-  // }, [changeShipping]);
 
   return (
     <div className='grid grid-cols-2 gap-2'>

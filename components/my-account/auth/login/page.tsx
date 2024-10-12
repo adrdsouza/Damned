@@ -31,12 +31,7 @@ const LoginForm = () => {
 
     setLoading(false);
 
-    console.log(customer);
-
     if (!!customer?.id && customer?.id !== 'guest') {
-      const currentCountry = customer.billing?.country ?? '';
-      setLocalStorageItem('customerId', customer?.databaseId);
-      setLocalStorageItem('currentCountry', currentCountry);
       toast.success(`Welcome Back! ${customer.firstName}`);
     } else {
       toast.error((customer || 'Login failed. Please try again.') as string);

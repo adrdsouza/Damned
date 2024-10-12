@@ -6,7 +6,11 @@ import { PaymentTokenCC, Customer as CustomerType, Cart } from '@/graphql';
 import { useSession } from './SessionProvider';
 import { useSelector } from 'react-redux';
 import { getShippingRate } from '@/lib/graphql';
-import { getLocalStorageItem } from '@/components/utils';
+import {
+  getLocalStorageItem,
+  setLocalStorageItem,
+  storeCustomerInformation,
+} from '@/components/utils';
 
 type LoginResponse = {
   authToken: string;
@@ -124,6 +128,8 @@ export function createSessionOperations(
           cache: 'no-store',
         });
 
+      storeCustomerInformation(customer);
+
       tokenManager.saveTokens({ sessionToken });
       const clientSessionId = tokenManager.getClientSessionId();
 
@@ -223,6 +229,8 @@ export function createSessionOperations(
             body: JSON.stringify(body),
             next: { revalidate: 10 },
           });
+
+        storeCustomerInformation(customer);
 
         tokenManager.saveTokens({ sessionToken, authToken, refreshToken });
 

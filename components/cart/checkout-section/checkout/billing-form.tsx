@@ -24,14 +24,16 @@ import { useCheckoutDetails } from '@/client/CheckoutProvider';
 import { getShippingRate } from '@/lib/graphql';
 
 const BillingForm = ({ formik }: any) => {
-  const { cart: cartData, updateCart } = useSession();
+  const { cart: cartData, updateCart, customer } = useSession();
   const cart = cartData as Cart;
+
   //const { updateCheckoutDetails } = useCheckoutDetails();
   const { setShippingLocale } = useOtherCartMutations<Data>(sessionContext);
   const { removeCoupon } = useOtherCartMutations<Data>(sessionContext);
   const diffShipAddress = useSelector(
     (state: any) => state.cartSlice.diffShipAddress
   );
+
   // const changeShipping = useSelector(
   //   (state: any) => state.cartSlice.changeShipping
   // );
@@ -64,43 +66,6 @@ const BillingForm = ({ formik }: any) => {
             })) || [],
         },
       });
-
-      //@ts-ignore
-      // const currentShippingMethod = cart?.chosenShippingMethods[0];
-      // if (currentShippingMethod === 'free_shipping:14') {
-      //   dispatch(setCartLoading(false));
-      //   return;
-      // }
-      // const shippingRate = await getShippingRate(formik.values.billing.country);
-      // if (!shippingRate) {
-      //   dispatch(setCartLoading(false));
-      //   return;
-      // }
-      // const updatedCart = {
-      //   ...cart,
-      //   chosenShippingMethods: [shippingRate.id],
-      //   availableShippingMethods: [
-      //     {
-      //       packageDetails: cart?.contents?.nodes
-      //         .map((node) => `${node?.variation?.node.name} ×${node.quantity}`)
-      //         .join(', '),
-      //       supportsShippingCalculator: true,
-      //       rates: [shippingRate],
-      //     },
-      //   ],
-      //   //discountTotal: '$0.00',
-      //   shippingTotal: `$${shippingRate.cost}`,
-      //   total: `${(
-      //     parseFloat(cart?.subtotal?.replace('$', '') as string) +
-      //     parseFloat(shippingRate.cost)
-      //   ).toFixed(2)}`,
-      // };
-
-      // await updateCart({
-      //   //@ts-ignore
-      //   updateShippingRate: true,
-      //   cart,
-      // });
     } catch (error) {
       console.log(error);
       toast.error('Cart Session Expired');
@@ -124,27 +89,6 @@ const BillingForm = ({ formik }: any) => {
       updateShippingRate();
     }
   }, [billingCountry, diffShipAddress]);
-
-  // useEffect(() => {
-  //   if (
-  //     !diffShipAddress &&
-  //     (billingCountry as string) !== '' &&
-  //     prevBillingCountry.current !== billingCountry
-  //   ) {
-  //     updateShippingRate();
-  //   }
-  // }, [billingCountry, diffShipAddress]);
-
-  // useEffect(() => {
-  //   if (changeShipping) {
-  //     formik.setFieldValue('billing.country', '');
-  //     dispatch(setChangeShipping(false));
-  //     const el = document.getElementById('billing-country-select');
-  //     if (el) {
-  //       el.scrollIntoView({ behavior: 'smooth' });
-  //     }
-  //   }
-  // }, [changeShipping]);
 
   return (
     <div className='grid grid-cols-2 gap-2'>

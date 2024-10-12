@@ -38,3 +38,7 @@ export const setLocalStorageItem = (key, value) => {
     window.localStorage.setItem(key, JSON.stringify(value));
   }
 };
+
+export const storeCustomerInformation = (customer) => {
+  setLocalStorageItem('customerId', customer?.databaseId);
+};

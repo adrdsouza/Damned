@@ -15,8 +15,10 @@ import { useCountries } from '@/hooks/useCountries';
 import { CountriesEnum, Customer } from '@/graphql';
 import Link from 'next/link';
 import { onlyShippingSchema } from '@/components/cart/checkout-section/checkout/helpers';
+import { useRouter } from 'next/navigation';
 
 const EditShipping = () => {
+  const { push } = useRouter();
   const { customer, updateCustomer } = useSession();
   const { shipping } = customer as Customer;
 
@@ -30,6 +32,9 @@ const EditShipping = () => {
         mutation: 'updateCustomer',
         input: { shipping: values.shipping },
       });
+
+      push('/my-account/edit-address');
+
       toast.success('Shipping address updated.');
     } catch (error) {
       console.log(error);

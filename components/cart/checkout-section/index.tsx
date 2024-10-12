@@ -64,7 +64,20 @@ const CheckoutSection = () => {
     updateCheckoutDetails,
   } = useCheckoutDetails();
 
-  const initialValues = { billing: billing, shipping: shipping };
+  const billingCountry: string =
+    billing.firstName === '' && billing.lastName === '' ? '' : billing.country;
+  const billingState: string = billingCountry === '' ? '' : billing.state;
+
+  const shippingCountry: string =
+    shipping.firstName === '' && shipping.lastName === ''
+      ? ''
+      : shipping.country;
+  const shippingState: string = shippingCountry === '' ? '' : shipping.state;
+
+  const initialValues = {
+    billing: { ...billing, country: billingCountry, state: billingState },
+    shipping: { ...shipping, country: shippingCountry, state: shippingState },
+  };
 
   const formikValues = useRef(initialValues);
   //------------------> FUNCTIONS
@@ -85,11 +98,14 @@ const CheckoutSection = () => {
       try {
         if (diffShipAddress) {
           await updateCheckoutDetails({
+            //@ts-ignore
             billing: values.billing,
+            //@ts-ignore
             shipping: values.shipping,
           });
         } else {
           await updateCheckoutDetails({
+            //@ts-ignore
             billing: values.billing,
           });
         }
@@ -183,6 +199,8 @@ const CheckoutSection = () => {
         isPaid: true,
         transactionId: transactionId?.value ?? '',
       };
+
+      //console.log(payload);
 
       const order = await createOrder(payload);
 

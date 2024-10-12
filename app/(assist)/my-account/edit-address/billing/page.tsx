@@ -28,7 +28,9 @@ const BillingForm = () => {
         mutation: 'updateCustomer',
         input: { billing: values.billing },
       });
+
       push('/my-account/edit-address');
+
       toast.success('Billing address updated.');
     } catch (error) {
       console.log(error);
