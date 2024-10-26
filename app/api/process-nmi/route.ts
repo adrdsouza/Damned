@@ -1,14 +1,23 @@
 import { NextResponse } from 'next/server';
+import { RequestBody, RequestBodySchema } from './validations';
 
 export async function POST(request: Request) {
   try {
+    const body = (await request.json()) as RequestBody;
+
+    const parsedBody = RequestBodySchema.parse(body);
+
+    const { token, order } = parsedBody;
+
+    if (token?.token === '' || token?.card?.type === 'authenticationError') {
+      throw new Error();
+    }
+
     let ip: any = request.headers.get('cf-connecting-ip');
     if (!ip) {
       ip = request.headers.get('x-forwarded-for')?.split(',')[0].trim();
     }
 
-    const body = await request.json();
-    const { token, order } = body;
     console.log(token);
 
     const billingInfo = {
@@ -38,6 +47,7 @@ export async function POST(request: Request) {
     const req: any = {
       type: 'sale',
       security_key: process.env.NMI_LIVE_PRIVATE_KEY,
+      //security_key: '6457Thfj624V5r7WUwc5v6a68Zsd6YEm',
       payment_token: token.token,
       ccnumber: token.card.number,
       ccexp: token.card.exp,

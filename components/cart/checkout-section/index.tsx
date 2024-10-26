@@ -14,7 +14,7 @@ import { useSelector } from 'react-redux';
 import { setDiffShipAddress } from '@/redux/slices/cart-slice';
 import { useCheckoutDetails } from '@/client/CheckoutProvider';
 import { useRouter } from 'next/navigation';
-import { useSession } from '@/client/SessionProvider';
+import { tokenManager, useSession } from '@/client/SessionProvider';
 import { useFormik } from 'formik';
 import { Cart } from '@/graphql';
 import { combinedSchema, onlyBillingSchema } from './checkout/helpers';
@@ -205,7 +205,7 @@ const CheckoutSection = () => {
       const order = await createOrder(payload);
 
       if (!order) {
-        console.log(order);
+        //console.log(order);
         toast.error('Error while creating order.');
         reloadBrowser();
         return;
@@ -230,7 +230,7 @@ const CheckoutSection = () => {
         dispatch(setCartSection('CART'));
       }, 2000);
     } catch (error: any) {
-      console.log(error);
+      //console.log(error);
       toast.error('Cart Session Expired');
       reloadBrowser();
     }
@@ -271,14 +271,19 @@ const CheckoutSection = () => {
 
       //console.log(data);
 
+      const tokens = tokenManager.getTokens();
+
       const res = await fetch(`${process.env.FRONTEND_URL}/api/process-nmi`, {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {
           'Content-Type': 'application/json',
           Accept: 'application/json',
+          'woocommerce-session': tokens.sessionToken,
         },
       });
+
+      //const resData = await processNMI(data);
 
       const resData = await res.json();
 
@@ -521,8 +526,12 @@ const CheckoutSection = () => {
         // },
 
         callback: (token: any) => {
-          console.log(token);
-          if (!token) {
+          //console.log(token);
+          if (
+            !token ||
+            token?.token === '' ||
+            token?.card?.type === 'authenticationError'
+          ) {
             toast.error('Transaction failed. Please try again.');
             return;
           }

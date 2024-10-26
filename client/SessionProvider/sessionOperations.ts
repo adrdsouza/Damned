@@ -46,11 +46,11 @@ const generateUrl = createUrlGenerator(
 );
 
 const fixCart = async (cart: Cart) => {
-  console.log('hello form fixcart');
+  //console.log('hello form fixcart');
 
   try {
     const currentCountry: any = getLocalStorageItem('currentCountry');
-    console.log(currentCountry);
+    //console.log(currentCountry);
     if (!currentCountry || currentCountry === '') {
       return cart;
     }
@@ -107,7 +107,7 @@ const fixCart = async (cart: Cart) => {
 
     return updatedCart;
   } catch (error) {
-    console.log(error);
+    //console.log(error);
   }
 };
 
@@ -117,7 +117,7 @@ export function createSessionOperations(
   return {
     fetchSessionData: (state, dispatch) => async () => {
       const tokens = tokenManager.getTokens();
-      console.log('fetching session data...');
+      //console.log('fetching session data...');
       const { sessionToken, cart, customer } =
         await apiCall<FetchSessionResponse>('/api/session', {
           method: 'POST',
@@ -131,12 +131,13 @@ export function createSessionOperations(
       storeCustomerInformation(customer);
 
       tokenManager.saveTokens({ sessionToken });
+
       const clientSessionId = tokenManager.getClientSessionId();
 
       let fixedCart;
       if ((cart.contents?.itemCount as number) > 0) {
         fixedCart = await fixCart(cart);
-        console.log('fixed cart from session api', fixedCart);
+        //console.log('fixed cart from session api', fixedCart);
         //dispatch({ type: 'UPDATE_STATE', payload: { cart: fixedCart } });
         //return fixedCart;
       } else {
@@ -164,7 +165,7 @@ export function createSessionOperations(
       //   //return input?.cart;
       // }
 
-      console.log('updating Cart...');
+      //console.log('updating Cart...');
       const { sessionToken, cart } = await apiCall<FetchCartResponse>(
         '/api/cart',
         {
@@ -177,12 +178,12 @@ export function createSessionOperations(
           cache: 'no-cache',
         }
       );
-      console.log('response cart', cart);
+      //console.log('response cart', cart);
       tokenManager.saveTokens({ sessionToken });
 
       if ((cart.contents?.itemCount as number) > 0) {
         const fixedCart = await fixCart(cart);
-        console.log('fixed cart', fixedCart);
+        //console.log('fixed cart', fixedCart);
         dispatch({ type: 'UPDATE_STATE', payload: { cart: fixedCart } });
         return fixedCart;
       }

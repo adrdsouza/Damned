@@ -37,7 +37,7 @@ export default function RootLayout({
         <script
           async
           src='https://secure.nmi.com/token/Collect.js'
-          // data-tokenization-key='5mN8N7-jhr55W-N22pxX-uAW2s9'
+          //data-tokenization-key='5mN8N7-jhr55W-N22pxX-uAW2s9'
           data-tokenization-key={process.env.NMI_LIVE_PUBLIC_KEY}
         />
         <script

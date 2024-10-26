@@ -43,7 +43,7 @@ export function CartItem({ item, priority }: CartItemProps) {
     dispatch(setCartLoading(true));
     try {
       const res = await mutate('updateItemQuantities', { quantity });
-      console.log(res);
+      //console.log(res);
       if (!res) {
         reloadBrowser();
       }

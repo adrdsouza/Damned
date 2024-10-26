@@ -32,7 +32,7 @@ jobs:
             git clean -fd
             git pull origin fixing-bug-while-order-creation
             cp env.prod .env
-            #npm install
+            npm install
             npm run build
             pm2 kill
             pm2 start "npm run start"

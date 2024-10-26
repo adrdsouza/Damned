@@ -36,6 +36,7 @@ export async function POST(request: Request) {
     if (tokens.authToken) {
       graphQLClient.setHeader('Authorization', `Bearer ${tokens.authToken}`);
     }
+
     if (tokens.sessionToken) {
       graphQLClient.setHeader(
         'woocommerce-session',
