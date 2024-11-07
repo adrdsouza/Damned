@@ -614,23 +614,23 @@ const CheckoutSection = () => {
 
   return (
     <>
-      <div className='w-full border-b p-2'>
-        <div className='flex gap-6 items-center'>
+      <div className="w-full border-b p-2">
+        <div className="flex gap-6 items-center">
           <ArrowLeft
-            className='w-5 h-5 cursor-pointer'
+            className="w-5 h-5 cursor-pointer"
             onClick={() => dispatch(setCartSection('CART'))}
           />
           <p className={`${text.md} font-medium`}>CHECKOUT</p>
         </div>
       </div>
 
-      <div className='relative overflow-scroll flex-col no-scrollbar flex flex-1 justify-between '>
-        <div className='p-4 flex flex-col gap-8'>
+      <div className="relative overflow-scroll flex-col no-scrollbar flex flex-1 justify-between ">
+        <div className="p-4 flex flex-col gap-8">
           <BillingForm formik={formik} />
 
-          <div className='flex gap-2'>
+          <div className="flex gap-2">
             <input
-              type='checkbox'
+              type="checkbox"
               checked={diffShipAddress}
               onChange={() => dispatch(setDiffShipAddress(!diffShipAddress))}
             />
@@ -642,59 +642,59 @@ const CheckoutSection = () => {
 
         <Divider sx={{ my: 1 }} />
 
-        <div className='p-4'>
+        <div className="p-4">
           {paymentMethod !== 'discount' ? (
             <>
-              <p className='mb-2 font-bold'>Select Payment Method</p>
+              <p className="mb-2 font-bold">Select Payment Method</p>
               <FormControl fullWidth>
                 <Select
-                  size='small'
+                  size="small"
                   value={paymentMethod}
                   onChange={changePaymentMethod}
                 >
                   <MenuItem key={'nmi'} value={'nmi'}>
-                    <div className='flex gap-2'>
+                    <div className="flex gap-2">
                       <img
-                        src='https://admin.damneddesigns.com/wp-content/plugins/woocommerce/assets/images/icons/credit-cards/visa.svg'
-                        alt='Visa'
-                        width='32'
+                        src="https://admin.damneddesigns.com/wp-content/plugins/woocommerce/assets/images/icons/credit-cards/visa.svg"
+                        alt="Visa"
+                        width="32"
                       />
                       <img
-                        src='https://admin.damneddesigns.com/wp-content/plugins/woocommerce/assets/images/icons/credit-cards/mastercard.svg'
-                        alt='Mastercard'
-                        width='32'
+                        src="https://admin.damneddesigns.com/wp-content/plugins/woocommerce/assets/images/icons/credit-cards/mastercard.svg"
+                        alt="Mastercard"
+                        width="32"
                       />
                       <img
-                        src='https://admin.damneddesigns.com/wp-content/plugins/woocommerce/assets/images/icons/credit-cards/amex.svg'
-                        alt='Amex'
-                        width='32'
+                        src="https://admin.damneddesigns.com/wp-content/plugins/woocommerce/assets/images/icons/credit-cards/amex.svg"
+                        alt="Amex"
+                        width="32"
                       />
                       <img
-                        src='https://admin.damneddesigns.com/wp-content/plugins/woocommerce/assets/images/icons/credit-cards/discover.svg'
-                        alt='Discover'
-                        width='32'
+                        src="https://admin.damneddesigns.com/wp-content/plugins/woocommerce/assets/images/icons/credit-cards/discover.svg"
+                        alt="Discover"
+                        width="32"
                       />
                       <img
-                        src='https://admin.damneddesigns.com/wp-content/plugins/woocommerce/assets/images/icons/credit-cards/diners.svg'
-                        alt='Diners Club'
-                        width='32'
+                        src="https://admin.damneddesigns.com/wp-content/plugins/woocommerce/assets/images/icons/credit-cards/diners.svg"
+                        alt="Diners Club"
+                        width="32"
                       />
                       <img
-                        src='https://admin.damneddesigns.com/wp-content/plugins/woocommerce/assets/images/icons/credit-cards/jcb.svg'
-                        alt='JCB'
-                        width='32'
+                        src="https://admin.damneddesigns.com/wp-content/plugins/woocommerce/assets/images/icons/credit-cards/jcb.svg"
+                        alt="JCB"
+                        width="32"
                       />
                       <img
-                        src='https://admin.damneddesigns.com/wp-content/plugins/woocommerce/assets/images/icons/credit-cards/maestro.svg'
-                        alt='Maestro'
-                        width='32'
+                        src="https://admin.damneddesigns.com/wp-content/plugins/woocommerce/assets/images/icons/credit-cards/maestro.svg"
+                        alt="Maestro"
+                        width="32"
                       />
                     </div>
                   </MenuItem>
                   <MenuItem key={'sezzlepay'} value={'sezzlepay'}>
                     <img
-                      src='https://d34uoa9py2cgca.cloudfront.net/branding/sezzle-logos/png/sezzle-logo-sm-100w.png'
-                      alt='sezzle'
+                      src="https://d34uoa9py2cgca.cloudfront.net/branding/sezzle-logos/png/sezzle-logo-sm-100w.png"
+                      alt="sezzle"
                     />
                   </MenuItem>
                   {/* <MenuItem key={'cod'} value={'cod'}>
@@ -706,28 +706,28 @@ const CheckoutSection = () => {
           ) : null}
 
           {paymentMethod === 'nmi' ? (
-            <div className='mt-4'>
-              <div className='mb-2'>
-                <div id='ccnumber' />
+            <div className="mt-4">
+              <div className="mb-2">
+                <div id="ccnumber" />
                 {validnumber && (
-                  <div className='text-red-600 text-[12px]'>{validnumber}</div>
+                  <div className="text-red-600 text-[12px]">{validnumber}</div>
                 )}
               </div>
 
-              <div className='flex justify-between gap-4'>
-                <div className='w-full'>
-                  <div id='ccexp' />
+              <div className="flex justify-between gap-4">
+                <div className="w-full">
+                  <div id="ccexp" />
                   {validexpiration && (
-                    <div className='text-red-600 text-[12px]'>
+                    <div className="text-red-600 text-[12px]">
                       {validexpiration}
                     </div>
                   )}
                 </div>
 
-                <div className='w-full'>
-                  <div id='cvv' />
+                <div className="w-full">
+                  <div id="cvv" />
                   {validcvv && (
-                    <div className='text-red-600 text-[12px]'>{validcvv}</div>
+                    <div className="text-red-600 text-[12px]">{validcvv}</div>
                   )}
                 </div>
               </div>
@@ -735,7 +735,7 @@ const CheckoutSection = () => {
           ) : null}
 
           {paymentMethod === 'sezzlepay' ? (
-            <div className='hidden' id='sezzle-smart-button-container' />
+            <div className="hidden" id="sezzle-smart-button-container" />
           ) : null}
         </div>
 
@@ -743,18 +743,18 @@ const CheckoutSection = () => {
       </div>
 
       <Button
-        type='submit'
+        type="submit"
         disabled={cartLoading || formik.isSubmitting}
         onClick={() => formik.handleSubmit()}
-        className='py-8 bg-stone-500 w-full rounded-none text-white hover:bg-stone-600 '
+        className="py-8 bg-stone-500 w-full rounded-none text-white hover:bg-stone-600 "
       >
         {`Place Order - $${cart?.total}`}
       </Button>
 
       {checkoutSuccess ? (
-        <div className='absolute bg-white z-[999] h-full w-full flex '>
-          <div className='m-auto p-4 text-center'>
-            <p className='mb-2'>
+        <div className="absolute bg-white z-[999] h-full w-full flex ">
+          <div className="m-auto p-4 text-center">
+            <p className="mb-2">
               {`Thank You. Your order has been recieved. Plese wait. We're redirecting to your order...`}
             </p>
             <Loader />

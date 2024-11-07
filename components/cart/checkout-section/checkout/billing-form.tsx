@@ -91,17 +91,17 @@ const BillingForm = ({ formik }: any) => {
   }, [billingCountry, diffShipAddress]);
 
   return (
-    <div className='grid grid-cols-2 gap-2'>
-      <div className='col-span-2 mb-2'>BILLING DETAILS</div>
-      <div className='col-span-1'>
+    <div className="grid grid-cols-2 gap-2">
+      <div className="col-span-2 mb-2">BILLING DETAILS</div>
+      <div className="col-span-1">
         {/* <label htmlFor='firstName'>First Name</label> */}
         <TextField
           fullWidth
-          placeholder='First Name'
-          size='small'
-          variant='outlined'
-          name='billing.firstName'
-          id='billing.firstName'
+          placeholder="First Name"
+          size="small"
+          variant="outlined"
+          name="billing.firstName"
+          id="billing.firstName"
           value={formik.values.billing?.firstName}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
@@ -116,15 +116,15 @@ const BillingForm = ({ formik }: any) => {
         />
       </div>
 
-      <div className='col-span-1'>
+      <div className="col-span-1">
         {/* <label htmlFor='lastName'>Last Name</label> */}
         <TextField
-          placeholder='Last Name'
+          placeholder="Last Name"
           fullWidth
-          variant='outlined'
-          name='billing.lastName'
-          id='billing.lastName'
-          size='small'
+          variant="outlined"
+          name="billing.lastName"
+          id="billing.lastName"
+          size="small"
           value={formik.values.billing?.lastName}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
@@ -139,10 +139,10 @@ const BillingForm = ({ formik }: any) => {
       </div>
 
       <FormControl
-        id='billing-country-select'
-        className='col-span-1'
+        id="billing-country-select"
+        className="col-span-1"
         fullWidth
-        size='small'
+        size="small"
       >
         {/* <label htmlFor='country' className='mb-2'>
           Country / Region
@@ -156,9 +156,9 @@ const BillingForm = ({ formik }: any) => {
             },
           }}
           displayEmpty
-          placeholder='Country'
-          id='billing.country'
-          name='billing.country'
+          placeholder="Country"
+          id="billing.country"
+          name="billing.country"
           value={formik.values.billing?.country}
           onChange={formik.handleChange}
           error={
@@ -166,8 +166,8 @@ const BillingForm = ({ formik }: any) => {
             Boolean(formik.errors.billing?.country)
           }
         >
-          <MenuItem value=''>
-            <p className='text-gray-400'>Select Country</p>
+          <MenuItem value="">
+            <p className="text-gray-400">Select Country</p>
           </MenuItem>
           {billingCountries.map(({ code, name }) => (
             <MenuItem value={code} key={code}>
@@ -180,52 +180,54 @@ const BillingForm = ({ formik }: any) => {
         </FormHelperText>
       </FormControl>
 
-      <FormControl className='col-span-1' fullWidth size='small'>
-        {/* <label htmlFor='state' className='mb-2'>
-          State
-        </label> */}
-        <Select
-          MenuProps={{
-            PaperProps: {
-              style: {
-                maxHeight: 200,
+      {billingStates && billingStates.length !== 0 ? (
+        <FormControl className="col-span-1" fullWidth size="small">
+          {/* <label htmlFor='state' className='mb-2'>
+            State
+          </label> */}
+          <Select
+            MenuProps={{
+              PaperProps: {
+                style: {
+                  maxHeight: 200,
+                },
               },
-            },
-          }}
-          displayEmpty
-          id='billing.state'
-          name='billing.state'
-          value={formik.values.billing?.state}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={
-            formik.touched.billing?.state &&
-            Boolean(formik.errors.billing?.state)
-          }
-        >
-          <MenuItem value=''>
-            <p className='text-gray-400'>Select State</p>
-          </MenuItem>
-          {billingStates.map(({ code, name }) => (
-            <MenuItem value={code} key={code}>
-              {name}
+            }}
+            displayEmpty
+            id="billing.state"
+            name="billing.state"
+            value={formik.values.billing?.state}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={
+              formik.touched.billing?.state &&
+              Boolean(formik.errors.billing?.state)
+            }
+          >
+            <MenuItem value="">
+              <p className="text-gray-400">Select State</p>
             </MenuItem>
-          ))}
-        </Select>
-        <FormHelperText>
-          {formik.touched.billing?.state && formik.errors.billing?.state}
-        </FormHelperText>
-      </FormControl>
+            {billingStates.map(({ code, name }) => (
+              <MenuItem value={code} key={code}>
+                {name}
+              </MenuItem>
+            ))}
+          </Select>
+          <FormHelperText>
+            {formik.touched.billing?.state && formik.errors.billing?.state}
+          </FormHelperText>
+        </FormControl>
+      ) : null}
 
-      <div className='col-span-2 flex flex-col gap-2'>
+      <div className="col-span-2 flex flex-col gap-2">
         {/* <label htmlFor='address1'>Street Address</label> */}
         <TextField
           fullWidth
-          placeholder='House number and street name'
-          variant='outlined'
-          name='billing.address1'
-          id='billing.address1'
-          size='small'
+          placeholder="House number and street name"
+          variant="outlined"
+          name="billing.address1"
+          id="billing.address1"
+          size="small"
           value={formik.values.billing?.address1}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
@@ -239,11 +241,11 @@ const BillingForm = ({ formik }: any) => {
         />
         <TextField
           fullWidth
-          variant='outlined'
-          placeholder='Apartment, suite, unit, etc. (optional)'
-          name='billing.address2'
-          id='billing.address2'
-          size='small'
+          variant="outlined"
+          placeholder="Apartment, suite, unit, etc. (optional)"
+          name="billing.address2"
+          id="billing.address2"
+          size="small"
           value={formik.values.billing?.address2}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
@@ -257,15 +259,15 @@ const BillingForm = ({ formik }: any) => {
         />
       </div>
 
-      <div className='col-span-1'>
+      <div className="col-span-1">
         {/* <label htmlFor='city'>Town / City</label> */}
         <TextField
-          placeholder='Town / City'
+          placeholder="Town / City"
           fullWidth
-          variant='outlined'
-          name='billing.city'
-          id='billing.city'
-          size='small'
+          variant="outlined"
+          name="billing.city"
+          id="billing.city"
+          size="small"
           value={formik.values.billing?.city}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
@@ -278,15 +280,15 @@ const BillingForm = ({ formik }: any) => {
         />
       </div>
 
-      <div className='col-span-1'>
+      <div className="col-span-1">
         {/* <label htmlFor='postcode'>ZIP Code</label> */}
         <TextField
-          placeholder='Postcode'
+          placeholder="Postcode"
           fullWidth
-          variant='outlined'
-          name='billing.postcode'
-          id='billing.postcode'
-          size='small'
+          variant="outlined"
+          name="billing.postcode"
+          id="billing.postcode"
+          size="small"
           value={formik.values.billing?.postcode}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
@@ -300,15 +302,15 @@ const BillingForm = ({ formik }: any) => {
         />
       </div>
 
-      <div className='col-span-1'>
+      <div className="col-span-1">
         {/* <label htmlFor='phone'>Phone</label> */}
         <TextField
-          placeholder='Phone'
+          placeholder="Phone"
           fullWidth
-          variant='outlined'
-          name='billing.phone'
-          id='billing.phone'
-          size='small'
+          variant="outlined"
+          name="billing.phone"
+          id="billing.phone"
+          size="small"
           value={formik.values.billing?.phone}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
@@ -322,15 +324,15 @@ const BillingForm = ({ formik }: any) => {
         />
       </div>
 
-      <div className='col-span-1'>
+      <div className="col-span-1">
         {/* <label htmlFor='email'>Email address</label> */}
         <TextField
-          placeholder='Email Address'
+          placeholder="Email Address"
           fullWidth
-          variant='outlined'
-          name='billing.email'
-          id='billing.email'
-          size='small'
+          variant="outlined"
+          name="billing.email"
+          id="billing.email"
+          size="small"
           value={formik.values.billing?.email}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
