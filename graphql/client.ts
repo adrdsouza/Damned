@@ -52,7 +52,8 @@ export function fetchProducts(variables: GetProductsQueryVariables = {}) {
     {
       method: 'POST',
       body: JSON.stringify(variables),
-      next: { revalidate: 24 * HOUR_IN_SECONDS },
+      //next: { revalidate: 24 * HOUR_IN_SECONDS },
+      cache: 'no-store',
     }
   );
 }
