@@ -82,7 +82,7 @@ export async function fetchProduct(id: string, idType: ProductIdTypeEnum) {
   return apiCall<Product>(`${process.env.FRONTEND_URL}/api/product`, {
     method: 'POST',
     body: JSON.stringify({ id, idType }),
-    next: { revalidate: 24 * HOUR_IN_SECONDS },
+    //next: { revalidate: 24 * HOUR_IN_SECONDS },
   });
 }
 
