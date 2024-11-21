@@ -18,6 +18,7 @@ import { clearLocalStorage, reloadBrowser } from '@/components/utils';
 import { addToWaitlist } from '@/lib/graphql';
 
 const ProductDetails = ({ product }: any) => {
+  console.log(product);
   const [waitlist, setWaitlist] = useState('');
   const [selectedVariation, setSelectedVariation] = useState<any>(null);
   const [executing, setExecuting] = useState<any>(false);
@@ -121,7 +122,7 @@ const ProductDetails = ({ product }: any) => {
   }, [fetching, cart]);
 
   return (
-    <div className='flex flex-col gap-4'>
+    <div className="flex flex-col gap-4">
       <div>
         <h1 className={`${text.lg} font-normal uppercase`}>{product.name}</h1>
         <p className={`${text.lg} font-normal`}>{product.price}</p>
@@ -152,7 +153,7 @@ const ProductDetails = ({ product }: any) => {
       {selectedVariation?.stockStatus === 'OUT_OF_STOCK' ? (
         <form
           onSubmit={handleWaitlist}
-          className=' flex flex-col gap-4 items-start'
+          className=" flex flex-col gap-4 items-start"
         >
           <p>Sold Out!</p>
           <p>
@@ -162,14 +163,14 @@ const ProductDetails = ({ product }: any) => {
             <TextField
               value={waitlist}
               onChange={(e) => setWaitlist(e.target.value)}
-              type='email'
+              type="email"
               required
-              size='small'
+              size="small"
             />
           ) : null}
           <Button
-            type='submit'
-            className='py-2 px-8 bg-stone-400 w-fit text-white hover:bg-stone-600'
+            type="submit"
+            className="py-2 px-8 bg-stone-400 w-fit text-white hover:bg-stone-600"
           >
             ADD TO WAITLIST
           </Button>
@@ -180,7 +181,7 @@ const ProductDetails = ({ product }: any) => {
         onClick={addToCart}
         loading={executing || !cart}
         disabled={cartButtonDisabled}
-        className='py-2 px-8 bg-stone-400 w-fit text-white hover:bg-stone-600'
+        className="py-2 px-8 bg-stone-400 w-fit text-white hover:bg-stone-600"
       >
         ADD TO CART
       </LoadingButton>
