@@ -3,6 +3,8 @@ import ProductDetails from './ProductDetails';
 import ImageCarousel from '@/components/carousel/page';
 import { Metadata } from 'next';
 
+export const dynamic = 'force-dynamic';
+
 export interface ProductPageProps {
   params: {
     slug: string;
@@ -59,11 +61,11 @@ const ProductPage = async ({ params }: ProductPageProps) => {
   ];
 
   return (
-    <div className='w-full px-8 m-auto py-8 flex flex-col lg:flex-row gap-10'>
-      <div className='w-full lg:w-1/2'>
+    <div className="w-full px-8 m-auto py-8 flex flex-col lg:flex-row gap-10">
+      <div className="w-full lg:w-1/2">
         <ImageCarousel images={images} />
       </div>
-      <div className='w-full lg:w-1/2 flex flex-col gap-5 py-5'>
+      <div className="w-full lg:w-1/2 flex flex-col gap-5 py-5">
         <ProductDetails product={product} />
       </div>
     </div>
