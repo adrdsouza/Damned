@@ -83,6 +83,7 @@ export async function fetchProduct(id: string, idType: ProductIdTypeEnum) {
     method: 'POST',
     body: JSON.stringify({ id, idType }),
     //next: { revalidate: 24 * HOUR_IN_SECONDS },
+    cache: 'no-store',
   });
 }
 
