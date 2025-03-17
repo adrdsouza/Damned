@@ -65,6 +65,7 @@ export function fetchOrders(variables: ordersQueryVariables = {}) {
       method: 'POST',
       body: JSON.stringify(variables),
       next: { revalidate: 24 * HOUR_IN_SECONDS },
+      cache: 'no-store',
     }
   );
 }
@@ -76,6 +77,7 @@ export function fetchSingleOrder(id: any, idType: OrderIdTypeEnum) {
     method: 'POST',
     body: JSON.stringify({ id, idType }),
     next: { revalidate: 24 * HOUR_IN_SECONDS },
+    cache: 'no-store',
   });
 }
 
