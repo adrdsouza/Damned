@@ -18,9 +18,10 @@ const Page = async ({ searchParams }) => {
     const order: any = await fetchSingleOrder(key, OrderIdTypeEnum.ORDER_KEY);
 
     // If order not found or mismatch with ID, return error
-    if (!order || order.databaseId !== Number(id)) {
+    if (!order || order.orderNumber !== id) {
       throw Error('orer not found');
     }
+
     // Render order details
     return (
       <div className='w-full px-[30px] py-[2em] md:py-[4em] 2xl:w-[1440px] m-auto'>
