@@ -181,208 +181,52 @@ const CheckoutSection = () => {
     dispatch(setCartLoading(false));
   };
 
-  const processNMI = async (token) => {
-    try {
-      // const order = await handleSubmit();
-      // if (!order) return;
+const processNMI = async (token) => {
+  try {
+    // Use the actual order data from handleSubmit instead of the hardcoded test data
+    const order = await handleSubmit();
+    if (!order) return;
 
-      const order = {
-        id: 'b3JkZXI6NTMwOTA=',
-        databaseId: 53090,
-        orderKey: 'wc_order_JcqYbdQgFGxiT',
-        orderNumber: '53090',
-        status: 'PROCESSING',
-        date: '2024-08-06T18:39:38+00:00',
-        paymentMethodTitle: 'NMI',
-        subtotal: '$75.00',
-        shippingTotal: '$8.00',
-        shippingTax: '$0.00',
-        discountTotal: '$0.00',
-        discountTax: '$0.00',
-        totalTax: '$0.00',
-        total: '$83.00',
-        billing: {
-          firstName: 'test from nextjs',
-          lastName: 'Kamal',
-          company: null,
-          address1: 'Lahore',
-          address2: 'Lahore',
-          city: 'Lahore',
-          state: 'PB',
-          postcode: '54000',
-          country: 'PK',
-          email: 'fareedkamal.dev@gmail.com',
-          phone: '77777777777',
-        },
-        shipping: {
-          firstName: null,
-          lastName: null,
-          company: null,
-          address1: null,
-          address2: null,
-          city: null,
-          state: null,
-          postcode: null,
-          country: null,
-          email: null,
-          phone: null,
-        },
-        lineItems: {
-          nodes: [
-            {
-              id: 'b3JkZXJfaXRlbTo1MzA5MCs3MzgxNA==',
-              databaseId: 73814,
-              product: {
-                node: {
-                  id: 'cHJvZHVjdDo0MTEyNQ==',
-                  databaseId: 41125,
-                  name: 'Basilisk Fixed',
-                  slug: 'basilisk-fixed',
-                  type: 'VARIABLE',
-                  image: {
-                    id: 'cG9zdDo0OTIyNQ==',
-                    sourceUrl:
-                      'https://admin.damneddesigns.com/wp-content/uploads/DSC_0219-01-800x600.png',
-                    altText: '',
-                  },
-                  price: '$75.00',
-                  regularPrice: '$75.00',
-                  salePrice: null,
-                  stockStatus: 'IN_STOCK',
-                  stockQuantity: null,
-                  soldIndividually: false,
-                },
-              },
-              variation: {
-                node: {
-                  id: 'cHJvZHVjdF92YXJpYXRpb246NDExNDc=',
-                  databaseId: 41147,
-                  name: 'Basilisk Fixed - Black G10, Stonewashed 14c28n',
-                  slug: 'basilisk-fixed',
-                  type: 'VARIATION',
-                  image: {
-                    id: 'cG9zdDo0OTIyNQ==',
-                    sourceUrl:
-                      'https://admin.damneddesigns.com/wp-content/uploads/DSC_0219-01-800x600.png',
-                    altText: '',
-                  },
-                  price: '$75.00',
-                  regularPrice: '$75.00',
-                  salePrice: null,
-                  stockStatus: 'IN_STOCK',
-                  stockQuantity: 1,
-                  soldIndividually: null,
-                },
-              },
-              quantity: 1,
-              total: '75',
-              subtotal: '75',
-              subtotalTax: null,
-            },
-          ],
-        },
-      };
+    const data = {
+      order: order,
+      token: token,
+    };
 
-      // const token = {
-      //   tokenType: 'inline',
-      //   token: 'gpxE2G97-exjG7C-xAvdqk-f7b5972P88zJ',
-      //   card: {
-      //     number: '559049******1142',
-      //     bin: '559049',
-      //     exp: '0628',
-      //     type: 'mastercard',
-      //     hash: '',
-      //   },
-      //   check: {
-      //     name: null,
-      //     account: null,
-      //     aba: null,
-      //     transit: null,
-      //     institution: null,
-      //     hash: null,
-      //   },
-      //   wallet: {
-      //     cardDetails: null,
-      //     cardNetwork: null,
-      //     email: null,
-      //     billingInfo: {
-      //       address1: null,
-      //       address2: null,
-      //       firstName: null,
-      //       lastName: null,
-      //       postalCode: null,
-      //       city: null,
-      //       state: null,
-      //       country: null,
-      //       phone: null,
-      //     },
-      //     shippingInfo: {
-      //       method: null,
-      //       address1: null,
-      //       address2: null,
-      //       firstName: null,
-      //       lastName: null,
-      //       postalCode: null,
-      //       city: null,
-      //       state: null,
-      //       country: null,
-      //       phone: null,
-      //     },
-      //   },
-      // };
+    const res = await fetch(`${process.env.FRONTEND_URL}/api/process-nmi`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+    });
 
-      const data = {
-        order: order,
-        token: token,
-      };
+    const resData = await res.json();
 
-      const res = await fetch(`${process.env.FRONTEND_URL}/api/process-nmi`, {
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-      });
-
-      const resData = await res.json();
-
-      if (!resData?.status) {
-        throw new Error();
-      }
-
-      console.log('NMI process res: ', resData);
-
-      // const dummyRes = {
-      //   response: '3',
-      //   responsetext: 'Payment Token does not exist REFID:3129089407',
-      //   authcode: '',
-      //   transactionid: '',
-      //   avsresponse: '',
-      //   cvvresponse: '',
-      //   orderid: '53090',
-      //   type: 'sale',
-      //   response_code: '300',
-      // };
-
-      if (resData.response === '2' || resData.response === '3') {
-        throw new Error();
-      }
-
-      // setCheckoutSuccess(true);
-
-      // setTimeout(() => {
-      //   push(`/order-recieved/${order.orderNumber}?key=${order.orderKey}`);
-      //   dispatch(setCartClose());
-      //   dispatch(setCartSection('CART'));
-      // }, 3000);
-    } catch (error) {
-      console.log('in error block');
-      console.log(error);
-      toast.error('We were unable to complete transcation. Please try again');
-      //reloadBrowser();
+    if (!resData?.status) {
+      throw new Error();
     }
-  };
+
+    console.log('NMI process res: ', resData);
+
+    if (resData.response === '2' || resData.response === '3') {
+      throw new Error();
+    }
+
+    setCheckoutSuccess(true);
+
+    setTimeout(() => {
+      push(`/order-recieved/${order.orderNumber}?key=${order.orderKey}`);
+      dispatch(setCartClose());
+      dispatch(setCartSection('CART'));
+    }, 3000);
+  } catch (error) {
+    console.log('in error block');
+    console.log(error);
+    toast.error('We were unable to complete transaction. Please try again');
+    formik.setSubmitting(false);
+  }
+};
 
   //-----------------> USE EFFECTS ------------------------------>
   //-------------------->
