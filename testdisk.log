@@ -1,0 +1,24 @@
+
+
+Wed Apr 23 18:49:52 2025
+Command line: TestDisk
+
+TestDisk 7.1, Data Recovery Utility, July 2019
+Christophe GRENIER <grenier@cgsecurity.org>
+https://www.cgsecurity.org
+OS: Linux, kernel 6.8.0-57-generic (#59-Ubuntu SMP PREEMPT_DYNAMIC Sat Mar 15 17:40:59 UTC 2025) x86_64
+Compiler: GCC 13.2
+ext2fs lib: 1.47.0, ntfs lib: libntfs-3g, reiserfs lib: none, ewf lib: none, curses lib: ncurses 6.4
+Warning: can't get size for Disk /dev/mapper/control - 0 B - 0 sectors, sector size=512
+Warning: can't get size for Disk /dev/loop6 - 0 B - 0 sectors, sector size=512
+Warning: can't get size for Disk /dev/loop7 - 0 B - 0 sectors, sector size=512
+Hard disk list
+Disk /dev/vda - 69 GB / 65 GiB - CHS 135233 16 63, sector size=512
+Disk /dev/loop0 - 66 MB / 63 MiB - 130568 sectors (RO), sector size=512
+Disk /dev/loop1 - 64 MB / 61 MiB - 126896 sectors (RO), sector size=512
+Disk /dev/loop2 - 71 MB / 67 MiB - 138880 sectors (RO), sector size=512
+Disk /dev/loop3 - 96 MB / 91 MiB - 188192 sectors (RO), sector size=512
+Disk /dev/loop4 - 46 MB / 44 MiB - 91024 sectors (RO), sector size=512
+Disk /dev/loop5 - 66 MB / 63 MiB - 130552 sectors (RO), sector size=512
+
+SIGINT detected! TestDisk has been killed.

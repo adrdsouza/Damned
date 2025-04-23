@@ -1,0 +1,127 @@
+node_modules
+.env
+
+
+backend/dist
+backend/.DS_Store
+backend/uploads
+backend/node_modules
+backend/yarn-error.log
+backend/.vscode
+backend/.idea
+backend/.env
+
+backend/coverage
+
+!backend/src/**
+
+backend/tsconfig.tsbuildinfo
+backend/medusa-db.sql
+backend/build
+backend/.cache
+
+backend/.yarn/*
+!backend/.yarn/patches
+!backend/.yarn/plugins
+!backend/.yarn/releases
+!backend/.yarn/sdks
+!backend/.yarn/versions
+
+backend/.medusa
+backend/static
+
+
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# IDEs
+storefront/.idea
+storefront/.vscode
+
+# dependencies
+storefront/node_modules
+storefront/.pnp
+storefront/.pnp.js
+
+# testing
+storefront/coverage
+
+# next.js
+storefront/.next/
+storefront/out/
+
+# production
+storefront/build
+
+# misc
+storefront/.DS_Store
+storefront/*.pem
+
+# debug
+storefront/npm-debug.log*
+storefront/yarn-debug.log*
+storefront/yarn-error.log*
+storefront/.pnpm-debug.log*
+
+# local env files
+storefront/.env
+storefront/.env.local
+storefront/.env.development.local
+storefront/.env.test.local
+storefront/.env.production.local
+
+# vercel
+storefront/.vercel
+
+# typescript
+storefront/*.tsbuildinfo
+storefront/node_modules
+
+storefront/.yarn
+storefront/.swc
+storefront/dump.rdb
+storefront/test-results/
+storefront/playwright-report/
+storefront/blob-report/
+storefront/playwright/.cache/
+storefront/playwright/.auth
+
+
+
+# Logs
+admin/logs
+admin/*.log
+admin/npm-debug.log*
+admin/yarn-debug.log*
+admin/yarn-error.log*
+admin/pnpm-debug.log*
+admin/lerna-debug.log*
+
+admin/node_modules
+admin/dist
+admin/dist-ssr
+admin/*.local
+
+# Editor directories and files
+admin/.vscode/*
+!admin/.vscode/extensions.json
+admin/.idea
+admin/.DS_Store
+admin/*.suo
+admin/*.ntvs*
+admin/*.njsproj
+admin/*.sln
+admin/*.sw?
+admin/.vercel
+admin/.yarn
+
+
+
+images/node_modules
+images/static
+
+
+uploads/
+uploads
+
+
+
