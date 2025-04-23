@@ -1,0 +1,107 @@
+<script lang="ts">
+  import { ChevronRight } from "lucide-svelte";
+</script>
+
+<svelte:head>
+  <title>Support | Damned Designs</title>
+  <meta name="description" content="Get help and support for your Damned Designs products. Find answers to common questions and learn how to care for your knives." />
+</svelte:head>
+
+<div class="container py-12">
+  <div class="flex items-center text-sm mb-6">
+    <a href="/" class="hover:underline">Home</a>
+    <ChevronRight size={16} class="mx-2" />
+    <span>Support</span>
+  </div>
+  
+  <div class="max-w-4xl mx-auto">
+    <h1 class="text-4xl font-bold mb-8">Support Center</h1>
+    
+    <div class="space-y-8">
+      <!-- FAQ Section -->
+      <section>
+        <h2 class="text-2xl font-bold mb-6">Frequently Asked Questions</h2>
+        <div class="space-y-4">
+          <div class="bg-white p-6 rounded-lg shadow-sm">
+            <h3 class="font-bold mb-2">What payment methods do you accept?</h3>
+            <p class="text-gray-700">We accept all major credit cards (Visa, MasterCard, American Express) and PayPal. All transactions are processed securely through our payment providers.</p>
+          </div>
+          
+          <div class="bg-white p-6 rounded-lg shadow-sm">
+            <h3 class="font-bold mb-2">What is your shipping policy?</h3>
+            <p class="text-gray-700">We offer free shipping on orders over $100 within the United States. International shipping rates vary by location. Most orders are processed within 1-2 business days.</p>
+          </div>
+          
+          <div class="bg-white p-6 rounded-lg shadow-sm">
+            <h3 class="font-bold mb-2">What is your return policy?</h3>
+            <p class="text-gray-700">We offer a 30-day return policy for unused items in their original packaging. Custom orders are non-returnable. Please contact us for a return authorization before sending any items back.</p>
+          </div>
+          
+          <div class="bg-white p-6 rounded-lg shadow-sm">
+            <h3 class="font-bold mb-2">How do I care for my knife?</h3>
+            <p class="text-gray-700">Keep your knife clean and dry after use. Use appropriate lubricant for the pivot and moving parts. Store in a dry place. Avoid exposure to moisture and corrosive materials.</p>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Contact Options -->
+      <section>
+        <h2 class="text-2xl font-bold mb-6">Contact Us</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-white p-6 rounded-lg shadow-sm">
+            <h3 class="font-bold mb-4">Email Support</h3>
+            <p class="text-gray-700 mb-4">For general inquiries and support:</p>
+            <a href="mailto:support@damneddesigns.com" class="text-primary hover:underline">support@damneddesigns.com</a>
+          </div>
+          
+          <div class="bg-white p-6 rounded-lg shadow-sm">
+            <h3 class="font-bold mb-4">Phone Support</h3>
+            <p class="text-gray-700 mb-4">Available Monday-Friday, 9am-5pm EST:</p>
+            <a href="tel:+1-555-123-4567" class="text-primary hover:underline">+1 (555) 123-4567</a>
+          </div>
+          
+          <div class="bg-white p-6 rounded-lg shadow-sm">
+            <h3 class="font-bold mb-4">Support Tickets</h3>
+            <p class="text-gray-700 mb-4">Create a support ticket for more complex issues:</p>
+            <a href="/help/tickets" class="btn btn-primary">View My Tickets</a>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Warranty Information -->
+      <section>
+        <h2 class="text-2xl font-bold mb-6">Warranty Information</h2>
+        <div class="bg-white p-6 rounded-lg shadow-sm">
+          <p class="text-gray-700 mb-4">
+            All Damned Designs knives come with a lifetime warranty against manufacturing defects. This warranty covers:
+          </p>
+          <ul class="list-disc pl-5 space-y-2 text-gray-700">
+            <li>Material defects</li>
+            <li>Manufacturing defects</li>
+            <li>Mechanical issues</li>
+          </ul>
+          <p class="text-gray-700 mt-4">
+            The warranty does not cover damage from misuse, abuse, or normal wear and tear. For warranty claims, please contact our support team with photos and a description of the issue.
+          </p>
+          <div class="mt-4">
+            <a href="/help/tickets/new" class="text-primary hover:underline">Submit a warranty claim</a>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Support Tickets Section -->
+      <section>
+        <h2 class="text-2xl font-bold mb-6">Support Ticket System</h2>
+        <div class="bg-white p-6 rounded-lg shadow-sm">
+          <p class="text-gray-700 mb-4">
+            For more complex issues or inquiries that require ongoing communication, please use our support ticket system. This allows us to track your request and provide you with timely updates.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4 mt-6">
+            <a href="/help/tickets/new" class="btn btn-primary">Create New Ticket</a>
+            <a href="/help/tickets" class="btn btn-secondary">View My Tickets</a>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>

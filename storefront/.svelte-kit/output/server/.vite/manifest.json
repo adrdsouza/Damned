@@ -1,0 +1,607 @@
+{
+  ".svelte-kit/generated/server/internal.js": {
+    "file": "internal.js",
+    "name": "internal",
+    "src": ".svelte-kit/generated/server/internal.js",
+    "isEntry": true,
+    "imports": [
+      "_internal.js"
+    ]
+  },
+  "_Icon.js": {
+    "file": "chunks/Icon.js",
+    "name": "Icon",
+    "imports": [
+      "_utils.js",
+      "_ssr.js"
+    ]
+  },
+  "_ProductCard.js": {
+    "file": "chunks/ProductCard.js",
+    "name": "ProductCard",
+    "imports": [
+      "_ssr.js",
+      "_cart.service.js",
+      "_Toaster.svelte_svelte_type_style_lang.js"
+    ]
+  },
+  "_Toaster.svelte_svelte_type_style_lang.js": {
+    "file": "chunks/Toaster.svelte_svelte_type_style_lang.js",
+    "name": "Toaster.svelte_svelte_type_style_lang",
+    "imports": [
+      "_index2.js",
+      "_utils.js"
+    ],
+    "css": [
+      "_app/immutable/assets/Toaster.B9JcwM7w.css"
+    ]
+  },
+  "_cart.service.js": {
+    "file": "chunks/cart.service.js",
+    "name": "cart.service",
+    "imports": [
+      "_medusa.js",
+      "_Toaster.svelte_svelte_type_style_lang.js"
+    ]
+  },
+  "_chevron-right.js": {
+    "file": "chunks/chevron-right.js",
+    "name": "chevron-right",
+    "imports": [
+      "_ssr.js",
+      "_Icon.js"
+    ]
+  },
+  "_client.js": {
+    "file": "chunks/client.js",
+    "name": "client",
+    "imports": [
+      "_exports.js",
+      "_ssr2.js"
+    ]
+  },
+  "_credit-card.js": {
+    "file": "chunks/credit-card.js",
+    "name": "credit-card",
+    "imports": [
+      "_ssr.js",
+      "_Icon.js"
+    ]
+  },
+  "_exports.js": {
+    "file": "chunks/exports.js",
+    "name": "exports"
+  },
+  "_false.js": {
+    "file": "chunks/false.js",
+    "name": "false"
+  },
+  "_home.js": {
+    "file": "chunks/home.js",
+    "name": "home",
+    "imports": [
+      "_ssr.js",
+      "_Icon.js"
+    ]
+  },
+  "_index.js": {
+    "file": "chunks/index.js",
+    "name": "index"
+  },
+  "_index2.js": {
+    "file": "chunks/index2.js",
+    "name": "index",
+    "imports": [
+      "_utils.js"
+    ]
+  },
+  "_index3.js": {
+    "file": "chunks/index3.js",
+    "name": "index",
+    "imports": [
+      "_client.js",
+      "_stores.js",
+      "_index2.js",
+      "_utils.js",
+      "_ssr.js",
+      "_index.js"
+    ]
+  },
+  "_internal.js": {
+    "file": "chunks/internal.js",
+    "name": "internal",
+    "imports": [
+      "_ssr.js",
+      "_ssr2.js"
+    ]
+  },
+  "_medusa.js": {
+    "file": "chunks/medusa.js",
+    "name": "medusa"
+  },
+  "_package.js": {
+    "file": "chunks/package.js",
+    "name": "package",
+    "imports": [
+      "_ssr.js",
+      "_Icon.js"
+    ]
+  },
+  "_plus.js": {
+    "file": "chunks/plus.js",
+    "name": "plus",
+    "imports": [
+      "_ssr.js",
+      "_Icon.js"
+    ]
+  },
+  "_search.js": {
+    "file": "chunks/search.js",
+    "name": "search",
+    "imports": [
+      "_ssr.js",
+      "_Icon.js"
+    ]
+  },
+  "_shopping-cart.js": {
+    "file": "chunks/shopping-cart.js",
+    "name": "shopping-cart",
+    "imports": [
+      "_ssr.js",
+      "_Icon.js"
+    ]
+  },
+  "_ssr.js": {
+    "file": "chunks/ssr.js",
+    "name": "ssr",
+    "imports": [
+      "_utils.js"
+    ]
+  },
+  "_ssr2.js": {
+    "file": "chunks/ssr2.js",
+    "name": "ssr"
+  },
+  "_stores.js": {
+    "file": "chunks/stores.js",
+    "name": "stores",
+    "imports": [
+      "_ssr.js",
+      "_client.js"
+    ]
+  },
+  "_truck.js": {
+    "file": "chunks/truck.js",
+    "name": "truck",
+    "imports": [
+      "_ssr.js",
+      "_Icon.js"
+    ]
+  },
+  "_user.js": {
+    "file": "chunks/user.js",
+    "name": "user",
+    "imports": [
+      "_ssr.js",
+      "_Icon.js"
+    ]
+  },
+  "_userStore.js": {
+    "file": "chunks/userStore.js",
+    "name": "userStore",
+    "imports": [
+      "_index2.js",
+      "_medusa.js",
+      "_Toaster.svelte_svelte_type_style_lang.js"
+    ]
+  },
+  "_utils.js": {
+    "file": "chunks/utils.js",
+    "name": "utils"
+  },
+  "node_modules/@sveltejs/kit/src/runtime/components/svelte-4/error.svelte": {
+    "file": "entries/fallbacks/error.svelte.js",
+    "name": "entries/fallbacks/error.svelte",
+    "src": "node_modules/@sveltejs/kit/src/runtime/components/svelte-4/error.svelte",
+    "isEntry": true,
+    "imports": [
+      "_utils.js",
+      "_ssr.js",
+      "_stores.js"
+    ]
+  },
+  "node_modules/@sveltejs/kit/src/runtime/server/index.js": {
+    "file": "index.js",
+    "name": "index",
+    "src": "node_modules/@sveltejs/kit/src/runtime/server/index.js",
+    "isEntry": true,
+    "imports": [
+      "_false.js",
+      "_internal.js",
+      "_index.js",
+      "_exports.js",
+      "_index2.js"
+    ]
+  },
+  "src/lib/data/products.ts": {
+    "file": "chunks/products.js",
+    "name": "products",
+    "src": "src/lib/data/products.ts",
+    "isDynamicEntry": true
+  },
+  "src/lib/services/medusa/product.service.ts": {
+    "file": "chunks/product.service.js",
+    "name": "product.service",
+    "src": "src/lib/services/medusa/product.service.ts",
+    "isDynamicEntry": true,
+    "imports": [
+      "_medusa.js"
+    ],
+    "dynamicImports": [
+      "src/lib/data/products.ts",
+      "src/lib/data/products.ts",
+      "src/lib/data/products.ts"
+    ]
+  },
+  "src/routes/+layout.svelte": {
+    "file": "entries/pages/_layout.svelte.js",
+    "name": "entries/pages/_layout.svelte",
+    "src": "src/routes/+layout.svelte",
+    "isEntry": true,
+    "imports": [
+      "_utils.js",
+      "_ssr.js",
+      "_stores.js",
+      "_cart.service.js",
+      "_userStore.js",
+      "_client.js",
+      "_Toaster.svelte_svelte_type_style_lang.js",
+      "_search.js",
+      "_user.js",
+      "_Icon.js",
+      "_shopping-cart.js",
+      "_index2.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_layout.D7ovfb-I.css"
+    ]
+  },
+  "src/routes/+page.svelte": {
+    "file": "entries/pages/_page.svelte.js",
+    "name": "entries/pages/_page.svelte",
+    "src": "src/routes/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_ssr.js",
+      "_truck.js",
+      "_Icon.js",
+      "_credit-card.js",
+      "src/lib/data/products.ts",
+      "_utils.js",
+      "_index3.js",
+      "_Toaster.svelte_svelte_type_style_lang.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.Df-H_aBf.css"
+    ]
+  },
+  "src/routes/about/+page.svelte": {
+    "file": "entries/pages/about/_page.svelte.js",
+    "name": "entries/pages/about/_page.svelte",
+    "src": "src/routes/about/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_ssr.js",
+      "_chevron-right.js"
+    ]
+  },
+  "src/routes/account/+page.svelte": {
+    "file": "entries/pages/account/_page.svelte.js",
+    "name": "entries/pages/account/_page.svelte",
+    "src": "src/routes/account/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_utils.js",
+      "_ssr.js",
+      "_client.js",
+      "_userStore.js",
+      "_user.js",
+      "_Icon.js",
+      "_package.js",
+      "_credit-card.js"
+    ]
+  },
+  "src/routes/account/orders/[id]/+page.js": {
+    "file": "entries/pages/account/orders/_id_/_page.js",
+    "name": "entries/pages/account/orders/_id_/_page",
+    "src": "src/routes/account/orders/[id]/+page.js",
+    "isEntry": true,
+    "imports": [
+      "_index.js",
+      "_false.js",
+      "_userStore.js",
+      "_utils.js"
+    ]
+  },
+  "src/routes/account/orders/[id]/+page.svelte": {
+    "file": "entries/pages/account/orders/_id_/_page.svelte.js",
+    "name": "entries/pages/account/orders/_id_/_page.svelte",
+    "src": "src/routes/account/orders/[id]/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_utils.js",
+      "_ssr.js",
+      "_client.js",
+      "_userStore.js",
+      "_Toaster.svelte_svelte_type_style_lang.js",
+      "_home.js",
+      "_chevron-right.js",
+      "_Icon.js",
+      "_truck.js",
+      "_package.js"
+    ]
+  },
+  "src/routes/api/reviews/+server.ts": {
+    "file": "entries/endpoints/api/reviews/_server.ts.js",
+    "name": "entries/endpoints/api/reviews/_server.ts",
+    "src": "src/routes/api/reviews/+server.ts",
+    "isEntry": true,
+    "imports": [
+      "_index.js"
+    ]
+  },
+  "src/routes/api/tickets/+server.ts": {
+    "file": "entries/endpoints/api/tickets/_server.ts.js",
+    "name": "entries/endpoints/api/tickets/_server.ts",
+    "src": "src/routes/api/tickets/+server.ts",
+    "isEntry": true,
+    "imports": [
+      "_index.js"
+    ]
+  },
+  "src/routes/api/tickets/[id]/+server.ts": {
+    "file": "entries/endpoints/api/tickets/_id_/_server.ts.js",
+    "name": "entries/endpoints/api/tickets/_id_/_server.ts",
+    "src": "src/routes/api/tickets/[id]/+server.ts",
+    "isEntry": true,
+    "imports": [
+      "_index.js"
+    ]
+  },
+  "src/routes/api/tickets/[id]/messages/+server.ts": {
+    "file": "entries/endpoints/api/tickets/_id_/messages/_server.ts.js",
+    "name": "entries/endpoints/api/tickets/_id_/messages/_server.ts",
+    "src": "src/routes/api/tickets/[id]/messages/+server.ts",
+    "isEntry": true,
+    "imports": [
+      "_index.js"
+    ]
+  },
+  "src/routes/cart/+page.svelte": {
+    "file": "entries/pages/cart/_page.svelte.js",
+    "name": "entries/pages/cart/_page.svelte",
+    "src": "src/routes/cart/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_ssr.js",
+      "_client.js"
+    ]
+  },
+  "src/routes/checkout/+page.svelte": {
+    "file": "entries/pages/checkout/_page.svelte.js",
+    "name": "entries/pages/checkout/_page.svelte",
+    "src": "src/routes/checkout/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_ssr.js",
+      "_client.js"
+    ]
+  },
+  "src/routes/checkout/confirmation/+page.js": {
+    "file": "entries/pages/checkout/confirmation/_page.js",
+    "name": "entries/pages/checkout/confirmation/_page",
+    "src": "src/routes/checkout/confirmation/+page.js",
+    "isEntry": true,
+    "imports": [
+      "_index.js"
+    ]
+  },
+  "src/routes/checkout/confirmation/+page.svelte": {
+    "file": "entries/pages/checkout/confirmation/_page.svelte.js",
+    "name": "entries/pages/checkout/confirmation/_page.svelte",
+    "src": "src/routes/checkout/confirmation/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_utils.js",
+      "_ssr.js",
+      "_client.js",
+      "_userStore.js",
+      "_cart.service.js",
+      "_home.js",
+      "_chevron-right.js"
+    ]
+  },
+  "src/routes/contact/+page.svelte": {
+    "file": "entries/pages/contact/_page.svelte.js",
+    "name": "entries/pages/contact/_page.svelte",
+    "src": "src/routes/contact/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_utils.js",
+      "_ssr.js",
+      "_index3.js",
+      "_Toaster.svelte_svelte_type_style_lang.js",
+      "_chevron-right.js"
+    ]
+  },
+  "src/routes/help/+page.svelte": {
+    "file": "entries/pages/help/_page.svelte.js",
+    "name": "entries/pages/help/_page.svelte",
+    "src": "src/routes/help/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_ssr.js",
+      "_chevron-right.js"
+    ]
+  },
+  "src/routes/help/tickets/+page.svelte": {
+    "file": "entries/pages/help/tickets/_page.svelte.js",
+    "name": "entries/pages/help/tickets/_page.svelte",
+    "src": "src/routes/help/tickets/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_utils.js",
+      "_ssr.js",
+      "_client.js",
+      "_userStore.js",
+      "_Toaster.svelte_svelte_type_style_lang.js",
+      "_chevron-right.js",
+      "_plus.js",
+      "_Icon.js",
+      "_search.js"
+    ]
+  },
+  "src/routes/help/tickets/[id]/+page.svelte": {
+    "file": "entries/pages/help/tickets/_id_/_page.svelte.js",
+    "name": "entries/pages/help/tickets/_id_/_page.svelte",
+    "src": "src/routes/help/tickets/[id]/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_utils.js",
+      "_ssr.js",
+      "_stores.js",
+      "_client.js",
+      "_userStore.js",
+      "_Toaster.svelte_svelte_type_style_lang.js",
+      "_chevron-right.js"
+    ]
+  },
+  "src/routes/help/tickets/new/+page.svelte": {
+    "file": "entries/pages/help/tickets/new/_page.svelte.js",
+    "name": "entries/pages/help/tickets/new/_page.svelte",
+    "src": "src/routes/help/tickets/new/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_utils.js",
+      "_ssr.js",
+      "_client.js",
+      "_userStore.js",
+      "_Toaster.svelte_svelte_type_style_lang.js",
+      "_index3.js",
+      "_chevron-right.js"
+    ]
+  },
+  "src/routes/login/+page.svelte": {
+    "file": "entries/pages/login/_page.svelte.js",
+    "name": "entries/pages/login/_page.svelte",
+    "src": "src/routes/login/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_utils.js",
+      "_ssr.js",
+      "_userStore.js",
+      "_client.js",
+      "_Toaster.svelte_svelte_type_style_lang.js"
+    ]
+  },
+  "src/routes/products/+page.js": {
+    "file": "entries/pages/products/_page.js",
+    "name": "entries/pages/products/_page",
+    "src": "src/routes/products/+page.js",
+    "isEntry": true,
+    "imports": [
+      "src/lib/services/medusa/product.service.ts"
+    ],
+    "dynamicImports": [
+      "src/lib/data/products.ts"
+    ]
+  },
+  "src/routes/products/+page.svelte": {
+    "file": "entries/pages/products/_page.svelte.js",
+    "name": "entries/pages/products/_page.svelte",
+    "src": "src/routes/products/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_ssr.js",
+      "_ProductCard.js",
+      "_search.js"
+    ]
+  },
+  "src/routes/products/[slug]/+page.js": {
+    "file": "entries/pages/products/_slug_/_page.js",
+    "name": "entries/pages/products/_slug_/_page",
+    "src": "src/routes/products/[slug]/+page.js",
+    "isEntry": true,
+    "imports": [
+      "src/lib/services/medusa/product.service.ts",
+      "_index.js"
+    ],
+    "dynamicImports": [
+      "src/lib/services/medusa/product.service.ts",
+      "src/lib/data/products.ts"
+    ]
+  },
+  "src/routes/products/[slug]/+page.svelte": {
+    "file": "entries/pages/products/_slug_/_page.svelte.js",
+    "name": "entries/pages/products/_slug_/_page.svelte",
+    "src": "src/routes/products/[slug]/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_ssr.js",
+      "_client.js",
+      "_cart.service.js",
+      "_Toaster.svelte_svelte_type_style_lang.js",
+      "_Icon.js",
+      "_shopping-cart.js",
+      "_plus.js"
+    ]
+  },
+  "src/routes/shop/+page.js": {
+    "file": "entries/pages/shop/_page.js",
+    "name": "entries/pages/shop/_page",
+    "src": "src/routes/shop/+page.js",
+    "isEntry": true,
+    "imports": [
+      "_medusa.js",
+      "src/lib/services/medusa/product.service.ts"
+    ],
+    "dynamicImports": [
+      "src/lib/data/products.ts"
+    ]
+  },
+  "src/routes/shop/+page.svelte": {
+    "file": "entries/pages/shop/_page.svelte.js",
+    "name": "entries/pages/shop/_page.svelte",
+    "src": "src/routes/shop/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_ssr.js",
+      "_chevron-right.js"
+    ]
+  },
+  "src/routes/shop/[category]/+page.js": {
+    "file": "entries/pages/shop/_category_/_page.js",
+    "name": "entries/pages/shop/_category_/_page",
+    "src": "src/routes/shop/[category]/+page.js",
+    "isEntry": true,
+    "imports": [
+      "src/lib/services/medusa/product.service.ts",
+      "_index.js"
+    ],
+    "dynamicImports": [
+      "src/lib/data/products.ts"
+    ]
+  },
+  "src/routes/shop/[category]/+page.svelte": {
+    "file": "entries/pages/shop/_category_/_page.svelte.js",
+    "name": "entries/pages/shop/_category_/_page.svelte",
+    "src": "src/routes/shop/[category]/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_ssr.js",
+      "_client.js",
+      "_ProductCard.js",
+      "_chevron-right.js"
+    ]
+  }
+}

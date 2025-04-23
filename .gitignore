@@ -1,6 +1,85 @@
+<<<<<<< HEAD
 node_modules
 .env
 
+=======
+# OS Files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# IDE/Editor folders
+.idea/
+.vscode/
+*.swp
+*.swo
+.project
+.settings/
+*.sublime-project
+*.sublime-workspace
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+lerna-debug.log*
+.pnp/
+.pnp.js
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+# Build outputs
+dist/
+dist-ssr/
+build/
+out/
+*.tsbuildinfo
+.swc/
+.cache/
+tsconfig.tsbuildinfo
+.medusa/
+
+# Testing
+coverage/
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+playwright/.auth/
+
+# Environment variables
+.env
+.env.*
+!.env.template
+!.env.example
+
+# Medusa specific
+uploads/
+static/
+medusa-db.sql
+
+# Next.js
+.next/
+.vercel/
+next-env.d.ts
+
+# Misc
+dump.rdb
+.cache/
+.turbo
+
+# Keep .gitkeep files
+!**/.gitkeep
+#backend-------------------
+>>>>>>> 15333ea (init commit on combine repo)
 
 backend/dist
 backend/.DS_Store
@@ -31,6 +110,10 @@ backend/.medusa
 backend/static
 
 
+<<<<<<< HEAD
+=======
+#storefront-----------------
+>>>>>>> 15333ea (init commit on combine repo)
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # IDEs
@@ -85,8 +168,12 @@ storefront/blob-report/
 storefront/playwright/.cache/
 storefront/playwright/.auth
 
+<<<<<<< HEAD
 
 
+=======
+#admin-------------------------
+>>>>>>> 15333ea (init commit on combine repo)
 # Logs
 admin/logs
 admin/*.log
@@ -114,6 +201,7 @@ admin/*.sw?
 admin/.vercel
 admin/.yarn
 
+<<<<<<< HEAD
 
 
 images/node_modules
@@ -123,5 +211,15 @@ images/static
 uploads/
 uploads
 
+=======
+#images---------------
+images/node_modules
+images/static
+
+#packages-----------
+packages/medusa-payment-cod/node_modules
+packages/medusa-payment-nmi/node_modules
+packages/medusa-payment-sezzle/node_modules
+>>>>>>> 15333ea (init commit on combine repo)
 
 

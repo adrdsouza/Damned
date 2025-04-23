@@ -1,0 +1,43 @@
+{
+	"/": [],
+	"/about": [],
+	"/account": [],
+	"/account/orders/[id]": [
+		"src/routes/account/orders/[id]/+page.js"
+	],
+	"/api/reviews": [
+		"src/routes/api/reviews/+server.ts"
+	],
+	"/api/tickets": [
+		"src/routes/api/tickets/+server.ts"
+	],
+	"/api/tickets/[id]": [
+		"src/routes/api/tickets/[id]/+server.ts"
+	],
+	"/api/tickets/[id]/messages": [
+		"src/routes/api/tickets/[id]/messages/+server.ts"
+	],
+	"/cart": [],
+	"/checkout": [],
+	"/checkout/confirmation": [
+		"src/routes/checkout/confirmation/+page.js"
+	],
+	"/contact": [],
+	"/help": [],
+	"/help/tickets": [],
+	"/help/tickets/new": [],
+	"/help/tickets/[id]": [],
+	"/login": [],
+	"/products": [
+		"src/routes/products/+page.js"
+	],
+	"/products/[slug]": [
+		"src/routes/products/[slug]/+page.js"
+	],
+	"/shop": [
+		"src/routes/shop/+page.js"
+	],
+	"/shop/[category]": [
+		"src/routes/shop/[category]/+page.js"
+	]
+}
