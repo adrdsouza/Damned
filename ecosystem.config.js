@@ -22,11 +22,10 @@ module.exports = {
       cwd: "/root/damneddesigns/storefront",
       script: "npm",
       args: "run start",
-      env: {
-        NODE_ENV: "production",
-        // Force binding to all interfaces so Caddy can connect
-        HOST: "0.0.0.0"
-      },
+        env:{
+HOST:"0.0.0.0"
+
+},    
       time: true,
       autorestart: true,
       max_restarts: 10,
