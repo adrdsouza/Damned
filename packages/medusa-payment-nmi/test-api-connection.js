@@ -20,8 +20,9 @@ try {
 }
 
 // Get security key from environment variables
-const NMI_SECURITY_KEY = process.env.NMI_SECURITY_KEY || 'h3WD8p6Hc8WM4eEAqpb6fsTJMYp45Mrp';
+const NMI_SECURITY_KEY = process.env.NMI_SECURITY_KEY || '6457Thfj624V5r7WUwc5v6a68Zsd6YEm'; // Test account security key
 const NMI_API_URL = 'https://secure.nmi.com/api/transact.php';
+const TEST_MODE = 'enabled';
 
 async function testNMIConnection() {
   console.log('Testing NMI Payment Gateway API Connection...');
@@ -35,16 +36,18 @@ async function testNMIConnection() {
       security_key: NMI_SECURITY_KEY,
       type: 'validate',
       ccnumber: '4111111111111111', // Test card number
-      ccexp: '1224',               // Test expiration date (Dec 2024)
-      cvv: '123',                  // Test CVV
-      test: 'true'                 // Ensure this is in test mode
+      ccexp: '1025',               // Test expiration date (Oct 2025) - Required for test mode
+      cvv: '999',                  // Test CVV for matching
+      address1: '888',             // Test Address for AVS match
+      zip: '77777',                // Test ZIP for AVS match
+      test_mode: TEST_MODE         // Use test mode as specified in the documentation
     }));
     
     console.log('\nNMI API Response:');
     console.log(response.data);
     
     // Check for success response
-    if (response.data.includes('result=1')) {
+    if (response.data.includes('response=1') || response.data.includes('result=1')) {
       console.log('\n✅ Connection to NMI API successful!');
       // Parse out specific values from the response
       const responseValues = response.data.split('&').reduce((obj, pair) => {
@@ -54,7 +57,7 @@ async function testNMIConnection() {
       }, {});
       
       console.log('\nResponse Details:');
-      console.log(`Result: ${responseValues.result}`);
+      console.log(`Response: ${responseValues.response || responseValues.result}`);
       console.log(`Response Code: ${responseValues.response_code}`);
       console.log(`Response Text: ${responseValues.responsetext}`);
       console.log(`Transaction ID: ${responseValues.transactionid}`);

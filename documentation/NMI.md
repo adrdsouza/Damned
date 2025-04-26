@@ -5,14 +5,27 @@ This document outlines the NMI (Network Merchants Inc) payment gateway integrati
 
 ## Configuration Details
 
-### API Credentials
-- **Integration Type**: Direct API Integration
-- **Security Key**: `h3WD8p6Hc8WM4eEAqpb6fsTJMYp45Mrp`
-- **Checkout Public Key**: `checkout_public_2he6c5yTBC73u3AV2reJeHb37TpEegUa`
+### Environment Variables
+These variables should be set in your backend `.env` file:
+
+```
+# NMI Configuration
+NMI_SECURITY_KEY=your_key_here
+NMI_TEST_MODE=enabled  # Set to "disabled" for production
+```
+
+### Test Configuration
+- **Test Security Key**: `6457Thfj624V5r7WUwc5v6a68Zsd6YEm`
+- **Test Mode**: Set to `enabled`
 - **API Endpoint**: `https://secure.nmi.com/api/transact.php`
 
-### Environment
-- **Environment**: Production
+### Production Configuration
+- **Production Security Key**: `h3WD8p6Hc8WM4eEAqpb6fsTJMYp45Mrp`
+- **Production Checkout Public Key**: `checkout_public_2he6c5yTBC73u3AV2reJeHb37TpEegUa`
+- **Test Mode**: Set to `disabled`
+- **API Endpoint**: `https://secure.nmi.com/api/transact.php`
+
+### System Details
 - **Plugin Location**: `/root/damneddesigns/packages/medusa-payment-nmi`
 - **Plugin ID in Database**: `pp_nmi_nmi`
 
