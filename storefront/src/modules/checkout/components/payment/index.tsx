@@ -1,60 +1,59 @@
 "use client"
 
 import { RadioGroup } from "@headlessui/react"
-import { paymentInfoMap } from "@lib/constants"
+import { isStripe as isStripeFunc, paymentInfoMap } from "@lib/constants"
 import { initiatePaymentSession } from "@lib/data/cart"
 import { CheckCircleSolid, CreditCard } from "@medusajs/icons"
 import { Button, Container, Heading, Text, clx } from "@medusajs/ui"
 import ErrorMessage from "@modules/checkout/components/error-message"
-import PaymentContainer from "@modules/checkout/components/payment-container"
+import PaymentContainer, {
+  StripeCardContainer,
+} from "@modules/checkout/components/payment-container"
 import Divider from "@modules/common/components/divider"
-import { useEffect, useState } from "react"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { useCallback, useEffect, useState } from "react"
 
 const Payment = ({
   cart,
-  availablePaymentMethods,
-  checkoutStep,
-  setCheckoutStep
+  availablePaymentMethods,checkoutStep,setCheckoutStep
 }: {
   cart: any
   availablePaymentMethods: any[]
   checkoutStep:string
   setCheckoutStep:any
 }) => {
-  const activeSession = cart?.payment_collection?.payment_sessions?.find(
+  const activeSession = cart.payment_collection?.payment_sessions?.find(
     (paymentSession: any) => paymentSession.status === "pending"
   )
 
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [cardBrand, setCardBrand] = useState<string | null>(null)
+  const [cardComplete, setCardComplete] = useState(false)
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(
     activeSession?.provider_id ?? ""
   )
 
+  // const searchParams = useSearchParams()
+  // const router = useRouter()
+  // const pathname = usePathname()
+
   const isOpen = checkoutStep === "payment"
+
+  const isStripe = isStripeFunc(selectedPaymentMethod)
 
   const setPaymentMethod = async (method: string) => {
     setError(null)
     setSelectedPaymentMethod(method)
-    
-    if (!method) {
-      console.log("No payment method selected")
-      return
-    }
-    
-    // Initialize payment session for any provider
-    try {
+    if (isStripeFunc(method)) {
       await initiatePaymentSession(cart, {
         provider_id: method,
       })
-    } catch (err) {
-      console.error("Error initializing payment session:", err)
-      // Don't show error to user at selection time, only at submission time
     }
   }
 
-  // Disable gift card functionality
-  const paidByGiftcard = false
+  const paidByGiftcard =
+    cart?.gift_cards && cart?.gift_cards?.length > 0 && cart?.total === 0
 
   const paymentReady =
     (activeSession && cart?.shipping_methods.length !== 0) || paidByGiftcard
@@ -79,53 +78,25 @@ const Payment = ({
   const handleSubmit = async () => {
     setIsLoading(true)
     try {
-      // Log current state for debugging
-      console.log("Current Payment Method:", selectedPaymentMethod)
-      console.log("Active Session:", activeSession)
-      
-      // Make sure we have a selected payment method
-      if (!selectedPaymentMethod) {
-        setError("Please select a payment method before continuing")
-        setIsLoading(false)
-        return
-      }
-      
-      // Always make a fresh call to initiate the payment session
-      // This ensures it's properly created AND selected as the active session
-      try {
-        console.log("Initiating and selecting payment session for:", selectedPaymentMethod)
-        const updatedCart = await initiatePaymentSession(cart, {
+      const shouldInputCard =
+        isStripeFunc(selectedPaymentMethod) && !activeSession
+
+      const checkActiveSession =
+        activeSession?.provider_id === selectedPaymentMethod
+
+      if (!checkActiveSession) {
+        await initiatePaymentSession(cart, {
           provider_id: selectedPaymentMethod,
         })
-        
-        if (updatedCart) {
-          console.log("Updated cart after payment session init:", updatedCart)
-          
-          // Verify the session is now active/pending
-          const newActiveSession = updatedCart?.payment_collection?.payment_sessions?.find(
-            (s: any) => s.status === "pending" && s.provider_id === selectedPaymentMethod
-          )
-          
-          console.log("New active session after setup:", newActiveSession)
-          
-          if (!newActiveSession) {
-            console.warn("Session created but may not be active - continuing anyway")
-          }
-        } else {
-          console.error("Failed to get updated cart after session setup")
-        }
-      } catch (initErr) {
-        console.error("Payment session init/selection error:", initErr)
-        // Continue even if this fails, as we'll let the user try to complete anyway
       }
 
-      // Move to review step
-      console.log("Moving to review step")
-      setCheckoutStep("review")
+      if (!shouldInputCard) {
       
+        setCheckoutStep("review");
+        return
+      }
     } catch (err: any) {
-      console.error("Payment error:", err)
-      setError(err?.message || "An error occurred while processing payment")
+      setError(err.message)
     } finally {
       setIsLoading(false)
     }
@@ -134,7 +105,6 @@ const Payment = ({
   useEffect(() => {
     setError(null)
   }, [isOpen])
-
 
   return (
     <div className="bg-white">
@@ -174,18 +144,41 @@ const Payment = ({
               >
                 {availablePaymentMethods.map((paymentMethod) => (
                   <div key={paymentMethod.id}>
-                    <PaymentContainer
-                      paymentInfoMap={paymentInfoMap}
-                      paymentProviderId={paymentMethod.id}
-                      selectedPaymentOptionId={selectedPaymentMethod}
-                    />
+                    {isStripeFunc(paymentMethod.id) ? (
+                      <StripeCardContainer
+                        paymentProviderId={paymentMethod.id}
+                        selectedPaymentOptionId={selectedPaymentMethod}
+                        paymentInfoMap={paymentInfoMap}
+                        setCardBrand={setCardBrand}
+                        setError={setError}
+                        setCardComplete={setCardComplete}
+                      />
+                    ) : (
+                      <PaymentContainer
+                        paymentInfoMap={paymentInfoMap}
+                        paymentProviderId={paymentMethod.id}
+                        selectedPaymentOptionId={selectedPaymentMethod}
+                      />
+                    )}
                   </div>
                 ))}
               </RadioGroup>
             </>
           )}
 
-          {/* Gift card functionality disabled */}
+          {paidByGiftcard && (
+            <div className="flex flex-col w-1/3">
+              <Text className="txt-medium-plus text-ui-fg-base mb-1">
+                Payment method
+              </Text>
+              <Text
+                className="txt-medium text-ui-fg-subtle"
+                data-testid="payment-method-summary"
+              >
+                Gift card
+              </Text>
+            </div>
+          )}
 
           <ErrorMessage
             error={error}
@@ -197,10 +190,15 @@ const Payment = ({
             className="mt-6"
             onClick={handleSubmit}
             isLoading={isLoading}
-            disabled={!selectedPaymentMethod && !paidByGiftcard}
+            disabled={
+              (isStripe && !cardComplete) ||
+              (!selectedPaymentMethod && !paidByGiftcard)
+            }
             data-testid="submit-payment-button"
           >
-            Continue to review
+            {!activeSession && isStripeFunc(selectedPaymentMethod)
+              ? " Enter card details"
+              : "Continue to review"}
           </Button>
         </div>
 
@@ -233,10 +231,24 @@ const Payment = ({
                     )}
                   </Container>
                   <Text>
-                    Another step will appear
+                    {isStripeFunc(selectedPaymentMethod) && cardBrand
+                      ? cardBrand
+                      : "Another step will appear"}
                   </Text>
                 </div>
               </div>
+            </div>
+          ) : paidByGiftcard ? (
+            <div className="flex flex-col w-1/3">
+              <Text className="txt-medium-plus text-ui-fg-base mb-1">
+                Payment method
+              </Text>
+              <Text
+                className="txt-medium text-ui-fg-subtle"
+                data-testid="payment-method-summary"
+              >
+                Gift card
+              </Text>
             </div>
           ) : null}
         </div>
