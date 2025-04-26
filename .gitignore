@@ -225,3 +225,58 @@ packages/medusa-payment-sezzle/node_modules
 
 
 backups/
+
+
+
+
+# IDEs
+nextjs-starter-medusa/.idea
+nextjs-starter-medusa/.vscode
+
+# dependencies
+nextjs-starter-medusa/node_modules
+nextjs-starter-medusa/.pnp
+nextjs-starter-medusa/.pnp.js
+
+# testing
+nextjs-starter-medusa/coverage
+
+# next.js
+nextjs-starter-medusa/.next/
+nextjs-starter-medusa/out/
+
+# production
+nextjs-starter-medusa/build
+
+# misc
+nextjs-starter-medusa/.DS_Store
+nextjs-starter-medusa/*.pem
+
+# debug
+nextjs-starter-medusa/npm-debug.log*
+nextjs-starter-medusa/yarn-debug.log*
+nextjs-starter-medusa/yarn-error.log*
+nextjs-starter-medusa/.pnpm-debug.log*
+
+# local env files
+nextjs-starter-medusa/.env
+nextjs-starter-medusa/.env.local
+nextjs-starter-medusa/.env.development.local
+nextjs-starter-medusa/.env.test.local
+nextjs-starter-medusa/.env.production.local
+
+# vercel
+nextjs-starter-medusa/.vercel
+
+# typescript
+nextjs-starter-medusa/*.tsbuildinfo
+nextjs-starter-medusa/node_modules
+
+nextjs-starter-medusa/.yarn
+nextjs-starter-medusa/.swc
+nextjs-starter-medusa/dump.rdb
+nextjs-starter-medusa/test-results/
+nextjs-starter-medusa/playwright-report/
+nextjs-starter-medusa/blob-report/
+nextjs-starter-medusa/playwright/.cache/
+nextjs-starter-medusa/playwright/.auth
