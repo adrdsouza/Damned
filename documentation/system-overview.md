@@ -14,7 +14,7 @@ The system follows a modern e-commerce architecture with separate frontend, back
 
 - **Backend Layer**:
   - Medusa.js Server (e-commerce engine)
-  - Payment Services (NMI payment gateway)
+  - Payment Services (NMI payment gateway, Sezzle for BNPL, COD)
   - Various modules (Product, Order, Customer, Inventory management)
 
 - **Data Layer**:
@@ -24,26 +24,28 @@ The system follows a modern e-commerce architecture with separate frontend, back
 
 - **External Services**:
   - Custom Image Server (image processing and serving)
-  - NMI Payment Gateway (payment processing)
+  - NMI Payment Gateway (credit card processing)
+  - Sezzle Payment Gateway (buy now, pay later)
   - Gmail SMTP (email notifications)
 
 ### Technology Stack
 
 #### Backend Components
-- **Core**: Medusa.js v2.7.0
+- **Core**: Medusa.js v2.7.1
 - **Runtime**: Node.js 20+
 - **Database**: PostgreSQL with MikroORM
 - **Event Bus**: Redis
 - **File Storage**: Local file storage
 - **API**: RESTful API endpoints
-- **Payment**: Custom NMI payment integration
+- **Payment**: Custom NMI and Sezzle payment integrations
 - **Email**: Nodemailer with Gmail OAuth2
 
 #### Storefront
-- **Framework**: Next.js 15
+- **Framework**: Next.js 15.3.1
 - **UI Library**: React 19 (RC)
 - **Styling**: Tailwind CSS
-- **State Management**: React Query via Medusa's SDK
+- **State Management**: React Query via Medusa's SDK v2.7.1
+- **Package Manager**: npm (yarn removed)
 - **Features**: Product pages, cart, checkout, user accounts
 - **Directory**: `/root/damneddesigns/storefront`
 
@@ -113,7 +115,9 @@ ALLOWED_ORIGINS=https://admin.damneddesigns.com,https://api.damneddesigns.com
 
 - **Medusa Config**: `backend/medusa-config.ts`
 - **PM2 Config**: `ecosystem.config.js` (manages all services)
-- **NMI Config**: Payment gateway configuration in `.env` and plugin code
+- **Payment Gateway Config**: 
+  - NMI: Configuration in `.env` and `/packages/medusa-payment-nmi`
+  - Sezzle: Configuration in `.env` and `/packages/medusa-payment-sezzle`
 
 ## 3. Payment Integrations
 
@@ -123,11 +127,18 @@ ALLOWED_ORIGINS=https://admin.damneddesigns.com,https://api.damneddesigns.com
 The NMI payment integration enables secure credit card processing through Network Merchants Inc payment gateway.
 
 #### Configuration Details
-- **Security Key**: `h3WD8p6Hc8WM4eEAqpb6fsTJMYp45Mrp`
-- **Checkout Public Key**: `checkout_public_2he6c5yTBC73u3AV2reJeHb37TpEegUa`
+- **Integration Type**: Direct API Integration
+- **Test Mode**: Currently enabled (`NMI_TEST_MODE=enabled`)
 - **API Endpoint**: `https://secure.nmi.com/api/transact.php`
 - **Plugin Location**: `/packages/medusa-payment-nmi`
 - **Database ID**: `pp_nmi_nmi`
+
+#### Test Credentials
+- **Test Security Key**: `6457Thfj624V5r7WUwc5v6a68Zsd6YEm`
+
+#### Production Credentials (Not currently in use)
+- **Production Security Key**: `h3WD8p6Hc8WM4eEAqpb6fsTJMYp45Mrp`
+- **Production Checkout Public Key**: `checkout_public_2he6c5yTBC73u3AV2reJeHb37TpEegUa`
 
 #### Features
 - ✅ Basic payment processing (authorization & capture)
@@ -146,23 +157,37 @@ The NMI payment integration enables secure credit card processing through Networ
 ### Sezzle Payment Gateway
 
 #### Overview
-The system is also configured for Sezzle "Buy Now, Pay Later" integration, allowing customers to split purchases into four interest-free payments over six weeks.
+The system is configured for Sezzle "Buy Now, Pay Later" integration, allowing customers to split purchases into four interest-free payments over six weeks. This implementation uses Sezzle's virtual card API.
 
 #### Configuration Details
-- **Integration Type**: REST API Integration
-- **Authentication**: API Keys (Public/Private Key pairs)
-- **API Endpoint**: https://gateway.sezzle.com/v2 (production)
+- **Integration Type**: Virtual Card API Integration
+- **Authentication**: Two-step process with token-based auth
+- **Test Mode**: Currently in sandbox mode
+- **API Endpoint**: https://sandbox.gateway.sezzle.com (sandbox), https://gateway.sezzle.com (production)
 - **Plugin Location**: `/packages/medusa-payment-sezzle`
 - **Database ID**: `pp_sezzle_sezzle`
 
+#### Test Credentials
+- **Sandbox Public Key**: `sz_pub_fV7SRB5FuCvueYl07GA5lOObLRjEY6be`
+- **Sandbox Private Key**: `sz_pr_nIhPldbj7QgcZjWffh78GV6kYKgyqBog`
+- **Sandbox Mode**: Currently enabled (`true`)
+
 #### Key Features
-- ✅ Checkout integration with Sezzle "Buy Now, Pay Later"
-- ✅ Payment status tracking
-- ✅ Order creation and management
-- ⚠️ Refunding and webhook handling need verification
+- ✅ Checkout integration with Sezzle "Buy Now, Pay Later" via virtual card
+- ✅ Token-based authentication with expiration management
+- ✅ Session creation with customer data
+- ✅ Order updates and completion
+- ✅ Integration with Medusa checkout flow
+
+#### Test Card Information
+For testing in sandbox mode:
+- Visa: 4242424242424242
+- Mastercard: 5555555555554444
+- Amex: 371449635398431
+- Test OTP: 123123
 
 #### Documentation
-See the complete Sezzle integration documentation at `/documentation/sezzle-integration.md`
+See the complete Sezzle integration documentation at `/documentation/Sezzle.md`
 
 ## 4. Email Integration (SMTP)
 
@@ -424,8 +449,8 @@ module.exports = {
       env: { NODE_ENV: "production" }
     },
     {
-      name: "damned-designs-frontend",
-      cwd: "/root/damneddesigns/frontend",
+      name: "damned-designs-storefront",
+      cwd: "/root/damneddesigns/storefront",
       script: "npm",
       args: "run start",
       env: { NODE_ENV: "production" }
@@ -490,20 +515,23 @@ module.exports = {
    - Basic storefront pages (Home, Products, About)
    - Checkout flow with support for the following payment methods:
      - Cash on Delivery (cod_cod)
-     - Credit Card via NMI (nmi_nmi)
-     - Sezzle Buy Now, Pay Later (sezzle_sezzle)
+     - Credit Card via NMI (nmi_nmi) - Currently in test mode
+     - Sezzle Buy Now, Pay Later (sezzle_sezzle) - Currently in sandbox mode
    - Responsive design using Tailwind CSS
 
 4. Payment Infrastructure:
-   - NMI payment gateway: Configured in medusa-config.ts
-   - Sezzle payment integration: Configured in medusa-config.ts
+   - NMI payment gateway: Configured in medusa-config.ts with test credentials
+   - Sezzle payment integration: Configured in medusa-config.ts using virtual card API
    - Custom payment plugins located in `/root/damneddesigns/packages/`
 
 5. Testing payment methods:
    - NMI Test Cards:
      - Success: 4111111111111111
      - Decline: 4111111111111112
-   - Sezzle: Redirects to Sezzle sandbox for testing
+   - Sezzle Test Cards (used after virtual card issuance):
+     - Visa: 4242424242424242
+     - Mastercard: 5555555555554444
+     - Test OTP: 123123
 
 > **Note**: The frontend is running in production mode with a streamlined user interface to ensure optimal performance and stability.
 
@@ -822,6 +850,76 @@ If you need to reinstall the system on a new server, follow these steps in order
 
 ### Common Issues and Solutions
 
+#### Database Schema Mismatches
+- **Problem**: "column i1.is_giftcard does not exist" error when adding products to cart
+- **Solution**:
+  1. Connect to the PostgreSQL database:
+     ```bash
+     psql -U myuser -d medusa-medusaapp
+     ```
+  2. Check if the column exists:
+     ```sql
+     SELECT column_name FROM information_schema.columns 
+     WHERE table_name='cart_line_item' AND column_name='is_giftcard';
+     ```
+  3. Add the missing column if it doesn't exist:
+     ```sql
+     ALTER TABLE cart_line_item ADD COLUMN is_giftcard BOOLEAN NOT NULL DEFAULT FALSE;
+     ```
+  4. Restart the backend and storefront services:
+     ```bash
+     pm2 restart damned-designs-backend damned-designs-storefront
+     pm2 save
+     ```
+  5. This issue occurs because Medusa 2.7.1 expects certain database schema elements that might not exist in your database if upgraded from an earlier version
+
+#### COD Payment Button Text Issues
+- **Problem**: Cash on Delivery payment button shows "Select payment method" instead of "Pay on Delivery" in the checkout process
+- **Solution**:
+  1. The issue occurs in the payment button component and has been fixed in:
+     ```
+     /root/damneddesigns/storefront/src/modules/checkout/components/payment-button/index.tsx
+     ```
+  2. The fix improves active payment session detection and button text setting logic:
+     ```javascript
+     // Fixed code properly detects active session first, then falls back to COD
+     const activeSession = allSessions.find(s => s.status === "pending")
+     const findCODSession = allSessions.find(s => isCOD(s.provider_id))
+     const effectiveSession = activeSession || findCODSession || allSessions[0] || null
+     
+     // Improved button text setting
+     let newButtonText = "Place Order"
+     if (isCOD(providerId)) {
+       newButtonText = "Pay on Delivery"
+     } else if (isNMI(providerId)) {
+       newButtonText = "Pay with Credit Card"
+     }
+     // Then set state with this value
+     setButtonText(newButtonText)
+     ```
+  3. After making any fixes to payment components, restart the storefront:
+     ```bash
+     pm2 restart damned-designs-storefront
+     pm2 save
+     ```
+  4. Related files that were updated:
+     - `payment-button/index.tsx` - Button text and session detection
+     - `review/index.tsx` - Review component session handling
+   
+  5. For more details on the COD implementation, see `/documentation/COD.md`
+
+#### Product Page 500 Errors
+- **Problem**: Server-side rendering errors on product pages
+- **Solution**:
+  1. Use dynamic rendering for product pages instead of static generation:
+     ```javascript
+     // In /storefront/src/app/[countryCode]/(main)/products/[handle]/page.tsx
+     export const dynamic = 'force-dynamic'
+     ```
+  2. This ensures the page is always rendered on-demand with fresh data
+  3. Another approach is to use incremental static regeneration with a low revalidation time
+  4. Ensure middleware.ts has proper error handling for region detection
+
 #### Storefront to Backend Connection Issues
 - **Problem**: Storefront not connecting to the Medusa backend API
 - **Solution**:
@@ -891,7 +989,7 @@ If you need to reinstall the system on a new server, follow these steps in order
 
 ---
 
-*Last updated: April 23, 2025 (Backup system documentation updated)*
+*Last updated: April 25, 2025 (System versions updated - Medusa 2.7.1, Next.js 15.3.1, Yarn removed, Documentation expanded)*
 
 ## System Backups and Restoration
 

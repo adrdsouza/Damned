@@ -1,32 +1,54 @@
 # Damned Designs System Reference for Claude
 
-This document contains critical information about the system that Claude should refer to when helping with the Damned Designs e-commerce platform.
+This document contains critical information about the Damned Designs e-commerce platform.
 
-## System Architecture
+## System Architecture & Status
 
-- Backend: Medusa.js running on Node.js 20+
-- Storefront: Next.js 15 at port 8000
-- Admin Panel: Vite/React running at port 5173
-- Images Server: Custom service at port 6162
-- Database: PostgreSQL
-- Process Management: PM2
+- **Backend**: Medusa.js v2.7.1 running on Node.js 20+
+- **Storefront**: Next.js 15.3.1 at port 8000
+- **Admin Panel**: Vite/React running at port 5173
+- **Images Server**: Custom service at port 6162
+- **Database**: PostgreSQL
+- **Process Management**: PM2
+- **Web Server**: Caddy (reverse proxy)
 
-## Important Services
+### Payment Providers
+- **NMI Payment Gateway**: Credit card processing
+  - Currently in **TEST MODE** with key: `6457Thfj624V5r7WUwc5v6a68Zsd6YEm`
+  - Production key available: `h3WD8p6Hc8WM4eEAqpb6fsTJMYp45Mrp`
+  
+- **Sezzle Payment Gateway**: Buy now, pay later
+  - Using virtual card API approach
+  - Currently in **SANDBOX MODE** with these credentials:
+    - Public key: `sz_pub_fV7SRB5FuCvueYl07GA5lOObLRjEY6be`
+    - Private key: `sz_pr_nIhPldbj7QgcZjWffh78GV6kYKgyqBog`
+  - Production credentials in backend `.env.production`:
+    - Public key: `sz_pub_mHYs860HGQAamnTUWOMfmOOsISn9slaT`
+    - Private key: `sz_pr_SSKy28nqlOAd5ujZu9w8jEHCvGJ78fBR`
+
+### Test Card Information
+- **NMI Test Cards**:
+  - Success: 4111111111111111
+  - Decline: 4111111111111112
+  
+- **Sezzle Test Cards**:
+  - Visa: 4242424242424242
+  - Mastercard: 5555555555554444
+  - Test OTP: 123123
+
+## Services Overview
 
 | Service | PM2 Name | Port | URL | Notes |
 |---------|----------|------|-----|-------|
-| Backend | damned-designs-backend | 9000 | https://api.damneddesigns.com | Core e-commerce engine |
-| Storefront | damned-designs-storefront | 8000 | https://damneddesigns.com | Customer-facing store |
+| Backend | damned-designs-backend | 9000 | https://api.damneddesigns.com | Core e-commerce engine v2.7.1 |
+| Storefront | damned-designs-storefront | 8000 | https://damneddesigns.com | Next.js 15.3.1 customer-facing store |
 | Admin | damned-designs-admin | 5173 | https://admin.damneddesigns.com | Admin dashboard |
 | Images Server | damned-designs-images | 6162 | https://images.damneddesigns.com | Image hosting |
 
-## Important URLs
+## Important URLs & Access
 
 - **Main Store**: https://damneddesigns.com
-- **Admin Dashboard**: https://admin.damneddesigns.com 
-  - Running on port 5173
-  - Direct access via: http://172.245.105.195:5173/
-  - No Nginx is used - direct access required!
+- **Admin Dashboard**: https://admin.damneddesigns.com
 - **API**: https://api.damneddesigns.com
 - **Images**: https://images.damneddesigns.com
 
@@ -49,23 +71,13 @@ pm2 restart all
 pm2 save
 ```
 
-## ⚠️ Critical Notes
+## Documentation
 
-1. **NO NGINX CONFIGURATION**: This system does not use Nginx. URLs like admin.damneddesigns.com must be accessed directly through their respective ports.
-
-2. **AVOID DUPLICATE SERVICES**: The PM2 ecosystem.config.js defines each service, but they can sometimes be started twice. Always check for and remove duplicates:
-   ```bash
-   # If you see duplicates in pm2 list:
-   pm2 delete <id_of_duplicate>
-   pm2 save
-   ```
-
-3. **DIRECT PORT ACCESS**: To access the admin panel directly use: http://172.245.105.195:5173/
-
-4. **CHECK PROPER PORT BINDING**: Always ensure services are bound to the correct ports:
-   ```bash
-   netstat -tulpn | grep 5173  # Check admin panel port
-   ```
+- **Payment Providers**: 
+  - NMI: `/documentation/NMI.md`
+  - Sezzle: `/documentation/Sezzle.md`
+- **System Overview**: `/documentation/system-overview.md`
+- **Backup System**: `/documentation/BACKUP.md`
 
 ## PM2 Configuration Reference
 
@@ -102,9 +114,47 @@ module.exports = {
 };
 ```
 
-## Troubleshooting
+## Future Tasks
 
-If admin.damneddesigns.com returns a 404:
-1. Check PM2 to ensure the admin service is running: `pm2 list`
-2. Verify the admin service is accessible directly via: http://172.245.105.195:5173/
-3. Remember, there is NO Nginx - direct port access is required!
+1. Test both payment methods in checkout flow
+2. Switch to production mode when ready:
+   - NMI: Set `NMI_TEST_MODE=disabled` in `.env`
+   - Sezzle: Set `SEZZLE_SANDBOX_MODE=false` in `.env`
+
+## Common Issues & Fixes
+
+### Cart/Checkout Issues
+- **"column i1.is_giftcard does not exist" Error**:
+  - **Problem**: Database schema mismatch with Medusa 2.7.1 expectations
+  - **Solution**: Add the missing column to the database:
+    ```sql
+    ALTER TABLE cart_line_item ADD COLUMN is_giftcard BOOLEAN NOT NULL DEFAULT FALSE;
+    ```
+  - After adding the column, restart services:
+    ```bash
+    pm2 restart damned-designs-backend damned-designs-storefront
+    pm2 save
+    ```
+
+- **Cash on Delivery Button Text Issue**:
+  - **Problem**: When using COD payment method, the "Pay on Delivery" button text doesn't appear correctly in checkout
+  - **Solution**: The fix has been implemented in:
+    ```
+    /root/damneddesigns/storefront/src/modules/checkout/components/payment-button/index.tsx
+    ```
+  - The fix ensures proper session detection and button text setting for COD payments
+  - After any modifications, restart the storefront:
+    ```bash
+    pm2 restart damned-designs-storefront
+    pm2 save
+    ```
+  - Detailed documentation is available in `/documentation/COD.md`
+
+### Server Component Errors
+- **500 errors on Product Pages**:
+  - **Problem**: Static generation issues with dynamic data
+  - **Solution**: Force dynamic rendering by adding to product page file:
+    ```javascript
+    // In /storefront/src/app/[countryCode]/(main)/products/[handle]/page.tsx
+    export const dynamic = 'force-dynamic'
+    ```

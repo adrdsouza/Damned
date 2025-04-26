@@ -89,6 +89,19 @@ Common issues and solutions:
    - Check the COD provider implementation for correct status handling
    - Verify order workflow settings in Medusa
 
+3. **"Pay on Delivery" button text not showing in checkout**:
+   - This can happen due to React component state issues or caching
+   - The fix is implemented in `storefront/src/modules/checkout/components/payment-button/index.tsx`
+   - Key solution points:
+     - Properly detect active payment session first, then fall back to COD if needed
+     - Set button text in a React state-friendly way with proper provider ID detection
+     - Ensure the button text is set to "Pay on Delivery" specifically for COD payments
+   - After making code changes, restart the storefront service:
+     ```bash
+     pm2 restart damned-designs-storefront
+     pm2 save
+     ```
+
 ## Developer Information
 
 ### Building the Plugin

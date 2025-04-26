@@ -33,6 +33,8 @@ export default function ProductActions({
 }: ProductActionsProps) {
   const [options, setOptions] = useState<Record<string, string | undefined>>({})
   const [isAdding, setIsAdding] = useState(false)
+  const [addError, setAddError] = useState<string | null>(null)
+  const [addSuccess, setAddSuccess] = useState(false)
   const countryCode = useParams().countryCode as string
 
   // If there is only 1 variant, preselect the options
@@ -98,19 +100,45 @@ export default function ProductActions({
 
   const inView = useIntersection(actionsRef, "0px")
 
+  // Clear success message after 3 seconds
+  useEffect(() => {
+    if (addSuccess) {
+      const timer = setTimeout(() => {
+        setAddSuccess(false)
+      }, 3000)
+      return () => clearTimeout(timer)
+    }
+  }, [addSuccess])
+
   // add the selected variant to the cart
   const handleAddToCart = async () => {
     if (!selectedVariant?.id) return null
 
+    // Reset states
     setIsAdding(true)
-
-    await addToCart({
-      variantId: selectedVariant.id,
-      quantity: 1,
-      countryCode,
-    })
-
-    setIsAdding(false)
+    setAddError(null)
+    setAddSuccess(false)
+    
+    try {
+      const result = await addToCart({
+        variantId: selectedVariant.id,
+        quantity: 1,
+        countryCode,
+      })
+      
+      if (!result.success) {
+        setAddError(result.error || "Failed to add to cart")
+        console.error("Failed to add to cart:", result.error)
+      } else {
+        setAddSuccess(true)
+      }
+    } catch (error) {
+      setAddError("Unexpected error occurred")
+      console.error("Unexpected error adding to cart:", error)
+    } finally {
+      // Always reset the loading state regardless of success or failure
+      setIsAdding(false)
+    }
   }
 
   return (
@@ -140,6 +168,18 @@ export default function ProductActions({
 
         <ProductPrice product={product} variant={selectedVariant} />
 
+        {addError && (
+          <div className="text-red-500 text-sm mb-2">
+            {addError}
+          </div>
+        )}
+        
+        {addSuccess && !addError && (
+          <div className="text-green-500 text-sm mb-2">
+            Item added to cart successfully!
+          </div>
+        )}
+        
         <Button
           onClick={handleAddToCart}
           disabled={
@@ -158,7 +198,7 @@ export default function ProductActions({
             ? "Select variant"
             : !inStock || !isValidVariant
             ? "Out of stock"
-            : "Add to cart"}
+            : addSuccess ? "Added to cart!" : "Add to cart"}
         </Button>
         <MobileActions
           product={product}

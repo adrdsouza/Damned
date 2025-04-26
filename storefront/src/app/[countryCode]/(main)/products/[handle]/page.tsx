@@ -4,6 +4,8 @@ import { listProducts } from "@lib/data/products"
 import { getRegion, listRegions } from "@lib/data/regions"
 import ProductTemplate from "@modules/products/templates"
 
+export const dynamic = 'force-dynamic'
+
 type Props = {
   params: Promise<{ countryCode: string; handle: string }>
 }
@@ -72,27 +74,62 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 }
 
 export default async function ProductPage(props: Props) {
-  const params = await props.params
-  const region = await getRegion(params.countryCode)
+  try {
+    const params = await props.params
+    const region = await getRegion(params.countryCode)
 
-  if (!region) {
-    notFound()
+    if (!region) {
+      notFound()
+    }
+
+    // Add error handling around product fetching
+    try {
+      const { response } = await listProducts({
+        countryCode: params.countryCode,
+        queryParams: { handle: params.handle },
+      });
+      
+      const pricedProduct = response.products[0];
+
+      if (!pricedProduct) {
+        notFound()
+      }
+
+      return (
+        <ProductTemplate
+          product={pricedProduct}
+          region={region}
+          countryCode={params.countryCode}
+        />
+      );
+    } catch (productError) {
+      console.error("Error fetching product data:", productError);
+      
+      // Return a graceful error component instead of throwing a 500 error
+      return (
+        <div className="content-container flex flex-col items-center justify-center py-32">
+          <h1 className="text-2xl font-bold mb-4">Product Unavailable</h1>
+          <p className="text-center mb-8">
+            We're having trouble loading this product right now. Please try again later.
+          </p>
+          <a 
+            href={`/${params.countryCode}`} 
+            className="btn btn-primary px-8 py-4 bg-black text-white rounded-md"
+          >
+            Return to home
+          </a>
+        </div>
+      );
+    }
+  } catch (error) {
+    console.error("Error in product page:", error);
+    return (
+      <div className="content-container flex flex-col items-center justify-center py-32">
+        <h1 className="text-2xl font-bold mb-4">Something went wrong</h1>
+        <p className="text-center">
+          We're having trouble displaying this page. Please try again later.
+        </p>
+      </div>
+    );
   }
-
-  const pricedProduct = await listProducts({
-    countryCode: params.countryCode,
-    queryParams: { handle: params.handle },
-  }).then(({ response }) => response.products[0])
-
-  if (!pricedProduct) {
-    notFound()
-  }
-
-  return (
-    <ProductTemplate
-      product={pricedProduct}
-      region={region}
-      countryCode={params.countryCode}
-    />
-  )
 }

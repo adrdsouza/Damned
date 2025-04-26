@@ -17,14 +17,15 @@ module.exports = {
       exec_mode: "fork"
     },
     {
-      // Storefront SvelteKit Server (Production Mode)
+      // Storefront Next.js Server (Production Mode)
       name: "damned-designs-storefront",
       cwd: "/root/damneddesigns/storefront",
       script: "npm",
-      args: "run preview",
+      args: "run start",
       env: {
         NODE_ENV: "production",
-        // Removed hardcoded backend URL to use the value from .env
+        // Force binding to all interfaces so Caddy can connect
+        HOST: "0.0.0.0"
       },
       time: true,
       autorestart: true,
