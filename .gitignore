@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-node_modules
-.env
-
-=======
 # OS Files
 .DS_Store
 Thumbs.db
@@ -80,7 +75,6 @@ dump.rdb
 # Keep .gitkeep files
 !**/.gitkeep
 #backend-------------------
->>>>>>> 15333ea (init commit on combine repo)
 
 backend/dist
 backend/.DS_Store
@@ -111,10 +105,7 @@ backend/.medusa
 backend/static
 
 
-<<<<<<< HEAD
-=======
 #storefront-----------------
->>>>>>> 15333ea (init commit on combine repo)
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # IDEs
@@ -169,12 +160,7 @@ storefront/blob-report/
 storefront/playwright/.cache/
 storefront/playwright/.auth
 
-<<<<<<< HEAD
-
-
-=======
 #admin-------------------------
->>>>>>> 15333ea (init commit on combine repo)
 # Logs
 admin/logs
 admin/*.log
@@ -202,17 +188,6 @@ admin/*.sw?
 admin/.vercel
 admin/.yarn
 
-<<<<<<< HEAD
-
-
-images/node_modules
-images/static
-
-
-uploads/
-uploads
-
-=======
 #images---------------
 images/node_modules
 images/static
@@ -221,7 +196,6 @@ images/static
 packages/medusa-payment-cod/node_modules
 packages/medusa-payment-nmi/node_modules
 packages/medusa-payment-sezzle/node_modules
->>>>>>> 15333ea (init commit on combine repo)
 
 
 backups/
@@ -280,3 +254,7 @@ nextjs-starter-medusa/playwright-report/
 nextjs-starter-medusa/blob-report/
 nextjs-starter-medusa/playwright/.cache/
 nextjs-starter-medusa/playwright/.auth
+<<<<<<< HEAD
+=======
+
+>>>>>>> 1587b0d (new)
