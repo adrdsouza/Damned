@@ -18,7 +18,7 @@ type DiscountCodeProps = {
 }
 
 const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
-  const [isOpen, setIsOpen] = React.useState(false)
+  const [isOpen, setIsOpen] = React.useState(true)
 
   const { items = [], promotions = [] } = cart
   const removePromotionCode = async (code: string) => {
@@ -52,38 +52,49 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
   const [message, formAction] = useActionState(submitPromotionForm, null)
 
   return (
-    <div className="w-full bg-white flex flex-col">
-      <div className="txt-medium">
+    <div className="flex gap-2 mb-4">
+      <div className="w-full">
         <form action={(a) => addPromotionCode(a)} className="w-full mb-5">
           <Label className="flex gap-x-1 my-2 items-center">
-            <button
+            {/* <button
               onClick={() => setIsOpen(!isOpen)}
               type="button"
               className="txt-medium text-ui-fg-interactive hover:text-ui-fg-interactive-hover"
               data-testid="add-discount-button"
             >
               Add Promotion Code(s)
-            </button>
+            </button> */}
 
             {/* <Tooltip content="You can add multiple promotion codes">
               <InformationCircleSolid color="var(--fg-muted)" />
             </Tooltip> */}
           </Label>
+         
+    {/* <input
+      type="text"
+      placeholder="Coupon code"
+      className="flex-grow px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary"
+    />
+    <button className="px-3 py-1.5 text-sm bg-gray-800 text-white rounded-md hover:bg-gray-700 pointer-events-auto">
+      Apply
+    </button> */}
 
           {isOpen && (
             <>
-              <div className="flex w-full gap-x-2">
+              <div className="flex gap-2 mb-4 ">
                 <Input
-                  className="size-full"
+                  className="flex-grow px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary"
                   id="promotion-input"
                   name="code"
                   type="text"
                   autoFocus={false}
                   data-testid="discount-input"
+                      placeholder="Coupon code"
                 />
                 <SubmitButton
                   variant="secondary"
                   data-testid="discount-apply-button"
+                  className="px-3 py-1.5 text-sm bg-gray-800 text-white rounded-md hover:bg-gray-700 pointer-events-auto"
                 >
                   Apply
                 </SubmitButton>
