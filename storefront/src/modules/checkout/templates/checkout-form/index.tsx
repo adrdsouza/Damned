@@ -29,6 +29,7 @@ export default function CheckoutForm({
       try {
         const shipping = await listCartShippingMethods(cart.id)
         const payment = await listCartPaymentMethods(cart.region?.id ?? "")
+console.log(shipping,"asdjgafksdhgashkjfa");
 
         if (shipping && payment) {
           setShippingMethods(shipping)
@@ -50,13 +51,13 @@ export default function CheckoutForm({
 
   return (
     <div className="w-full grid grid-cols-1 gap-y-8">
-      <Addresses cart={cart} customer={customer} checkoutStep={checkoutStep} setCheckoutStep={setCheckoutStep} />
+      <Addresses cart={cart} customer={customer} checkoutStep={checkoutStep} setCheckoutStep={setCheckoutStep} availableShippingMethods={shippingMethods} availablePaymentMethods={paymentMethods} />
 
-      <Shipping cart={cart} availableShippingMethods={shippingMethods} checkoutStep={checkoutStep} setCheckoutStep={setCheckoutStep}/>
+      {/* <Shipping cart={cart} availableShippingMethods={shippingMethods} checkoutStep={checkoutStep} setCheckoutStep={setCheckoutStep}/>
 
       <Payment cart={cart} availablePaymentMethods={paymentMethods} checkoutStep={checkoutStep} setCheckoutStep={setCheckoutStep} />
 
-      <Review cart={cart} checkoutStep={checkoutStep} setCheckoutStep={setCheckoutStep}/>
+      <Review cart={cart} checkoutStep={checkoutStep} setCheckoutStep={setCheckoutStep}/> */}
     </div>
   )
 }

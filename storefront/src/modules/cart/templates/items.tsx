@@ -166,10 +166,10 @@ const ItemsTemplate = ({ cart }: ItemsTemplateProps) => {
      <h3 className="font-bold mb-4 text-lg">
       Your items
      </h3>
-      <div className="space-y-4 divide-y divide-gray-200 flex-grow overflow-y-auto">
+      <div className="space-y-4 divide-y divide-gray-200 flex-grow overflow-y-auto scroll-custom">
 
     
-      <div className="pt-4 first:pt-0">
+      <div className="pt-4 first:pt-0 ">
       {items
             ? items
               .sort((a, b) => {
