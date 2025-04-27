@@ -201,7 +201,11 @@ const Addresses = ({
     })
 
     try {
+      const formData = new FormData(formRef?.current)
+      // Set addresses in the backend
+      const result = await setAddresses(null, formData)
       await setShippingMethod({ cartId: cart?.id, shippingMethodId: id })
+      
     } catch (err) {
       setShippingMethodId(currentId)
       setError(err.message)
@@ -261,18 +265,16 @@ const Addresses = ({
     setError(null)
     
     try {
-      if (formRef?.current) {
-        // Create and dispatch a submit event
-        const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
-        formRef.current.dispatchEvent(submitEvent);
-      }
+      
+      console.log("done","ashdfasdfasdfasd");
+
       // First confirm payment is ready
       const paymentReady = await handleSubmitPayment()
       
       if (!paymentReady) {
         return
       }
-      
+    
       // Then place the order
       await placeOrder()
       
@@ -557,7 +559,7 @@ const Addresses = ({
                 size="large"
                 className="mt-6 w-full"
                 onClick={handlePlaceOrder}
-                type="submit"
+             
                 isLoading={isLoading}
                 disabled={
                   !shippingMethodId || 
