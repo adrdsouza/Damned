@@ -19,6 +19,8 @@ const PICKUP_OPTION_OFF = "__PICKUP_OFF"
 type ShippingProps = {
   cart: HttpTypes.StoreCart
   availableShippingMethods: HttpTypes.StoreCartShippingOption[] | null
+  checkoutStep:string
+  setCheckoutStep:any
 }
 
 function formatAddress(address) {
@@ -50,6 +52,8 @@ function formatAddress(address) {
 const Shipping: React.FC<ShippingProps> = ({
   cart,
   availableShippingMethods,
+  checkoutStep,
+  setCheckoutStep
 }) => {
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingPrices, setIsLoadingPrices] = useState(true)
@@ -64,11 +68,11 @@ const Shipping: React.FC<ShippingProps> = ({
     cart.shipping_methods?.at(-1)?.shipping_option_id || null
   )
 
-  const searchParams = useSearchParams()
-  const router = useRouter()
-  const pathname = usePathname()
+  // const searchParams = useSearchParams()
+  // const router = useRouter()
+  // const pathname = usePathname()
 
-  const isOpen = searchParams.get("step") === "delivery"
+  const isOpen = checkoutStep === "delivery"
 
   const _shippingMethods = availableShippingMethods?.filter(
     (sm) => sm.service_zone?.fulfillment_set?.type !== "pickup"
@@ -107,11 +111,14 @@ const Shipping: React.FC<ShippingProps> = ({
   }, [availableShippingMethods])
 
   const handleEdit = () => {
-    router.push(pathname + "?step=delivery", { scroll: false })
+    // router.push(pathname + "?step=delivery", { scroll: false })
+    setCheckoutStep("delivery")
   }
 
   const handleSubmit = () => {
-    router.push(pathname + "?step=payment", { scroll: false })
+    // router.push(pathname + "?step=payment", { scroll: false })
+    setCheckoutStep("payment")
+
   }
 
   const handleSetShippingMethod = async (

@@ -17,15 +17,19 @@ import { SubmitButton } from "../submit-button"
 const Addresses = ({
   cart,
   customer,
+  checkoutStep,
+  setCheckoutStep
 }: {
   cart: HttpTypes.StoreCart | null
   customer: HttpTypes.StoreCustomer | null
+  checkoutStep:string,
+  setCheckoutStep:any
 }) => {
-  const searchParams = useSearchParams()
-  const router = useRouter()
-  const pathname = usePathname()
+  // const searchParams = useSearchParams()
+  // const router = useRouter()
+  // const pathname = usePathname()
 
-  const isOpen = searchParams.get("step") === "address"
+  const isOpen =checkoutStep === "address"
 
   const { state: sameAsBilling, toggle: toggleSameAsBilling } = useToggleState(
     cart?.shipping_address && cart?.billing_address
@@ -34,10 +38,20 @@ const Addresses = ({
   )
 
   const handleEdit = () => {
-    router.push(pathname + "?step=address")
+    // router.push(pathname + "?step=address");
+    setCheckoutStep("address")
   }
 
-  const [message, formAction] = useActionState(setAddresses, null)
+  const wrappedSetAddresses = async (prevState: unknown, formData: FormData) => {
+    const result = await setAddresses(prevState, formData);
+    if (result.success) {
+      setCheckoutStep(result.step)
+    }
+
+    return result.message
+  };
+
+  const [message, formAction] = useActionState(wrappedSetAddresses, null)
 
   return (
     <div className="bg-white">

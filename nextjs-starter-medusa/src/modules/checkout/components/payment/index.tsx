@@ -16,9 +16,13 @@ import { useCallback, useEffect, useState } from "react"
 const Payment = ({
   cart,
   availablePaymentMethods,
+  checkoutStep,
+  setCheckoutStep
 }: {
   cart: any
   availablePaymentMethods: any[]
+  checkoutStep:string
+  setCheckoutStep:any
 }) => {
   const activeSession = cart.payment_collection?.payment_sessions?.find(
     (paymentSession: any) => paymentSession.status === "pending"
@@ -32,11 +36,11 @@ const Payment = ({
     activeSession?.provider_id ?? ""
   )
 
-  const searchParams = useSearchParams()
-  const router = useRouter()
-  const pathname = usePathname()
+  // const searchParams = useSearchParams()
+  // const router = useRouter()
+  // const pathname = usePathname()
 
-  const isOpen = searchParams.get("step") === "payment"
+  const isOpen =checkoutStep === "payment"
 
   const isStripe = isStripeFunc(selectedPaymentMethod)
 
@@ -56,20 +60,13 @@ const Payment = ({
   const paymentReady =
     (activeSession && cart?.shipping_methods.length !== 0) || paidByGiftcard
 
-  const createQueryString = useCallback(
-    (name: string, value: string) => {
-      const params = new URLSearchParams(searchParams)
-      params.set(name, value)
 
-      return params.toString()
-    },
-    [searchParams]
-  )
 
   const handleEdit = () => {
-    router.push(pathname + "?" + createQueryString("step", "payment"), {
-      scroll: false,
-    })
+    // router.push(pathname + "?" + createQueryString("step", "payment"), {
+    //   scroll: false,
+    // })
+    setCheckoutStep("payment")
   }
 
   const handleSubmit = async () => {
@@ -88,12 +85,14 @@ const Payment = ({
       }
 
       if (!shouldInputCard) {
-        return router.push(
-          pathname + "?" + createQueryString("step", "review"),
-          {
-            scroll: false,
-          }
-        )
+        // return router.push(
+        //   pathname + "?" + createQueryString("step", "review"),
+        //   {
+        //     scroll: false,
+        //   }
+        // )
+        setCheckoutStep("review")
+
       }
     } catch (err: any) {
       setError(err.message)

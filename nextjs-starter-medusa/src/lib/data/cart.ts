@@ -330,16 +330,14 @@ export async function submitPromotionForm(
   }
 }
 
+
 // TODO: Pass a POJO instead of a form entity here
 export async function setAddresses(currentState: unknown, formData: FormData) {
   try {
-    if (!formData) {
-      throw new Error("No form data found when setting addresses")
-    }
-    const cartId = getCartId()
-    if (!cartId) {
-      throw new Error("No existing cart found when setting addresses")
-    }
+    if (!formData) throw new Error("No form data found when setting addresses");
+
+    const cartId = await getCartId();
+    if (!cartId) throw new Error("No existing cart found when setting addresses");
 
     const data = {
       shipping_address: {
@@ -355,12 +353,12 @@ export async function setAddresses(currentState: unknown, formData: FormData) {
         phone: formData.get("shipping_address.phone"),
       },
       email: formData.get("email"),
-    } as any
+    } as any;
 
-    const sameAsBilling = formData.get("same_as_billing")
-    if (sameAsBilling === "on") data.billing_address = data.shipping_address
-
-    if (sameAsBilling !== "on")
+    const sameAsBilling = formData.get("same_as_billing");
+    if (sameAsBilling === "on") {
+      data.billing_address = data.shipping_address;
+    } else {
       data.billing_address = {
         first_name: formData.get("billing_address.first_name"),
         last_name: formData.get("billing_address.last_name"),
@@ -372,17 +370,22 @@ export async function setAddresses(currentState: unknown, formData: FormData) {
         country_code: formData.get("billing_address.country_code"),
         province: formData.get("billing_address.province"),
         phone: formData.get("billing_address.phone"),
-      }
-    await updateCart(data)
+      };
+    }
+
+    await updateCart(data);
+
+    // Revalidate cart cache to ensure UI updates
+    const cartCacheTag = await getCacheTag("carts");
+    revalidateTag(cartCacheTag);
+
+    // ✅ Tell the client it succeeded
+    return { success: true, message: "Addresses set", step: "delivery" };
   } catch (e: any) {
-    return e.message
+    console.error("Error setting addresses:", e);
+    return { success: false, message: e.message };
   }
-
-  redirect(
-    `/${formData.get("shipping_address.country_code")}/checkout?step=delivery`
-  )
 }
-
 /**
  * Places an order for a cart. If no cart ID is provided, it will use the cart ID from the cookies.
  * @param cartId - optional - The ID of the cart to place an order for.
