@@ -3,8 +3,8 @@ import { Metadata } from "next"
 import LoginTemplate from "@modules/account/templates/login-template"
 
 export const metadata: Metadata = {
-  title: "Login | Damned Designs",
-  description: "Log in to your Damned Designs account to view orders, manage your profile, and more.",
+  title: "Sign in",
+  description: "Sign in to your Medusa Store account.",
 }
 
 export default function Login() {

@@ -15,7 +15,9 @@ import { useCallback, useEffect, useState } from "react"
 
 const Payment = ({
   cart,
-  availablePaymentMethods,checkoutStep,setCheckoutStep
+  availablePaymentMethods,
+  checkoutStep,
+  setCheckoutStep
 }: {
   cart: any
   availablePaymentMethods: any[]
@@ -38,7 +40,7 @@ const Payment = ({
   // const router = useRouter()
   // const pathname = usePathname()
 
-  const isOpen = checkoutStep === "payment"
+  const isOpen =checkoutStep === "payment"
 
   const isStripe = isStripeFunc(selectedPaymentMethod)
 
@@ -58,20 +60,12 @@ const Payment = ({
   const paymentReady =
     (activeSession && cart?.shipping_methods.length !== 0) || paidByGiftcard
 
-  // const createQueryString = useCallback(
-  //   (name: string, value: string) => {
-  //     const params = new URLSearchParams(searchParams)
-  //     params.set(name, value)
 
-  //     return params.toString()
-  //   },
-  //   [searchParams]
-  // )
 
   const handleEdit = () => {
     // router.push(pathname + "?" + createQueryString("step", "payment"), {
     //   scroll: false,
-    // });
+    // })
     setCheckoutStep("payment")
   }
 
@@ -91,9 +85,14 @@ const Payment = ({
       }
 
       if (!shouldInputCard) {
-      
-        setCheckoutStep("review");
-        return
+        // return router.push(
+        //   pathname + "?" + createQueryString("step", "review"),
+        //   {
+        //     scroll: false,
+        //   }
+        // )
+        setCheckoutStep("review")
+
       }
     } catch (err: any) {
       setError(err.message)

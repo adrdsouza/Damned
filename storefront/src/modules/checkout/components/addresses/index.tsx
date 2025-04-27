@@ -7,6 +7,7 @@ import { HttpTypes } from "@medusajs/types"
 import { Heading, Text, useToggleState } from "@medusajs/ui"
 import Divider from "@modules/common/components/divider"
 import Spinner from "@modules/common/icons/spinner"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useActionState } from "react"
 import BillingAddress from "../billing_address"
 import ErrorMessage from "../error-message"
@@ -20,7 +21,7 @@ const Addresses = ({
   setCheckoutStep
 }: {
   cart: HttpTypes.StoreCart | null
-  customer: HttpTypes.StoreCustomer | null,
+  customer: HttpTypes.StoreCustomer | null
   checkoutStep:string,
   setCheckoutStep:any
 }) => {
@@ -28,7 +29,7 @@ const Addresses = ({
   // const router = useRouter()
   // const pathname = usePathname()
 
-  const isOpen = checkoutStep === "address"
+  const isOpen =checkoutStep === "address"
 
   const { state: sameAsBilling, toggle: toggleSameAsBilling } = useToggleState(
     cart?.shipping_address && cart?.billing_address
@@ -37,9 +38,10 @@ const Addresses = ({
   )
 
   const handleEdit = () => {
-  setCheckoutStep("address")
-    // router.push(pathname + "?step=address")
+    // router.push(pathname + "?step=address");
+    setCheckoutStep("address")
   }
+
   const wrappedSetAddresses = async (prevState: unknown, formData: FormData) => {
     const result = await setAddresses(prevState, formData);
     if (result.success) {

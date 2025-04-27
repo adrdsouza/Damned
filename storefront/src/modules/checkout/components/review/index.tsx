@@ -1,51 +1,24 @@
 "use client"
 
 import { Heading, Text, clx } from "@medusajs/ui"
-import { paymentInfoMap, isCOD, isNMI, isSezzle, isManual } from "@lib/constants"
+
 import PaymentButton from "../payment-button"
+import { useSearchParams } from "next/navigation"
 
-const Review = ({ 
-  cart, 
-  checkoutStep,
-  setCheckoutStep
-}: { 
-  cart: any, 
-  checkoutStep: string
-  setCheckoutStep: any 
-}) => {
-  const isOpen = checkoutStep === "review"
+const Review = ({ cart ,  checkoutStep,
+  setCheckoutStep}: { cart: any ,  checkoutStep:string,
+  setCheckoutStep:any}) => {
+  // const searchParams = useSearchParams()
 
-  // Disable gift card functionality
-  const paidByGiftcard = false
+  const isOpen =checkoutStep=== "review"
 
-  // Check if all previous steps are completed
+  const paidByGiftcard =
+    cart?.gift_cards && cart?.gift_cards?.length > 0 && cart?.total === 0
+
   const previousStepsCompleted =
-    cart?.shipping_address &&
-    cart?.shipping_methods?.length > 0 &&
-    (cart?.payment_collection || paidByGiftcard)
-
-  // Find the active payment session (should be in pending status)
-  const activeSession = cart?.payment_collection?.payment_sessions?.find(
-    (session: any) => session.status === "pending"
-  )
-  
-  // Find COD session as a fallback
-  const codSession = cart?.payment_collection?.payment_sessions?.find(
-    (session: any) => isCOD(session.provider_id)
-  )
-  
-  // Use active session or COD session if available
-  const effectiveSession = activeSession || codSession || cart?.payment_collection?.payment_sessions?.[0]
-
-  // Debug the payment sessions
-  console.log("Activepaymentsession:", activeSession)
-  console.log("CODsession:", cart)
- 
-
-  // Get payment provider details for display
-  const paymentProviderId = effectiveSession?.provider_id
-  const paymentMethod = paymentInfoMap[paymentProviderId]?.title || 
-    (paymentProviderId ? `${paymentProviderId.split('_').pop()}` : "Unknown")
+    cart.shipping_address &&
+    cart.shipping_methods.length > 0 &&
+    (cart.payment_collection || paidByGiftcard)
 
   return (
     <div className="bg-white">
@@ -64,21 +37,13 @@ const Review = ({
       </div>
       {isOpen && previousStepsCompleted && (
         <>
-          {paymentProviderId && (
-            <div className="flex items-start gap-x-1 w-full mb-4">
-              <div className="w-full">
-                <Text className="txt-medium-plus text-ui-fg-base mb-1">
-                  Payment Method: {paymentMethod}
-                </Text>
-              </div>
-            </div>
-          )}
           <div className="flex items-start gap-x-1 w-full mb-6">
             <div className="w-full">
               <Text className="txt-medium-plus text-ui-fg-base mb-1">
-                By clicking the button below, you confirm that you have
+                By clicking the Place Order button, you confirm that you have
                 read, understand and accept our Terms of Use, Terms of Sale and
-                Returns Policy and acknowledge that you have read Damned Designs&apos;s Privacy Policy.
+                Returns Policy and acknowledge that you have read Medusa
+                Store&apos;s Privacy Policy.
               </Text>
             </div>
           </div>

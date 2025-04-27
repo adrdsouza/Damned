@@ -32,65 +32,57 @@ export const listProducts = async ({
 
   let region: HttpTypes.StoreRegion | undefined | null
 
-  try {
-    if (countryCode) {
-      region = await getRegion(countryCode)
-    } else {
-      region = await retrieveRegion(regionId!)
-    }
+  if (countryCode) {
+    region = await getRegion(countryCode)
+  } else {
+    region = await retrieveRegion(regionId!)
+  }
 
-    if (!region) {
-      return {
-        response: { products: [], count: 0 },
-        nextPage: null,
-      }
-    }
-
-    const headers = {
-      ...(await getAuthHeaders()),
-    }
-
-    const next = {
-      ...(await getCacheOptions("products")),
-    }
-
-    return sdk.client
-      .fetch<{ products: HttpTypes.StoreProduct[]; count: number }>(
-        `/store/products`,
-        {
-          method: "GET",
-          query: {
-            limit,
-            offset,
-            region_id: region?.id,
-            fields:
-              "*variants.calculated_price,+variants.inventory_quantity,+metadata,+tags",
-            ...queryParams,
-          },
-          headers,
-          next,
-          cache: "force-cache",
-        }
-      )
-      .then(({ products, count }) => {
-        const nextPage = count > offset + limit ? pageParam + 1 : null
-
-        return {
-          response: {
-            products,
-            count,
-          },
-          nextPage: nextPage,
-          queryParams,
-        }
-      })
-  } catch (error) {
-    console.error("Error fetching products:", error)
+  if (!region) {
     return {
       response: { products: [], count: 0 },
       nextPage: null,
     }
   }
+
+  const headers = {
+    ...(await getAuthHeaders()),
+  }
+
+  const next = {
+    ...(await getCacheOptions("products")),
+  }
+
+  return sdk.client
+    .fetch<{ products: HttpTypes.StoreProduct[]; count: number }>(
+      `/store/products`,
+      {
+        method: "GET",
+        query: {
+          limit,
+          offset,
+          region_id: region?.id,
+          fields:
+            "*variants.calculated_price,+variants.inventory_quantity,+metadata,+tags",
+          ...queryParams,
+        },
+        headers,
+        next,
+        cache: "force-cache",
+      }
+    )
+    .then(({ products, count }) => {
+      const nextPage = count > offset + limit ? pageParam + 1 : null
+
+      return {
+        response: {
+          products,
+          count,
+        },
+        nextPage: nextPage,
+        queryParams,
+      }
+    })
 }
 
 /**

@@ -1,10 +1,11 @@
 "use client"
 
-import { isCOD, isManual, isNMI, isSezzle } from "@lib/constants"
+import { isManual, isStripe } from "@lib/constants"
 import { placeOrder } from "@lib/data/cart"
 import { HttpTypes } from "@medusajs/types"
 import { Button } from "@medusajs/ui"
-import React, { useState, useEffect } from "react"
+import { useElements, useStripe } from "@stripe/react-stripe-js"
+import React, { useState } from "react"
 import ErrorMessage from "../error-message"
 
 type PaymentButtonProps = {
@@ -23,90 +24,151 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({
     !cart.email ||
     (cart.shipping_methods?.length ?? 0) < 1
 
-  // Find any payment session, regardless of status
-  const allSessions = cart?.payment_collection?.payment_sessions || []
-  
-  // Debug all payment sessions
-  console.log("All Payment Sessions:", allSessions)
-  
-  // Find active payment session (should be the selected one)
-  const activeSession = allSessions.find(s => s.status === "pending")
-  
-  // If there's no active session, look for COD session
-  const findCODSession = allSessions.find(s => isCOD(s.provider_id))
-  
-  // Use the active session if available, or the first session, or null
-  // Important: The active session is what matters, regardless of payment type
-  const effectiveSession = activeSession || findCODSession || allSessions[0] || null
-  
-  const [buttonText, setButtonText] = useState("Place Order")
-  
-  // Set appropriate button text based on payment method
-  useEffect(() => {
-    if (!effectiveSession) {
-      setButtonText("Select a payment method")
-      return
-    }
-    
-    const providerId = effectiveSession.provider_id || ""
-    console.log("Setting button text for provider:", providerId)
-    
-    let newButtonText = "Place Order"
-    
-    if (isCOD(providerId)) {
-      newButtonText = "Pay on Delivery"
-    } else if (isNMI(providerId)) {
-      newButtonText = "Pay with Credit Card"
-    } else if (isSezzle(providerId)) {
-      newButtonText = "Pay with Sezzle" 
-    } else if (isManual(providerId)) {
-      newButtonText = "Place Order"
-    }
-    
-    // Set the button text and log it
-    setButtonText(newButtonText)
-    console.log("Button text set to:", newButtonText, "for provider:", providerId)
-  }, [effectiveSession])
+  const paymentSession = cart.payment_collection?.payment_sessions?.[0]
 
-  // Return disabled button if no payment method selected
-  if (!effectiveSession) {
-    return <Button disabled>Select a payment method</Button>
+  switch (true) {
+    case isStripe(paymentSession?.provider_id):
+      return (
+        <StripePaymentButton
+          notReady={notReady}
+          cart={cart}
+          data-testid={dataTestId}
+        />
+      )
+    case isManual(paymentSession?.provider_id):
+      return (
+        <ManualTestPaymentButton notReady={notReady} data-testid={dataTestId} />
+      )
+    default:
+      return <Button disabled>Select a payment method</Button>
   }
-
-  // Always use the standard payment button with the appropriate text
-  return (
-    <StandardPaymentButton 
-      notReady={notReady} 
-      data-testid={dataTestId}
-      buttonText={buttonText}
-    />
-  )
 }
 
-// Unified payment button for all payment methods
-const StandardPaymentButton = ({ 
-  notReady, 
+const StripePaymentButton = ({
+  cart,
+  notReady,
   "data-testid": dataTestId,
-  buttonText = "Place Order" 
-}: { 
+}: {
+  cart: HttpTypes.StoreCart
   notReady: boolean
   "data-testid"?: string
-  buttonText?: string
 }) => {
   const [submitting, setSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
-  const handlePayment = () => {
-    setSubmitting(true)
-
-    placeOrder()
+  const onPaymentCompleted = async () => {
+    await placeOrder()
       .catch((err) => {
-        console.error("Place order error:", err)
-        setErrorMessage(err?.message || "An error occurred while placing your order")
+        setErrorMessage(err.message)
       })
       .finally(() => {
         setSubmitting(false)
       })
+  }
+
+  const stripe = useStripe()
+  const elements = useElements()
+  const card = elements?.getElement("card")
+
+  const session = cart.payment_collection?.payment_sessions?.find(
+    (s) => s.status === "pending"
+  )
+
+  const disabled = !stripe || !elements ? true : false
+
+  const handlePayment = async () => {
+    setSubmitting(true)
+
+    if (!stripe || !elements || !card || !cart) {
+      setSubmitting(false)
+      return
+    }
+
+    await stripe
+      .confirmCardPayment(session?.data.client_secret as string, {
+        payment_method: {
+          card: card,
+          billing_details: {
+            name:
+              cart.billing_address?.first_name +
+              " " +
+              cart.billing_address?.last_name,
+            address: {
+              city: cart.billing_address?.city ?? undefined,
+              country: cart.billing_address?.country_code ?? undefined,
+              line1: cart.billing_address?.address_1 ?? undefined,
+              line2: cart.billing_address?.address_2 ?? undefined,
+              postal_code: cart.billing_address?.postal_code ?? undefined,
+              state: cart.billing_address?.province ?? undefined,
+            },
+            email: cart.email,
+            phone: cart.billing_address?.phone ?? undefined,
+          },
+        },
+      })
+      .then(({ error, paymentIntent }) => {
+        if (error) {
+          const pi = error.payment_intent
+
+          if (
+            (pi && pi.status === "requires_capture") ||
+            (pi && pi.status === "succeeded")
+          ) {
+            onPaymentCompleted()
+          }
+
+          setErrorMessage(error.message || null)
+          return
+        }
+
+        if (
+          (paymentIntent && paymentIntent.status === "requires_capture") ||
+          paymentIntent.status === "succeeded"
+        ) {
+          return onPaymentCompleted()
+        }
+
+        return
+      })
+  }
+
+  return (
+    <>
+      <Button
+        disabled={disabled || notReady}
+        onClick={handlePayment}
+        size="large"
+        isLoading={submitting}
+        data-testid={dataTestId}
+      >
+        Place order
+      </Button>
+      <ErrorMessage
+        error={errorMessage}
+        data-testid="stripe-payment-error-message"
+      />
+    </>
+  )
+}
+
+const ManualTestPaymentButton = ({ notReady }: { notReady: boolean }) => {
+  const [submitting, setSubmitting] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+
+  const onPaymentCompleted = async () => {
+    await placeOrder()
+      .catch((err) => {
+        setErrorMessage(err.message)
+      })
+      .finally(() => {
+        setSubmitting(false)
+      })
+  }
+
+  const handlePayment = () => {
+    setSubmitting(true)
+
+    onPaymentCompleted()
   }
 
   return (
@@ -116,13 +178,13 @@ const StandardPaymentButton = ({
         isLoading={submitting}
         onClick={handlePayment}
         size="large"
-        data-testid={dataTestId || "submit-order-button"}
+        data-testid="submit-order-button"
       >
-        {buttonText}
+        Place order
       </Button>
       <ErrorMessage
         error={errorMessage}
-        data-testid="payment-error-message"
+        data-testid="manual-payment-error-message"
       />
     </>
   )

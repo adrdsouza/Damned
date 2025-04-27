@@ -50,8 +50,8 @@ export default function CategoryFilter({productCategories,searchCategoryId}:any)
          onChange={(e)=>setSearch(e?.target?.value)}
          onKeyDown={(e)=>{
             if(e.key=="Enter")
-                setQueryParams("s",search);
-            setSearch("")
+           setQueryParams("s",search);
+           
             }
         }
        />

@@ -121,62 +121,37 @@ export async function addToCart({
   countryCode: string
 }) {
   if (!variantId) {
-    return { 
-      success: false, 
-      error: "Missing variant ID when adding to cart" 
-    }
+    throw new Error("Missing variant ID when adding to cart")
   }
 
-  try {
-    const cart = await getOrSetCart(countryCode)
+  const cart = await getOrSetCart(countryCode)
 
-    if (!cart) {
-      return { 
-        success: false, 
-        error: "Failed to retrieve or create cart" 
-      }
-    }
+  if (!cart) {
+    throw new Error("Error retrieving or creating cart")
+  }
 
-    const headers = {
-      ...(await getAuthHeaders()),
-    }
+  const headers = {
+    ...(await getAuthHeaders()),
+  }
 
-    // Use createLineItems instead to avoid gift card schema issue
-    await sdk.client.fetch(
-      `/store/carts/${cart.id}/line-items`,
+  await sdk.store.cart
+    .createLineItem(
+      cart.id,
       {
-        method: "POST",
-        headers,
-        body: {
-          variant_id: variantId,
-          quantity
-        }
-      }
+        variant_id: variantId,
+        quantity,
+      },
+      {},
+      headers
     )
-      .then(async () => {
-        // Revalidate cache tags to ensure UI shows updated cart
-        const cartCacheTag = await getCacheTag("carts")
-        revalidateTag(cartCacheTag)
+    .then(async () => {
+      const cartCacheTag = await getCacheTag("carts")
+      revalidateTag(cartCacheTag)
 
-        const fulfillmentCacheTag = await getCacheTag("fulfillment")
-        revalidateTag(fulfillmentCacheTag)
-      })
-      .catch((err) => {
-        console.error("Error adding item to cart:", err)
-        throw err // Re-throw to be caught by the outer try/catch
-      })
-      
-    return { 
-      success: true,
-      cartId: cart.id 
-    }
-  } catch (error) {
-    console.error("AddToCart function error:", error)
-    return { 
-      success: false, 
-      error: error instanceof Error ? error.message : "Unknown error adding to cart" 
-    }
-  }
+      const fulfillmentCacheTag = await getCacheTag("fulfillment")
+      revalidateTag(fulfillmentCacheTag)
+    })
+    .catch(medusaError)
 }
 
 export async function updateLineItem({
@@ -267,97 +242,14 @@ export async function initiatePaymentSession(
     ...(await getAuthHeaders()),
   }
 
-  try {
-    // Validate inputs
-    if (!cart || !cart.id) {
-      console.error("Invalid cart provided to initiatePaymentSession")
-      return cart
-    }
-
-    if (!data || !data.provider_id) {
-      console.error("Invalid provider_id in initiatePaymentSession")
-      return cart
-    }
-
-    const cartId = cart.id
-    const paymentCollectionId = cart.payment_collection?.id
-
-    if (!paymentCollectionId) {
-      console.error("No payment collection found on cart")
-      return cart
-    }
-
-    // Use try/catch for the fetch operation
-    try {
-      // Step 1: Create a payment session
-      await sdk.client.fetch(
-        `/store/payment-collections/${paymentCollectionId}/payment-sessions`,
-        {
-          method: "POST",
-          headers,
-          body: {
-            provider_id: data.provider_id
-          }
-        }
-      )
-      
-      // Step 2: Set it as the selected session
-      // First try the Medusa 2.7+ endpoint format
-      try {
-        await sdk.client.fetch(
-          `/store/payment-collections/${paymentCollectionId}/sessions/${data.provider_id}/authorize`,
-          {
-            method: "POST",
-            headers
-          }
-        )
-      } catch (authorizeError) {
-        // If that fails, try the legacy format
-        console.error("Error using new authorize endpoint, trying legacy format:", authorizeError)
-        try {
-          await sdk.client.fetch(
-            `/store/payment-collections/${paymentCollectionId}`,
-            {
-              method: "POST",
-              headers,
-              body: {
-                session_id: data.provider_id
-              }
-            }
-          )
-        } catch (legacyError) {
-          console.error("Error using legacy selection endpoint:", legacyError)
-          throw legacyError
-        }
-      }
-      
-      console.log(`Payment session for ${data.provider_id} created and selected`)
-    } catch (fetchError) {
-      // Log the error but don't throw - we'll still try to retrieve the updated cart
-      console.error("Payment session initialization or selection error:", fetchError)
-    }
-    
-    // Always refresh cache
-    try {
+  return sdk.store.payment
+    .initiatePaymentSession(cart, data, {}, headers)
+    .then(async (resp) => {
       const cartCacheTag = await getCacheTag("carts")
       revalidateTag(cartCacheTag)
-    } catch (cacheError) {
-      console.error("Error refreshing cache:", cacheError)
-    }
-    
-    // Return updated cart (fetch it again to be safe)
-    try {
-      return await retrieveCart(cartId)
-    } catch (retrieveError) {
-      console.error("Error retrieving updated cart:", retrieveError)
-      return cart // Return original cart as fallback
-    }
-  } catch (error) {
-    console.error("Fatal error in payment session flow:", error)
-    // Return the original cart instead of throwing an error
-    // This prevents the Server Component render error
-    return cart
-  }
+      return resp
+    })
+    .catch(medusaError)
 }
 
 export async function applyPromotions(codes: string[]) {
@@ -383,21 +275,47 @@ export async function applyPromotions(codes: string[]) {
     .catch(medusaError)
 }
 
-// Gift card functionality completely removed
-
 export async function applyGiftCard(code: string) {
-  console.log("Gift card functionality disabled")
-  return { success: false, error: "Gift cards are not supported" }
+  //   const cartId = getCartId()
+  //   if (!cartId) return "No cartId cookie found"
+  //   try {
+  //     await updateCart(cartId, { gift_cards: [{ code }] }).then(() => {
+  //       revalidateTag("cart")
+  //     })
+  //   } catch (error: any) {
+  //     throw error
+  //   }
 }
 
 export async function removeDiscount(code: string) {
-  console.log("Discount removal functionality disabled")
-  return { success: false, error: "This functionality is not supported" }
+  // const cartId = getCartId()
+  // if (!cartId) return "No cartId cookie found"
+  // try {
+  //   await deleteDiscount(cartId, code)
+  //   revalidateTag("cart")
+  // } catch (error: any) {
+  //   throw error
+  // }
 }
 
-export async function removeGiftCard(codeToRemove: string, giftCards: any[]) {
-  console.log("Gift card functionality disabled")
-  return { success: false, error: "Gift cards are not supported" }
+export async function removeGiftCard(
+  codeToRemove: string,
+  giftCards: any[]
+  // giftCards: GiftCard[]
+) {
+  //   const cartId = getCartId()
+  //   if (!cartId) return "No cartId cookie found"
+  //   try {
+  //     await updateCart(cartId, {
+  //       gift_cards: [...giftCards]
+  //         .filter((gc) => gc.code !== codeToRemove)
+  //         .map((gc) => ({ code: gc.code })),
+  //     }).then(() => {
+  //       revalidateTag("cart")
+  //     })
+  //   } catch (error: any) {
+  //     throw error
+  //   }
 }
 
 export async function submitPromotionForm(
@@ -411,6 +329,7 @@ export async function submitPromotionForm(
     return e.message
   }
 }
+
 
 // TODO: Pass a POJO instead of a form entity here
 export async function setAddresses(currentState: unknown, formData: FormData) {
@@ -467,8 +386,6 @@ export async function setAddresses(currentState: unknown, formData: FormData) {
     return { success: false, message: e.message };
   }
 }
-
-
 /**
  * Places an order for a cart. If no cart ID is provided, it will use the cart ID from the cookies.
  * @param cartId - optional - The ID of the cart to place an order for.

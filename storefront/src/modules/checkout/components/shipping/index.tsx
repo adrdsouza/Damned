@@ -51,7 +51,9 @@ function formatAddress(address) {
 
 const Shipping: React.FC<ShippingProps> = ({
   cart,
-  availableShippingMethods,checkoutStep,setCheckoutStep
+  availableShippingMethods,
+  checkoutStep,
+  setCheckoutStep
 }) => {
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingPrices, setIsLoadingPrices] = useState(true)

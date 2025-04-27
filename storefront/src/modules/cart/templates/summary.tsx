@@ -11,8 +11,7 @@ import { HttpTypes } from "@medusajs/types"
 type SummaryProps = {
   cart: HttpTypes.StoreCart & {
     promotions: HttpTypes.StorePromotion[]
-  },
-  showCheckoutfn?:any
+  }
 }
 
 function getCheckoutStep(cart: HttpTypes.StoreCart) {
@@ -25,7 +24,7 @@ function getCheckoutStep(cart: HttpTypes.StoreCart) {
   }
 }
 
-const Summary = ({ cart, showCheckoutfn}: SummaryProps) => {
+const Summary = ({ cart }: SummaryProps) => {
   const step = getCheckoutStep(cart)
 
   return (
@@ -36,13 +35,12 @@ const Summary = ({ cart, showCheckoutfn}: SummaryProps) => {
       <DiscountCode cart={cart} />
       <Divider />
       <CartTotals totals={cart} />
-      {/* <LocalizedClientLink
+      <LocalizedClientLink
         href={"/checkout?step=" + step}
         data-testid="checkout-button"
-        
-      > */}
-        <Button onClick={showCheckoutfn} className="w-full h-10">Go to checkout</Button>
-      {/* </LocalizedClientLink> */}
+      >
+        <Button className="w-full h-10">Go to checkout</Button>
+      </LocalizedClientLink>
     </div>
   )
 }
