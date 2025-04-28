@@ -49,14 +49,18 @@ const NativeSelect = forwardRef<HTMLSelectElement, NativeSelectProps>(
             }
           )}
         >
+          { isPlaceholder &&<label className="ms-2">
+    {placeholder}
+    <span className="text-rose-500">*</span>
+  </label>}
           <select
             ref={innerRef}
             defaultValue={defaultValue}
             {...props}
-            className="appearance-none flex-1 bg-transparent border-none px-4 py-2.5 transition-colors duration-150 outline-none "
+            className="appearance-none flex-1 bg-transparent border-none pl-4 py-2.5 transition-colors duration-150 outline-none "
           >
             <option disabled value="">
-              {placeholder}
+              
             </option>
             {children}
           </select>
