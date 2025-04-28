@@ -74,6 +74,7 @@ const Addresses = ({
   const [error, setError] = useState<string | null>(null)
   const isOpen = checkoutStep === "address"
   const formRef = useRef<HTMLFormElement>(null)
+  const [formError, setFormError] = useState<string | null>(null)
 
   const { state: sameAsBilling, toggle: toggleSameAsBilling } = useToggleState(
     cart?.shipping_address && cart?.billing_address
@@ -186,7 +187,21 @@ const Addresses = ({
   // Step 2: Handle shipping method selection
   const handleSetShippingMethod = async (id: string, variant: "shipping" | "pickup") => {
     setError(null)
-    
+    if (formRef.current) {
+      const isValid = formRef.current.checkValidity();
+      
+      if (!isValid) {
+        // Trigger the browser's built-in validation UI
+        const tempSubmitButton = document.createElement('button');
+        tempSubmitButton.type = 'submit';
+        formRef.current.appendChild(tempSubmitButton);
+        tempSubmitButton.click();
+        tempSubmitButton.remove();
+        
+        setFormError("Please fill in all required fields");
+        return;
+      }
+    }
     if (variant === "pickup") {
       setShowPickupOptions(PICKUP_OPTION_ON)
     } else {
@@ -334,7 +349,8 @@ const Addresses = ({
                   <BillingAddress cart={cart} />
                 </div>
               )}
-              
+                            <ErrorMessage error={formError} data-testid="shipping-error-message" />
+
               {/* Shipping Method Selection */}
               <div className="grid mt-6">
                 <div className="flex flex-col">
