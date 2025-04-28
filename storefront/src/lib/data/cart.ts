@@ -120,6 +120,7 @@ export async function addToCart({
   quantity: number
   countryCode: string
 }) {
+ 
   if (!variantId) {
     throw new Error("Missing variant ID when adding to cart")
   }
@@ -133,7 +134,7 @@ export async function addToCart({
   const headers = {
     ...(await getAuthHeaders()),
   }
-
+  
   await sdk.store.cart
     .createLineItem(
       cart.id,
@@ -145,6 +146,14 @@ export async function addToCart({
       headers
     )
     .then(async () => {
+      // await sdk.store.cart.update(cart.id, {
+      //   shipping_address: {
+      //     country_code: process.env.NEXT_PUBLIC_DEFAULT_REGION ?? "us",
+      //     // You can set other address fields as needed or leave them blank
+      //     // to be filled by the user later
+      //   }
+      // })
+    
       const cartCacheTag = await getCacheTag("carts")
       revalidateTag(cartCacheTag)
 
@@ -174,7 +183,7 @@ export async function updateLineItem({
   const headers = {
     ...(await getAuthHeaders()),
   }
-
+ 
   await sdk.store.cart
     .updateLineItem(cartId, lineId, { quantity }, {}, headers)
     .then(async () => {
@@ -233,6 +242,33 @@ export async function setShippingMethod({
     })
     .catch(medusaError)
 }
+
+export async function updateShippingCounty({
+  cartId,
+  countryCode,
+}: {
+  cartId: string
+  countryCode: string
+}) {
+  const headers = {
+    ...(await getAuthHeaders()),
+  }
+  await sdk.store.cart.update(cartId, {
+    shipping_address: {
+      country_code: countryCode,
+     
+    }
+  }) .then(async () => {
+      //  const cartCacheTag = await getCacheTag("carts")
+      //       revalidateTag(cartCacheTag)
+           
+      //       const fulfillmentCacheTag = await getCacheTag("fulfillment")
+      //          revalidateTag(fulfillmentCacheTag)
+  })
+  .catch(medusaError)
+
+}
+
 
 export async function initiatePaymentSession(
   cart: HttpTypes.StoreCart,
