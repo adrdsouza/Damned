@@ -11,12 +11,13 @@ const ShippingAddress = ({
   customer,
   cart,
   checked,
-  onChange,
+  onChange,handleReginChange
 }: {
   customer: HttpTypes.StoreCustomer | null
   cart: HttpTypes.StoreCart | null
   checked: boolean
   onChange: () => void
+  handleReginChange:any
 }) => {
   const [formData, setFormData] = useState<Record<string, any>>({
     "shipping_address.first_name": cart?.shipping_address?.first_name || "",
@@ -89,7 +90,11 @@ const ShippingAddress = ({
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
-    })
+    });
+    if(e.target.name === "shipping_address.country_code"){
+      handleReginChange(e.target.value)
+    }
+    // handleReginChange()
   }
 
   return (

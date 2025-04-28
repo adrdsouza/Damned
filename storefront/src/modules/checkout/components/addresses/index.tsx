@@ -1,6 +1,6 @@
 "use client"
 
-import { initiatePaymentSession, placeOrder, setAddresses } from "@lib/data/cart"
+import { initiatePaymentSession, placeOrder, setAddresses, updateShippingCounty } from "@lib/data/cart"
 import compareAddresses from "@lib/util/compare-addresses"
 import { CheckCircleSolid, CreditCard } from "@medusajs/icons"
 import { HttpTypes } from "@medusajs/types"
@@ -14,7 +14,7 @@ import ShippingAddress from "../shipping-address"
 import { SubmitButton } from "../submit-button"
 import SignInPrompt from "@modules/cart/components/sign-in-prompt"
 import { setShippingMethod } from "@lib/data/cart"
-import { calculatePriceForShippingOption } from "@lib/data/fulfillment"
+import { calculatePriceForShippingOption, listCartShippingMethods } from "@lib/data/fulfillment"
 import { convertToLocale } from "@lib/util/money"
 import { Loader } from "@medusajs/icons"
 import { Button, clx } from "@medusajs/ui"
@@ -25,6 +25,9 @@ import PaymentContainer, {
   StripeCardContainer,
 } from "@modules/checkout/components/payment-container"
 import { isStripe as isStripeFunc, paymentInfoMap } from "@lib/constants"
+import { sdk } from "@lib/config"
+import { revalidateTag } from "next/cache"
+import { getCacheTag } from "@lib/data/cookies"
 
 function formatAddress(address) {
   if (!address) {
@@ -152,6 +155,23 @@ const Addresses = ({
     setCheckoutStep("address")
   }
 
+  const handleReginChange=async (region:string)=>{
+    try {
+      setIsLoading(true)
+
+     
+           await updateShippingCounty({  cartId:cart.id,
+            countryCode:region,})
+
+    } catch (error) {
+      
+    }finally{
+      setIsLoading(false)
+
+    }
+
+  }
+  
   // Step 1: Handle address submission
   const handleAddressSubmit = async (event) => {
     event.preventDefault()
@@ -163,7 +183,6 @@ const Addresses = ({
       
       // Set addresses in the backend
       const result = await setAddresses(null, formData)
-      console.log(result,"ashdfasdfasdfasd");
       
       if (!result.success) {
         setError(result.message || "Failed to save addresses")
@@ -280,8 +299,35 @@ const Addresses = ({
     setError(null)
     
     try {
-      
-      console.log("done","ashdfasdfasdfasd");
+      if (formRef.current) {
+        const isValid = formRef.current.checkValidity();
+        
+        if (!isValid) {
+          // Trigger the browser's built-in validation UI
+          const tempSubmitButton = document.createElement('button');
+          tempSubmitButton.type = 'submit';
+          formRef.current.appendChild(tempSubmitButton);
+          tempSubmitButton.click();
+          tempSubmitButton.remove();
+          
+          setFormError("Please fill in all required fields");
+          return;
+        }
+      }
+      const formData = new FormData(formRef?.current)
+      // Set addresses in the backend
+      const result = await setAddresses(null, formData)
+      if(result?.success){
+        const shipping = await listCartShippingMethods(cart.id);
+        console.log(shipping,"ashdfasdfasdfasd");
+        if(!shipping || shipping?.length==0){
+          return  setError("Shipping option not available")
+        }
+   let shippingMethodId=shipping[0].id
+        
+       let ress= await setShippingMethod({ cartId: cart?.id, shippingMethodId })
+
+        
 
       // First confirm payment is ready
       const paymentReady = await handleSubmitPayment()
@@ -295,6 +341,7 @@ const Addresses = ({
       
       // Order success - redirect or show confirmation would happen here
       // This would typically be handled by the Medusa backend redirecting
+    }
     } catch (err) {
       setError(err.message || "Failed to place order")
     } finally {
@@ -335,6 +382,7 @@ const Addresses = ({
                 checked={sameAsBilling}
                 onChange={toggleSameAsBilling}
                 cart={cart}
+                handleReginChange={handleReginChange}
               />
 
               {!sameAsBilling && (
@@ -352,7 +400,7 @@ const Addresses = ({
                             <ErrorMessage error={formError} data-testid="shipping-error-message" />
 
               {/* Shipping Method Selection */}
-              <div className="grid mt-6">
+               {/* <div className="grid mt-6">
                 <div className="flex flex-col">
                   <span className="font-medium txt-medium text-ui-fg-base">
                     Shipping method
@@ -522,7 +570,7 @@ const Addresses = ({
                     </div>
                   </div>
                 </div>
-              )}
+              )}  */}
 
               {/* Payment Method Selection */}
               <div className="mt-6">
@@ -578,7 +626,7 @@ const Addresses = ({
              
                 isLoading={isLoading}
                 disabled={
-                  !shippingMethodId || 
+                 
                   (isStripe && !cardComplete) ||
                   (!selectedPaymentMethod && !paidByGiftcard)
                 }
