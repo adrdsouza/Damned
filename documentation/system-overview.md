@@ -13,8 +13,8 @@ The system follows a modern e-commerce architecture with separate frontend, back
   - Admin Panel (React/Vite based internal management) - located in `/root/damneddesigns/admin`
 
 - **Backend Layer**:
-  - Medusa.js Server (e-commerce engine)
-  - Payment Services (NMI payment gateway, Sezzle for BNPL, COD)
+  - Medusa.js Server (e-commerce engine) v2.7.1
+  - Payment Services (NMI payment gateway, Sezzle for BNPL, Manual Payment)
   - Various modules (Product, Order, Customer, Inventory management)
 
 - **Data Layer**:
@@ -37,20 +37,20 @@ The system follows a modern e-commerce architecture with separate frontend, back
 - **Event Bus**: Redis
 - **File Storage**: Local file storage
 - **API**: RESTful API endpoints
-- **Payment**: Custom NMI and Sezzle payment integrations
+- **Payment**: Custom NMI and Sezzle payment integrations, Medusa's default manual payment
 - **Email**: Nodemailer with Gmail OAuth2
 
 #### Storefront
-- **Framework**: Next.js 15.3.1
+- **Framework**: Next.js 15.0.3
 - **UI Library**: React 19 (RC)
 - **Styling**: Tailwind CSS
-- **State Management**: React Query via Medusa's SDK v2.7.1
+- **State Management**: React Query via Medusa's JS SDK (latest version)
 - **Package Manager**: npm (yarn removed)
 - **Features**: Product pages, cart, checkout, user accounts
 - **Directory**: `/root/damneddesigns/storefront`
 
 #### Admin Panel
-- **Framework**: Vite with React 18
+- **Framework**: Medusa Dashboard v2.7.0 (Vite with React 18)
 - **Language**: TypeScript
 - **UI Components**: Medusa UI, Radix UI
 - **State Management**: React Query (Tanstack Query)
@@ -514,7 +514,7 @@ module.exports = {
 3. The frontend includes:
    - Basic storefront pages (Home, Products, About)
    - Checkout flow with support for the following payment methods:
-     - Cash on Delivery (cod_cod)
+     - Manual Payment (pp_system_default) - Medusa's built-in payment method
      - Credit Card via NMI (nmi_nmi) - Currently in test mode
      - Sezzle Buy Now, Pay Later (sezzle_sezzle) - Currently in sandbox mode
    - Responsive design using Tailwind CSS
@@ -873,40 +873,35 @@ If you need to reinstall the system on a new server, follow these steps in order
      ```
   5. This issue occurs because Medusa 2.7.1 expects certain database schema elements that might not exist in your database if upgraded from an earlier version
 
-#### COD Payment Button Text Issues
-- **Problem**: Cash on Delivery payment button shows "Select payment method" instead of "Pay on Delivery" in the checkout process
-- **Solution**:
-  1. The issue occurs in the payment button component and has been fixed in:
+#### Payment Method Update
+- **Change**: The custom COD (Cash on Delivery) payment method has been replaced with Medusa's built-in manual payment method
+- **Current Configuration**: The system now uses Medusa's standard manual payment provider (`pp_system_default`)
+- **Implementation**: 
+  1. The payment button component handles the manual payment method:
      ```
      /root/damneddesigns/storefront/src/modules/checkout/components/payment-button/index.tsx
      ```
-  2. The fix improves active payment session detection and button text setting logic:
+  2. The manual payment method is defined in the constants file:
      ```javascript
-     // Fixed code properly detects active session first, then falls back to COD
-     const activeSession = allSessions.find(s => s.status === "pending")
-     const findCODSession = allSessions.find(s => isCOD(s.provider_id))
-     const effectiveSession = activeSession || findCODSession || allSessions[0] || null
-     
-     // Improved button text setting
-     let newButtonText = "Place Order"
-     if (isCOD(providerId)) {
-       newButtonText = "Pay on Delivery"
-     } else if (isNMI(providerId)) {
-       newButtonText = "Pay with Credit Card"
+     // In /storefront/src/lib/constants.tsx
+     export const isManual = (providerId?: string) => {
+       return providerId?.startsWith("pp_system_default")
      }
-     // Then set state with this value
-     setButtonText(newButtonText)
      ```
-  3. After making any fixes to payment components, restart the storefront:
+  3. The payment button component uses a `ManualTestPaymentButton` for checkout:
+     ```javascript
+     // In payment-button/index.tsx
+     case isManual(paymentSession?.provider_id):
+       return (
+         <ManualTestPaymentButton notReady={notReady} data-testid={dataTestId} />
+       )
+     ```
+  4. After making any modifications to payment components, restart the storefront:
      ```bash
      pm2 restart damned-designs-storefront
      pm2 save
      ```
-  4. Related files that were updated:
-     - `payment-button/index.tsx` - Button text and session detection
-     - `review/index.tsx` - Review component session handling
-   
-  5. For more details on the COD implementation, see `/documentation/COD.md`
+  5. For more details on the manual payment implementation, see `/documentation/COD.md`
 
 #### Product Page 500 Errors
 - **Problem**: Server-side rendering errors on product pages
@@ -989,7 +984,7 @@ If you need to reinstall the system on a new server, follow these steps in order
 
 ---
 
-*Last updated: April 25, 2025 (System versions updated - Medusa 2.7.1, Next.js 15.3.1, Yarn removed, Documentation expanded)*
+*Last updated: April 28, 2025 (System versions updated - Medusa 2.7.1, Next.js 15.0.3, Admin 2.7.0, COD removed, Manual payment added)*
 
 ## System Backups and Restoration
 

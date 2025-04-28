@@ -5,8 +5,8 @@ This document contains critical information about the Damned Designs e-commerce 
 ## System Architecture & Status
 
 - **Backend**: Medusa.js v2.7.1 running on Node.js 20+
-- **Storefront**: Next.js 15.3.1 at port 8000
-- **Admin Panel**: Vite/React running at port 5173
+- **Storefront**: Next.js 15.0.3 at port 8000 (using @medusajs/js-sdk latest version)
+- **Admin Panel**: Medusa Dashboard v2.7.0 (Vite/React) running at port 5173
 - **Images Server**: Custom service at port 6162
 - **Database**: PostgreSQL
 - **Process Management**: PM2
@@ -136,13 +136,13 @@ module.exports = {
     pm2 save
     ```
 
-- **Cash on Delivery Button Text Issue**:
-  - **Problem**: When using COD payment method, the "Pay on Delivery" button text doesn't appear correctly in checkout
-  - **Solution**: The fix has been implemented in:
+- **Payment Method Update**:
+  - **Change**: The custom COD (Cash on Delivery) payment method has been replaced with Medusa's built-in manual payment method
+  - **Current Configuration**: The system uses Medusa's standard manual payment provider (`pp_system_default`)
+  - **Implementation**: The payment button component handles this method:
     ```
     /root/damneddesigns/storefront/src/modules/checkout/components/payment-button/index.tsx
     ```
-  - The fix ensures proper session detection and button text setting for COD payments
   - After any modifications, restart the storefront:
     ```bash
     pm2 restart damned-designs-storefront

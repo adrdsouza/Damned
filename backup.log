@@ -1,43 +1,44 @@
-[2025-04-27 03:00:01] Starting backup process for Damned Designs e-commerce system...
-[2025-04-27 03:00:01] Creating database backup...
-[2025-04-27 03:00:03] Backing up key configuration files...
-[2025-04-27 03:00:03] Creating compressed backup archive...
-20250427_030001/
-20250427_030001/medusa_db_20250427_030001.sql
-20250427_030001/Caddyfile
-20250427_030001/backend.env
-20250427_030001/documentation/
-20250427_030001/documentation/COD.md
-20250427_030001/documentation/Sezzle.md
-20250427_030001/documentation/PM2.md
-20250427_030001/documentation/BACKEND.md
-20250427_030001/documentation/SMTP.md
-20250427_030001/documentation/.gitignore
-20250427_030001/documentation/storefront.md
-20250427_030001/documentation/STOREFRONT.md
-20250427_030001/documentation/NMI.md
-20250427_030001/documentation/BACKUP.md
-20250427_030001/documentation/IMAGES.md
-20250427_030001/documentation/system-overview.md
-20250427_030001/documentation/ADMIN.md
-20250427_030001/ecosystem.config.js
-20250427_030001/admin.env
-20250427_030001/storefront.env
-[2025-04-27 03:00:04] Cleaning up temporary files...
-[2025-04-27 03:00:04] Creating weekly backup...
-[2025-04-27 03:00:04] Uploading backup to Google Drive...
+[2025-04-28 03:00:01] Starting backup process for Damned Designs e-commerce system...
+[2025-04-28 03:00:01] Creating database backup...
+[2025-04-28 03:00:03] Backing up key configuration files...
+[2025-04-28 03:00:03] Creating compressed backup archive...
+20250428_030001/
+20250428_030001/Caddyfile
+20250428_030001/backend.env
+20250428_030001/documentation/
+20250428_030001/documentation/COD.md
+20250428_030001/documentation/Sezzle.md
+20250428_030001/documentation/PM2.md
+20250428_030001/documentation/BACKEND.md
+20250428_030001/documentation/SMTP.md
+20250428_030001/documentation/.gitignore
+20250428_030001/documentation/storefront.md
+20250428_030001/documentation/STOREFRONT.md
+20250428_030001/documentation/NMI.md
+20250428_030001/documentation/BACKUP.md
+20250428_030001/documentation/IMAGES.md
+20250428_030001/documentation/system-overview.md
+20250428_030001/documentation/ADMIN.md
+20250428_030001/ecosystem.config.js
+20250428_030001/admin.env
+20250428_030001/storefront.env
+20250428_030001/medusa_db_20250428_030001.sql
+[2025-04-28 03:00:04] Cleaning up temporary files...
+[2025-04-28 03:00:04] Uploading backup to Google Drive...
+ 28684964 backups/damneddesigns_backup_20250427_030001.tar.gz
  28682551 backups/damneddesigns_backup_20250426_030001.tar.gz
  28664026 backups/damneddesigns_backup_20250425_030001.tar.gz
  28662892 backups/damneddesigns_backup_20250424_030001.tar.gz
- 28682551 backups/daily/damneddesigns_daily.tar.gz
  28664222 backups/ondemand/damneddesigns_ondemand_20250423_213940.tar.gz
  28658446 backups/ondemand/damneddesigns_ondemand_20250423_114755.tar.gz
+ 28684964 backups/weekly/damneddesigns_weekly_7.tar.gz
+ 28684964 backups/daily/damneddesigns_daily.tar.gz
  28658400 backups/db_backups/ondemand/medusa_db_20250423_115537.sql.gz
-[2025-04-27 03:00:56] Backup successfully uploaded to Google Drive
-[2025-04-27 03:00:56] Cleaning up old backups...
-[2025-04-27 03:00:57] Backup process completed successfully.
+[2025-04-28 03:00:50] Backup successfully uploaded to Google Drive
+[2025-04-28 03:00:50] Cleaning up old backups...
+[2025-04-28 03:00:52] Backup process completed successfully.
 ====================================================
-Backup saved to: /root/damneddesigns/backups/damneddesigns_backup_20250427_030001.tar.gz
+Backup saved to: /root/damneddesigns/backups/damneddesigns_backup_20250428_030001.tar.gz
 Backup sizes:
-28M	/root/damneddesigns/backups/damneddesigns_backup_20250427_030001.tar.gz
+28M	/root/damneddesigns/backups/damneddesigns_backup_20250428_030001.tar.gz
 ====================================================
