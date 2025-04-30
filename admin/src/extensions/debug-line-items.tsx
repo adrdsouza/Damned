@@ -7,7 +7,7 @@ import { Button, Container, Heading, Text } from "@medusajs/ui"
 export const DebugLineItems = () => {
   const [lineItems, setLineItems] = useState([])
   const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const [error, setError] = useState<string | null>(null)
 
   // Using direct fetch to avoid cache issues
   const fetchLineItems = async () => {
