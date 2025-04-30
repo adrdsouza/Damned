@@ -16,6 +16,7 @@ DB_NAME="medusa-medusaapp"
 # Log function
 log() {
   echo "[$(date +"%Y-%m-%d %H:%M:%S")] $1"
+  echo "[$(date +"%Y-%m-%d %H:%M:%S")] $1" >> "/root/damneddesigns/logs/backup.log"
 }
 
 # Create backup directories if they don't exist

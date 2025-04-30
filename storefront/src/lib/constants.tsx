@@ -31,12 +31,29 @@ export const paymentInfoMap: Record<
     icon: <CreditCard />,
   },
   // Add more payment providers here
+  pp_nmi_nmi: {
+    title: "Credit Card (NMI)",
+    icon: <CreditCard />, // Using CreditCard icon for now
+  },
+  pp_sezzle_sezzle: {
+    title: "Sezzle (Buy Now, Pay Later)",
+    icon: <CreditCard />, // Using CreditCard icon for now
+  },
 }
 
 // This only checks if it is native stripe for card payments, it ignores the other stripe-based providers
 export const isStripe = (providerId?: string) => {
   return providerId?.startsWith("pp_stripe_")
 }
+
+export const isNmi = (providerId?: string) => {
+  return providerId?.startsWith("pp_nmi_")
+}
+
+export const isSezzle = (providerId?: string) => {
+  return providerId?.startsWith("pp_sezzle_")
+}
+
 export const isPaypal = (providerId?: string) => {
   return providerId?.startsWith("pp_paypal")
 }

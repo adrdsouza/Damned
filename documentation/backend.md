@@ -30,7 +30,7 @@ The backend includes several custom extensions to the core Medusa functionality:
 1. **Custom Payment Providers**:
    - NMI Credit Card Processing (packages/medusa-payment-nmi)
    - Sezzle Buy Now, Pay Later (packages/medusa-payment-sezzle)
-   - Cash on Delivery (built-in Medusa provider)
+   - Manual Payment (Medusa's built-in system default provider)
 
 2. **Custom API Endpoints**:
    - Health check endpoint `/health`

@@ -1,280 +1,393 @@
-# Storefront to Backend Connection Analysis
+# Damned Designs Storefront Documentation
 
-This document provides a detailed analysis of the connection issues between the Damned Designs storefront and backend services, along with a comprehensive solution plan following Medusa 2.7 best practices.
+## Overview
 
-## 1. Problem Statement
+The Damned Designs storefront is a Next.js-based e-commerce frontend that serves as the customer-facing website. This document provides detailed technical information about the storefront architecture, configuration, development workflow, and troubleshooting.
 
-The storefront application is unable to properly connect to the Medusa backend API, resulting in failures when attempting to fetch products, process cart operations, and complete checkout flows.
+## Architecture & Components
 
-## 2. Architectural Analysis
+### Core Components
 
-### Current Architecture
+- **Framework**: Next.js 15.0.3
+- **React Version**: React 19 (RC)
+- **Directory**: `/root/damneddesigns/storefront`
+- **Styling**: Tailwind CSS
+- **State Management**: React Query via Medusa's JS SDK (latest version)
+- **Routing**: Next.js App Router
+- **Port**: 8000
 
-The system is designed as a modern e-commerce platform with separate components:
-
-- **Storefront**: SvelteKit application running on port 4173
-- **Backend**: Medusa.js API running on port 9000
-- **Admin Panel**: Vite/React application running on port 5173
-- **Image Server**: Custom service running on port 6162
-
-### Proxy Configuration
-
-Caddy is configured as a reverse proxy with the following routes:
-- `damneddesigns.com` → SvelteKit storefront (127.0.0.1:4173)
-- `api.damneddesigns.com` → Medusa backend (127.0.0.1:9000)
-- `admin.damneddesigns.com` → Admin panel (127.0.0.1:5173)
-- `images.damneddesigns.com` → Image server (127.0.0.1:6162)
-
-## 3. Identified Issues
-
-### 3.1. PM2 Configuration Override
-
-The PM2 configuration in `ecosystem.config.js` is forcing the storefront to use a local backend URL, overriding the environment variables:
-
-```javascript
-// Current problematic configuration in ecosystem.config.js
-{
-  name: "damned-designs-storefront",
-  cwd: "/root/damneddesigns/storefront",
-  script: "npm",
-  args: "run preview",
-  env: {
-    NODE_ENV: "production",
-    PUBLIC_MEDUSA_BACKEND_URL: "http://localhost:9000", // This overrides the .env setting
-  },
-  // ...
-}
-```
-
-### 3.2. Documentation vs. Implementation Discrepancies
-
-| Aspect | Documentation | Actual Implementation | Impact |
-|--------|--------------|----------------------|--------|
-| Storefront Framework | Next.js | SvelteKit | Different API connection patterns |
-| Backend URL | `https://api.damneddesigns.com` | Overridden to `http://localhost:9000` | Connection failures |
-| Port Configuration | 8000 (Next.js) | 4173 (SvelteKit preview) | Caddy proxy mismatch |
-
-### 3.3. Medusa Client Syntax Errors
-
-The Medusa client configuration in `src/lib/config/medusa.ts` contains duplicated properties:
-
-```javascript
-// Current problematic code with duplications
-const medusaClient = new Medusa({
-  baseUrl,
-  maxRetries: 3,
-  headers: {
-    'Accept-Version': '2022-01-01',
-    'Content-Type': 'application/json'
-  } as Record<string, string>,
-  publishableApiKey: PUBLIC_MEDUSA_STORE_ID
-  maxRetries: 3,  // Duplicate
-  headers: {      // Duplicate
-    'Accept-Version': '2022-01-01',
-    'Content-Type': 'application/json'
-  }
-  maxRetries: 3,  // Duplicate
-  publishableApiKey: PUBLIC_MEDUSA_STORE_ID
-});
-```
-
-### 3.4. CORS Configuration
-
-The backend's CORS settings may not explicitly include all necessary domains for proper API access.
-
-## 4. Solution Plan
-
-The following steps will resolve the storefront-to-backend connection issues:
-
-```mermaid
-flowchart TD
-    A[1. Fix PM2 Configuration] --> B[2. Verify Environment Variables]
-    B --> C[3. Fix Medusa Client Syntax]
-    C --> D[4. Update CORS Settings]
-    D --> E[5. Restart Services]
-    E --> F[6. Verify Connection]
-    F --> G[7. Monitor and Troubleshoot]
-```
-
-### 4.1. Fix PM2 Configuration
-
-Remove the hardcoded environment variable override in the PM2 configuration:
-
-```javascript
-// Fixed configuration
-{
-  name: "damned-designs-storefront",
-  cwd: "/root/damneddesigns/storefront",
-  script: "npm",
-  args: "run preview",
-  env: {
-    NODE_ENV: "production",
-    // Removed the PUBLIC_MEDUSA_BACKEND_URL override
-  },
-  // ...
-}
-```
-
-### 4.2. Verify Environment Variables
-
-Ensure that the storefront's `.env` file contains the correct configuration:
+### Key Directory Structure
 
 ```
-# Correct storefront .env configuration
-PUBLIC_MEDUSA_BACKEND_URL=https://api.damneddesigns.com
+/storefront
+├── .eslintrc.js           # ESLint configuration
+├── next-sitemap.js        # Sitemap generation config
+├── public/                # Static assets
+└── src/
+    ├── app/               # Next.js app router pages and layouts
+    │   ├── [countryCode]/ # Country/region-specific routes
+    │   │   ├── (main)/    # Main layout group
+    │   │   ├── account/   # User account pages
+    │   │   ├── cart/      # Shopping cart
+    │   │   ├── checkout/  # Checkout flow
+    │   │   └── products/  # Product listings and details
+    │   └── layout.tsx     # Root layout
+    ├── lib/               # Utility functions and shared code
+    │   ├── context/       # React context providers
+    │   └── hooks/         # Custom React hooks
+    ├── modules/           # Feature modules
+    │   ├── cart/          # Cart functionality
+    │   ├── checkout/      # Checkout functionality
+    │   ├── common/        # Shared components
+    │   ├── layout/        # Layout components
+    │   ├── products/      # Product components
+    │   └── store/         # Store-related functionality
+    └── styles/            # Global styles
+```
+
+## Server/Client Component Architecture
+
+The storefront follows Next.js App Router best practices for server and client components:
+
+### Server Components
+
+- Used for:
+  - Data fetching from Medusa API
+  - Initial page rendering
+  - SEO optimization
+  - Layout structures
+
+### Client Components
+
+- Used for:
+  - Interactive UI elements
+  - Cart management
+  - Form handling
+  - Client-side navigation
+  - Payment processing
+
+### Boundary Management
+
+The server/client component boundary is carefully managed:
+
+1. Server components fetch data and pass serializable data to client components
+2. Client components are marked with `"use client"` directive
+3. Server actions are marked with `"use server"` directive
+4. No client components import server-only functions
+
+## Configuration Details
+
+### Environment Variables
+
+The storefront configuration relies on environment variables defined in `/root/damneddesigns/storefront/.env`:
+
+```
+# Backend communication
+MEDUSA_BACKEND_URL=https://api.damneddesigns.com
 NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY=pk_4a68e1bd85e72212ebbe8364d329891e7bdabcc921912541f37078fcfe197bfe
+
+# Storefront configuration
+NEXT_PUBLIC_BASE_URL=https://damneddesigns.com
+NEXT_PUBLIC_DEFAULT_REGION=us
+
+# Revalidation
+REVALIDATE_SECRET=supersecret
 ```
 
-### 4.3. Fix Medusa Client Syntax
+### Medusa Client Configuration
 
-Fix the syntax errors in the Medusa client configuration:
+The Medusa client is configured to communicate with the backend API:
 
-```javascript
-// Fixed Medusa client configuration
-const medusaClient = new Medusa({
-  baseUrl,
+```typescript
+import Medusa from '@medusajs/medusa-js'
+
+const MEDUSA_BACKEND_URL = process.env.MEDUSA_BACKEND_URL || 'https://api.damneddesigns.com'
+const PUBLISHABLE_API_KEY = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY
+
+export const medusaClient = new Medusa({
+  baseUrl: MEDUSA_BACKEND_URL,
   maxRetries: 3,
-  headers: {
-    'Accept-Version': '2022-01-01',
-    'Content-Type': 'application/json'
-  } as Record<string, string>,
-  publishableApiKey: PUBLIC_MEDUSA_STORE_ID
-});
+  publishableApiKey: PUBLISHABLE_API_KEY
+})
 ```
 
-### 4.4. Update CORS Settings
+### Region & Country Handling
 
-Ensure the backend `.env` CORS settings include all necessary domains:
+The storefront implements sophisticated region handling:
 
+1. **URL Structure**: Uses `/[countryCode]/path` pattern for region-specific URLs
+2. **Region Selection**: Automatically detects user's region or fallback to default
+3. **Currency Display**: Shows prices in region's currency
+4. **Middleware**: Handles redirects based on region selection
+
+## Key Features
+
+### Product Browsing
+
+- Product listings with filtering and sorting
+- Product detail pages with variants
+- Product image galleries
+- Related products recommendations
+
+### Cart Functionality
+
+- Add to cart with variant selection
+- Cart preview/drawer
+- Quantity adjustments
+- Cart total calculations
+
+### Checkout Process
+
+1. **Cart Review**: Verify items and quantities
+2. **Shipping Information**: Address collection
+3. **Shipping Method**: Select from available options
+4. **Payment**: Multiple payment options:
+   - Credit/debit card via NMI
+   - Sezzle "Buy Now, Pay Later"
+   - Manual Payment (Medusa's built-in system default provider)
+5. **Order Confirmation**: Confirmation page with order details
+
+### User Account
+
+- User registration and login
+- Order history
+- Address management
+- Profile information
+
+## Payment Integration
+
+### Available Payment Methods
+
+The storefront is configured with the following payment providers:
+
+1. **Manual Payment**: Medusa's built-in payment provider (`pp_system_default`)
+   - Implemented using a simple button to place order
+   - No external payment provider integration
+   - Used for offline or alternative payment methods
+   - Defined in `/src/lib/constants.tsx` using the `isManual()` function
+
+2. **NMI Payment Gateway**: For credit card processing
+   - Provider ID: `pp_nmi_nmi`
+   - Processed through backend NMI integration
+   - Configured for production use
+
+3. **Sezzle Payment Gateway**: For buy now, pay later
+   - Provider ID: `pp_sezzle_sezzle`
+   - Processed through backend Sezzle integration
+   - Configured for production use
+
+### Payment Flow Implementation
+
+Payment processing is implemented in `/src/modules/checkout/components/payment-button/index.tsx` with the following logic:
+
+```typescript
+// Determine which payment UI to show based on provider
+switch (true) {
+  case isStripe(paymentSession?.provider_id):
+    return <StripePaymentButton />
+  case isManual(paymentSession?.provider_id):
+    return <ManualTestPaymentButton />
+  default:
+    return <Button disabled>Select a payment method</Button>
+}
+
+// Helper function in constants.tsx
+export const isManual = (providerId?: string) => {
+  return providerId?.startsWith("pp_system_default")
+}
 ```
-# Updated CORS settings
-STORE_CORS=http://localhost:8000,https://docs.medusajs.com,https://damneddesigns.com,https://api.damneddesigns.com
-ADMIN_CORS=http://localhost:5173,http://localhost:9000,https://docs.medusajs.com,https://damneddesigns.com,https://admin.damneddesigns.com
-AUTH_CORS=http://localhost:5173,http://localhost:9000,http://localhost:8000,https://docs.medusajs.com,https://damneddesigns.com,https://admin.damneddesigns.com,https://api.damneddesigns.com
-```
 
-### 4.5. Restart Services
+## Development Workflow
 
-After making these changes, restart both the backend and storefront services:
+### Local Development
 
+For local development:
+
+1. Start the storefront in development mode:
+   ```bash
+   cd /root/damneddesigns/storefront
+   npm run dev
+   ```
+
+2. This launches Next.js development server with:
+   - Hot Module Replacement
+   - Fast Refresh
+   - Development error overlay
+
+### Building for Production
+
+The production build process:
+
+1. Build the production assets:
+   ```bash
+   cd /root/damneddesigns/storefront
+   npm run build
+   ```
+   
+2. Start the production server:
+   ```bash
+   npm run start
+   ```
+
+3. The production server runs on port 8000
+
+### Using the Development Script
+
+For convenience, a development script is available:
 ```bash
-pm2 restart damned-designs-backend
-pm2 restart damned-designs-storefront
+/root/damneddesigns/storefront-dev.sh
 ```
 
-### 4.6. Verify Connection
+This script:
+1. Stops any running storefront process
+2. Sets up the environment
+3. Starts the development server
 
-Test the connection through:
-- Accessing the storefront website
-- Attempting to load products from the backend
-- Checking the browser console for any connection errors
-- Reviewing backend logs for CORS or connection issues
+## Rendering Strategies
 
-### 4.7. Monitor and Troubleshoot
+The storefront uses Next.js rendering strategies:
 
-If issues persist:
-- Enable verbose logging in the storefront
-- Check Caddy logs for proxy issues
-- Verify network connectivity between services
-- Test API endpoints directly with curl or Postman
+### Server-Side Rendering (SSR)
 
-## 5. Best Practices for SvelteKit with Medusa 2.7
+Used for:
+- Dynamic catalog pages
+- Search results
+- User-specific pages (cart, account)
+- Checkout flow
 
-### 5.1. Environment Variables
+### Dynamic Rendering
 
-- Use the SvelteKit environment variable pattern `PUBLIC_*` for client-side variables
-- Keep server URLs consistent between development and production
-- Avoid hardcoding URLs in PM2 configurations
+Used for:
+- Product pages with `dynamic = 'force-dynamic'` directive
+- This ensures product data is always fresh
+- Important for pages that need real-time data
 
-### 5.2. Service Initialization
+### Static Generation
 
-- Initialize the Medusa client once and reuse it throughout the application
-- Implement proper error handling and fallbacks
-- Use dependency injection patterns for easier testing
+Used for:
+- Homepage
+- Static pages (about, terms)
+- Product category listings that change infrequently
 
-### 5.3. CORS Configuration
+## API Integration
 
-- Configure proper CORS headers in Medusa backend for all domains
-- Use consistent protocol (HTTPS) for production environments
-- Test CORS configuration with preflight requests
+### Medusa API Communication
 
-### 5.4. Proxy Configuration
+The storefront communicates with the Medusa backend via:
 
-- Configure Caddy to properly route API requests
-- Use consistent port configurations for all services
-- Monitor for "connection refused" errors in proxy logs
+1. **Base URL**: `https://api.damneddesigns.com`
+2. **API Key**: Uses publishable API key for authentication
+3. **Client Library**: Uses `@medusajs/medusa-js` for standardized requests
+4. **Data Fetching**: Server components fetch data directly from the API
+5. **Client Updates**: Client components use React Query for mutations
 
-### 5.5. Monitoring
+### Data Fetching Pattern
 
-- Implement health checks between the storefront and backend
-- Add logging for API connection failures
-- Set up alerts for persistent connection issues
+```typescript
+// In server component
+async function ProductPage({ params }: Props) {
+  // Fetch product data from Medusa
+  const product = await getProduct(params.handle)
+  
+  // Pass serializable data to client components
+  return (
+    <div>
+      <ProductInfo product={product} />
+      <AddToCartButton productId={product.id} />
+    </div>
+  )
+}
+```
 
-## 6. Future Improvements
+## Common Issues & Troubleshooting
 
-Once the basic connectivity is restored, consider these improvements:
+### Product Page 500 Errors
 
-1. **Implement Server-Side Rendering (SSR)** for improved SEO and performance
-2. **Add caching layer** for product data to reduce API load
-3. **Implement service workers** for offline capabilities
-4. **Create health check endpoints** for better monitoring
-5. **Add connection status indicators** in the storefront UI
+- **Problem**: Static generation issues with dynamic product data
+- **Solution**: Force dynamic rendering by adding to product page file:
+  ```javascript
+  // In /storefront/src/app/[countryCode]/(main)/products/[handle]/page.tsx
+  export const dynamic = 'force-dynamic'
+  ```
+- This ensures the page is always rendered with fresh data
+
+### Database Schema Mismatches
+
+- **Problem**: "column i1.is_giftcard does not exist" error when adding products to cart
+- **Solution**:
+  1. Connect to the PostgreSQL database: `psql -U myuser -d medusa-medusaapp`
+  2. Add the missing column: `ALTER TABLE cart_line_item ADD COLUMN is_giftcard BOOLEAN NOT NULL DEFAULT FALSE;`
+  3. Restart services: `pm2 restart damned-designs-backend damned-designs-storefront`
+
+### Payment Provider Issues
+
+If payment methods aren't displaying correctly:
+
+1. **Check Provider IDs**: Verify payment provider identifiers match between backend and frontend
+   - Backend provider IDs should be properly set in `medusa-config.ts`
+   - Frontend constants should reference these IDs correctly in `constants.tsx`
+   - Format: `pp_provider_provider` (e.g., `pp_system_default`, `pp_nmi_nmi`)
+
+2. **Verify Client Components**: 
+   - Ensure all payment components use `"use client"` directive
+   - Add proper error handling and Suspense boundaries
+
+3. **Check Backend Configuration**:
+   - Verify payment plugins are registered in `/backend/medusa-config.ts`
+   - Ensure environment variables for payment providers are set correctly
+
+### Storefront to Backend Connection Issues
+
+If the storefront cannot connect to the backend:
+
+1. Verify the `MEDUSA_BACKEND_URL` is set to `https://api.damneddesigns.com`
+2. Check the Caddy configuration for proper proxy settings
+3. Ensure the publishable API key is correct and being sent with requests
+4. Check browser console for CORS or network errors
+5. Verify the backend is running: `pm2 status damned-designs-backend`
+
+## Performance Optimization
+
+The storefront is optimized for production with:
+
+1. **Code Splitting**: Automatic by Next.js for routes and components
+2. **Image Optimization**: Via Next.js Image component
+3. **Caching Strategy**: Mixed caching strategies including:
+   - `force-cache` for static content
+   - `no-store` for dynamic content
+4. **Bundle Optimization**: Minimized JavaScript bundles
+5. **Tree Shaking**: Removes unused code in production builds
+
+## Security Considerations
+
+The storefront implements several security measures:
+
+1. **HTTPS Only**: All traffic is encrypted via HTTPS
+2. **API Key Security**: Publishable API key only used for intended requests
+3. **Input Validation**: Form inputs validated on both client and server
+4. **XSS Protection**: React's built-in XSS protection
+5. **CORS Compliance**: Proper CORS headers for API requests
+
+## Deployment Process
+
+The standard deployment process:
+
+1. Build the production assets:
+   ```bash
+   cd /root/damneddesigns/storefront
+   npm run build
+   ```
+
+2. Start or restart the service with PM2:
+   ```bash
+   pm2 restart damned-designs-storefront
+   ```
+
+3. Verify the deployment:
+   - Check the site is accessible at `https://damneddesigns.com`
+   - Test critical flows (browse products, add to cart, checkout)
+   - Verify all regions and currencies are working
 
 ---
 
-## 7. API Key Configuration Fix (April 23, 2025)
-
-### 7.1. Issue: Missing Publishable API Key
-
-The backend was reporting the following error:
-```
-Publishable API key required in the request header: x-publishable-api-key.
-```
-
-This indicates that the storefront was not properly sending the publishable API key in the request headers when making API calls to the Medusa backend.
-
-### 7.2. Root Cause Analysis
-
-The root cause was identified as a mismatch between environment variable naming conventions:
-
-1. The storefront is built with SvelteKit, which uses the `PUBLIC_` prefix for client-side environment variables
-2. The API key was defined in `.env` using Next.js convention: `NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY`
-3. The medusa.ts file was attempting to access this environment variable using Vite's `import.meta.env` approach, which couldn't find the key due to the naming mismatch
-
-### 7.3. Solution Implemented
-
-Modified `src/lib/config/medusa.ts` to use a hardcoded publishable API key in the Axios headers:
-
-```typescript
-// The publishable API key for Medusa
-// This is hardcoded because SvelteKit uses a different naming convention than what's in .env
-const PUBLISHABLE_API_KEY = "pk_4a68e1bd85e72212ebbe8364d329891e7bdabcc921912541f37078fcfe197bfe";
-
-// Create a custom Axios instance with the publishable API key header
-const medusaAxios = axios.create({
-  headers: {
-    'x-publishable-api-key': PUBLISHABLE_API_KEY
-  }
-});
-```
-
-### 7.4. Alternative Long-Term Solutions
-
-For a more maintainable approach in the future, consider one of the following:
-
-1. **Rename environment variables** in `.env` to use the SvelteKit convention: `PUBLIC_MEDUSA_PUBLISHABLE_KEY`
-
-2. **Configure Vite** to expose the Next.js-named variables by updating `vite.config.ts`:
-   ```javascript
-   export default defineConfig({
-     plugins: [sveltekit()],
-     define: {
-       'import.meta.env.PUBLIC_MEDUSA_PUBLISHABLE_KEY':
-         JSON.stringify(process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY)
-     }
-   });
-   ```
-
-3. **Add environment variable transformation** in `hooks.server.ts` to map the variables at runtime
-
-*Last updated: April 23, 2025*
+*Last updated: April 30, 2025 (Next.js 15.0.3, Medusa JS SDK latest version, Manual payment method active)*

@@ -10,19 +10,17 @@ These variables should be set in your backend `.env` file:
 
 ```
 # NMI Configuration
-NMI_SECURITY_KEY=your_key_here
-NMI_TEST_MODE=enabled  # Set to "disabled" for production
+NMI_SECURITY_KEY=h3WD8p6Hc8WM4eEAqpb6fsTJMYp45Mrp
+# NMI_TEST_MODE is no longer used in the latest implementation
 ```
 
-### Test Configuration
-- **Test Security Key**: `6457Thfj624V5r7WUwc5v6a68Zsd6YEm`
-- **Test Mode**: Set to `enabled`
-- **API Endpoint**: `https://secure.nmi.com/api/transact.php`
-
-### Production Configuration
+### Production Configuration (Currently in use)
 - **Production Security Key**: `h3WD8p6Hc8WM4eEAqpb6fsTJMYp45Mrp`
 - **Production Checkout Public Key**: `checkout_public_2he6c5yTBC73u3AV2reJeHb37TpEegUa`
-- **Test Mode**: Set to `disabled`
+- **API Endpoint**: `https://secure.nmi.com/api/transact.php`
+
+### Test Configuration (Not currently in use)
+- **Test Security Key**: `6457Thfj624V5r7WUwc5v6a68Zsd6YEm`
 - **API Endpoint**: `https://secure.nmi.com/api/transact.php`
 
 ### System Details
@@ -112,8 +110,21 @@ To test the payment integration:
 2. Process a payment through the checkout flow
 3. Verify the transaction in the NMI merchant portal
 
-### Connectivity Test Result
-A connectivity test to the API endpoint `https://secure.nmi.com/api/transact.php` was performed. The API is reachable and responded with an authentication error (response code 300), confirming connectivity.
+### Connectivity Test Result (Manual Test)
+A manual connectivity test to the API endpoint `https://secure.nmi.com/api/transact.php` was performed. The API is reachable and responded with an authentication error (response code 300), confirming connectivity.
+
+### Automated Connection Test Script
+The script `/root/damneddesigns/scripts/utility/test-payment-providers.sh` can be used to test the NMI API connection using test credentials.
+
+**Result of latest execution (April 30, 2025):**
+Using NMI Security Key: `6457T*****d6YEm` (Test Key)
+Using NMI Test Mode: enabled
+API URL: `https://secure.nmi.com/api/transact.php`
+
+NMI API Response:
+`response=1&responsetext=SUCCESS&authcode=&transactionid=10660872751&avsresponse=Y&cvvresponse=M&orderid=&type=validate&response_code=100`
+
+**Conclusion:** The connection to the NMI API is successful using the provided test credentials, returning a `SUCCESS` response (code 100).
 
 ## Known Limitations
 1. The implementation primarily handles one-time payments
@@ -126,6 +137,124 @@ A connectivity test to the API endpoint `https://secure.nmi.com/api/transact.php
 3. Implement customer payment method storage (if needed)
 4. Add detailed error handling and reporting
 
+---
+
+## Storefront NMI Implementation Plan (2025-04-30)
+
+### 1. Summary of Current State and Blockers
+
+- **Storefront**: Next.js 15, React 19, TypeScript, Tailwind, React Query, Medusa JS SDK.
+- **NMI Backend**: Set up and working in test mode. The environment is currently configured to use test credentials, and the test API is working correctly.
+- **Frontend**: 
+  - NMI payment form exists (`nmi-payment-form.tsx`) and is structured for Collect.js.
+  - **Blocker**: `useCart` and `useCheckout` hooks are missing, so cart and checkout state are not accessible in the payment form.
+  - Collect.js script loading is not handled.
+  - Tokenization key is expected from an env variable.
+  - The `placeOrder` function may not be set up to handle the NMI payment token.
+
+### 2. Key Requirements from NMI Docs
+
+- **Collect.js** must be loaded on the page (via script tag or dynamic import).
+- **Tokenization key** (public key) is required for Collect.js configuration.
+- **Card fields** are rendered as iframes by Collect.js.
+- On successful tokenization, a payment token is returned and must be sent to the backend for processing.
+- **Security**: Never send raw card data to your backend; only the token.
+
+### 3. Step-by-Step Implementation Plan
+
+#### A. Fix Cart and Checkout State Access
+
+1. Implement or Refactor Cart/Checkout Hooks
+
+   - **Option 1:** Implement `useCart` and `useCheckout` hooks in `src/lib/hooks/` that use React Query and Medusa JS SDK to provide cart and checkout state.
+   - **Option 2:** If cart/checkout state is already available via context or props in the checkout flow, refactor the NMI payment form to consume that data directly (remove the broken imports).
+
+   ```mermaid
+   flowchart LR
+     A[Checkout Page] --> B[NMI Payment Form]
+     B -->|Needs| C[Cart State]
+     B -->|Needs| D[Checkout State]
+     C & D -->|From| E[React Query/Medusa SDK/Context]
+   ```
+
+   Example: Minimal `useCart` Hook
+
+   ```ts
+   // src/lib/hooks/use-cart.tsx
+   import { useQuery } from "@tanstack/react-query";
+   import { medusaClient } from "../config";
+
+   export function useCart() {
+     const { data, ...rest } = useQuery(["cart"], () => medusaClient.carts.retrieve());
+     return { cart: data?.cart, ...rest };
+   }
+   ```
+   (Adjust as needed for your actual cart state management.)
+
+#### B. Ensure Collect.js is Loaded
+
+- Add a `<script src="https://secure.nmi.com/token/Collect.js"></script>` tag to the checkout page, or dynamically load it in the payment form component.
+- Add error handling if the script fails to load.
+
+#### C. Pass the Tokenization Key Securely
+
+- Add `NEXT_PUBLIC_NMI_TOKENIZATION_KEY` to your `.env` file and expose it to the frontend.
+- In the payment form, use `process.env.NEXT_PUBLIC_NMI_TOKENIZATION_KEY` for Collect.js configuration.
+
+#### D. Update the Payment Form Logic
+
+- On form submit, Collect.js tokenizes the card data and returns a token.
+- Send the token to your backend (via the existing `placeOrder` or a new API endpoint).
+- Backend uses the token to process the payment with NMI.
+
+   ```mermaid
+   sequenceDiagram
+     participant User
+     participant Storefront
+     participant CollectJS
+     participant Backend
+     participant NMI
+
+     User->>Storefront: Enter card details
+     Storefront->>CollectJS: Tokenize card data
+     CollectJS-->>Storefront: Return payment token
+     Storefront->>Backend: Send payment token + order info
+     Backend->>NMI: Process payment with token
+     NMI-->>Backend: Payment result
+     Backend-->>Storefront: Order confirmation
+     Storefront-->>User: Show success/failure
+   ```
+
+#### E. Backend: Accept and Process Payment Token
+
+- Ensure the backend order placement endpoint accepts the NMI payment token and uses it to process the payment via the NMI plugin.
+- Update the backend if necessary to handle the tokenized flow.
+
+#### F. UI/UX and Error Handling
+
+- Show loading states and error messages in the payment form.
+- Disable the submit button while processing.
+- Display success/failure feedback to the user.
+
+#### G. Testing and Validation
+
+- Test the full flow in sandbox/test mode:
+  - Card tokenization
+  - Order placement
+  - Payment processing
+  - Error handling (invalid card, network issues, etc.)
+- Test in production with real credentials (after backend issues are resolved).
+
+#### H. Documentation and Maintenance
+
+- Document the integration steps and any custom logic in your project’s documentation.
+- Add troubleshooting steps for common issues (script loading, tokenization errors, backend failures).
+
+### 4. Clarification on Current Environment
+
+- As of April 30, 2025, the NMI integration is running in **test mode** with test credentials, and the test API is working correctly. The environment was switched from production to test, so any previous references to production errors in `payment_issues_analysis.md` are now outdated. Please refer to this document for the latest status.
+
+---
 ---
 
 *Last updated: April 22, 2025*
