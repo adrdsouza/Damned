@@ -92,11 +92,20 @@ const ShippingAddress = ({
       [e.target.name]: e.target.value,
     });
     if(e.target.name === "shipping_address.country_code"){
-      handleReginChange(e.target.value)
+      handleReginChange(e.target.value,formData)
     }
     // handleReginChange()
   }
-
+  const handleAnimationStart = (e) => {
+    if (e.animationName === 'onAutoFillStart') {
+      // The input has been autofilled
+      setFormData(prev => ({
+        ...prev,
+        [e.target.name]: e.target.value
+      }));
+    }
+  };
+  
   return (
     <>
       {customer && (addressesInRegion?.length || 0) > 0 && (
@@ -207,6 +216,7 @@ const ShippingAddress = ({
           onChange={handleChange}
           required
           data-testid="shipping-email-input"
+          onAnimationStart={handleAnimationStart}
         />
         <Input
           label="Phone"
@@ -215,6 +225,8 @@ const ShippingAddress = ({
           value={formData["shipping_address.phone"]}
           onChange={handleChange}
           data-testid="shipping-phone-input"
+          onAnimationStart={handleAnimationStart}
+
         />
       </div>
     </>

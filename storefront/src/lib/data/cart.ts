@@ -14,6 +14,7 @@ import {
   setCartId,
 } from "./cookies"
 import { getRegion } from "./regions"
+import { listCartShippingMethods } from "./fulfillment"
 
 /**
  * Retrieves a cart by its ID. If no ID is provided, it will use the cart ID from the cookies.
@@ -49,7 +50,32 @@ export async function retrieveCart(cartId?: string) {
     .then(({ cart }) => cart)
     .catch(() => null)
 }
+export async function retrieveCartWithoutCache(cartId?: string) {
+  const id = cartId || (await getCartId())
 
+  if (!id) {
+    return null
+  }
+
+  const headers = {
+    ...(await getAuthHeaders()),
+  }
+
+
+
+  return await sdk.client
+    .fetch<HttpTypes.StoreCartResponse>(`/store/carts/${id}`, {
+      method: "GET",
+      query: {
+        fields:
+          "*items, *region, *items.product, *items.variant, *items.thumbnail, *items.metadata, +items.total, *promotions, +shipping_methods.name",
+      },
+      headers,
+   
+    })
+    .then(({ cart }) => cart)
+    .catch(() => null)
+}
 export async function getOrSetCart(countryCode: string) {
   const region = await getRegion(countryCode)
 
@@ -110,7 +136,46 @@ export async function updateCart(data: HttpTypes.StoreUpdateCart) {
     })
     .catch(medusaError)
 }
+const handleUpdateShippingPrices = async (cartId: string) => {
+ try {
+  let cart=await retrieveCartWithoutCache(cartId)
+    // Step 2: Get available shipping methods
 
+    if(cart?.shipping_address){
+       const shippingMethods = await listCartShippingMethods(cartId);
+console.log(shippingMethods,"asdfasdfassdsdfasdfasd");
+ 
+       // Step 3: Verify shipping methods are available
+       if (!shippingMethods || shippingMethods.length === 0) {
+         return
+       }
+     let findFreeShipping = shippingMethods?.find((method) => method.amount == 0);
+ let oldShippingMethod = cart?.shipping_methods[0]?.shipping_option_id;
+ if(cart?.item_total >=100 && findFreeShipping && oldShippingMethod !=findFreeShipping?.id){
+   console.log(findFreeShipping,"asdfasdfasdfasdfasd");
+  
+   const shippingMethodId = findFreeShipping.id;
+   const result = await setShippingMethod({ 
+     cartId, 
+     shippingMethodId 
+   });
+  
+   console.log(result,"asdfasdfasdfasdfasd");
+
+}else{
+// Step 4: Set default shipping method (first option)
+let paidShipping = shippingMethods?.filter((method) => method.amount > 0);
+if(oldShippingMethod !=paidShipping[0]?.id){
+    let addshippin=await setShippingMethod({ 
+       cartId, 
+        shippingMethodId :paidShipping[0]?.id})
+    }
+    }
+  }
+ } catch (error) {
+  return error
+ }
+}
 export async function addToCart({
   variantId,
   quantity,
@@ -146,6 +211,8 @@ export async function addToCart({
       headers
     )
     .then(async () => {
+      await handleUpdateShippingPrices(cart.id)
+      
       // await sdk.store.cart.update(cart.id, {
       //   shipping_address: {
       //     country_code: process.env.NEXT_PUBLIC_DEFAULT_REGION ?? "us",
@@ -187,6 +254,8 @@ export async function updateLineItem({
   await sdk.store.cart
     .updateLineItem(cartId, lineId, { quantity }, {}, headers)
     .then(async () => {
+      await handleUpdateShippingPrices(cartId)
+
       const cartCacheTag = await getCacheTag("carts")
       revalidateTag(cartCacheTag)
 
@@ -214,6 +283,8 @@ export async function deleteLineItem(lineId: string) {
   await sdk.store.cart
     .deleteLineItem(cartId, lineId, headers)
     .then(async () => {
+      await handleUpdateShippingPrices(cartId)
+
       const cartCacheTag = await getCacheTag("carts")
       revalidateTag(cartCacheTag)
 
@@ -245,20 +316,16 @@ export async function setShippingMethod({
 
 export async function updateShippingCounty({
   cartId,
-  countryCode,
+  data,
 }: {
   cartId: string
-  countryCode: string
+  data: any
 }) {
   const headers = {
     ...(await getAuthHeaders()),
   }
-  await sdk.store.cart.update(cartId, {
-    shipping_address: {
-      country_code: countryCode,
-     
-    }
-  }) .then(async () => {
+  await sdk.store.cart.update(cartId, data,{},headers) .then(async (data) => {
+    return data
       //  const cartCacheTag = await getCacheTag("carts")
       //       revalidateTag(cartCacheTag)
            
