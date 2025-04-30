@@ -1,6 +1,7 @@
 import { ReactNode, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Link, useNavigate } from "react-router-dom"
+import { LineItemTitle } from "../../../../../extensions/line-item-title"
 
 import {
   ArrowDownRightMini,
@@ -399,14 +400,7 @@ const Item = ({
         <div className="flex items-start gap-x-4">
           <Thumbnail src={item.thumbnail} />
           <div>
-            <Text
-              size="small"
-              leading="compact"
-              weight="plus"
-              className="text-ui-fg-base"
-            >
-              {item.title}
-            </Text>
+            <LineItemTitle item={item} />
 
             {item.variant_sku && (
               <div className="flex items-center gap-x-1">

@@ -24,12 +24,6 @@ const sezzlePaymentPlugin = {
   }
 };
 
-// Define the Cash on Delivery plugin configuration
-const codPaymentPlugin = {
-  resolve: "medusa-payment-cod",
-  options: {}
-};
-
 // Ensure CORS settings include all necessary domains
 const cors = {
   origin: [
@@ -54,6 +48,8 @@ module.exports = defineConfig({
       cookieSecret: process.env.COOKIE_SECRET || "supersecret",
     },
     cors,
+    // Register custom entities for MikroORM (including LineItem with product_title)
+    entities: ["./src/models/*.ts"],
   },
   modules:[
     {
@@ -90,7 +86,6 @@ module.exports = defineConfig({
     // Add the payment plugin configurations here
     nmiPaymentPlugin,
     sezzlePaymentPlugin,
-    codPaymentPlugin,
     // Add Nodemailer with Google OAuth 2.0 for email notifications
     {
       resolve: `medusa-plugin-nodemailer`,
