@@ -155,12 +155,12 @@ const ItemsTemplate = ({ cart }: ItemsTemplateProps) => {
   const {
     currency_code,
     total,
-    subtotal,
-    tax_total,
-    discount_total,
-    gift_card_total,
+    item_total,
+  
     shipping_subtotal,
   } = cart
+  console.log(cart,"asdfasdfasdfasdfsd");
+  
   return (
     <>
      <h3 className="font-bold mb-4 text-lg">
@@ -195,7 +195,7 @@ const ItemsTemplate = ({ cart }: ItemsTemplateProps) => {
   <div className="space-y-2">
     <div className="flex justify-between">
       <span>Subtotal</span>
-      <span> {convertToLocale({ amount: subtotal ?? 0, currency_code })}</span>
+      <span> {convertToLocale({ amount: item_total ?? 0, currency_code })}</span>
     </div>
     <div className="flex justify-between">
       <span>Shipping</span>

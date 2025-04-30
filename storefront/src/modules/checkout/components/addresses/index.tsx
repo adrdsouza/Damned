@@ -28,6 +28,7 @@ import { isStripe as isStripeFunc, paymentInfoMap } from "@lib/constants"
 import { sdk } from "@lib/config"
 import { revalidateTag } from "next/cache"
 import { getCacheTag } from "@lib/data/cookies"
+import { collectValidFormData } from "@lib/util/formValidData"
 
 function formatAddress(address) {
   if (!address) {
@@ -155,22 +156,63 @@ const Addresses = ({
     setCheckoutStep("address")
   }
 
-  const handleReginChange=async (region:string)=>{
+  const handleReginChange = async (region: string,formData:any) => {
     try {
-      setIsLoading(true)
+      setIsLoading(true);
+      setError("");  // Clear previous errors
+      const validData = collectValidFormData(formRef);
+      console.log(validData,"hgasdkfasdfasdfasdfad");
+  
+  
 
-     
-           await updateShippingCounty({  cartId:cart.id,
-            countryCode:region,})
-
-    } catch (error) {
+     let res1= await updateShippingCounty({
+        cartId: cart?.id,
+        data:validData
+      });
       
-    }finally{
-      setIsLoading(false)
+  
+      // Step 2: Get available shipping methods
+      const shippingMethods = await listCartShippingMethods(cart?.id);
 
-    }
+      // Step 3: Verify shipping methods are available
+      if (!shippingMethods || shippingMethods.length === 0) {
+        throw new Error("Shipping options not available for this region");
+      }
+    let findFreeShipping = shippingMethods?.find((method) => method.amount == 0);
 
+  if(cart?.item_total >=100 && findFreeShipping){
+   
+      const shippingMethodId = findFreeShipping.id;
+      const result = await setShippingMethod({ 
+        cartId: cart?.id, 
+        shippingMethodId 
+      });
+      return result;
+
+  }else{
+// Step 4: Set default shipping method (first option)
+let paidShipping = shippingMethods?.filter((method) => method.amount > 0);
+
+const result = await setShippingMethod({ 
+  cartId: cart?.id, 
+  shippingMethodId :paidShipping[0]?.id
+});
+console.log({shippingMethods,cart,findFreeShipping},"hgasdkfasdfasdfsdasdasdfad");
+return result;
   }
+      
+      // Optional: you could return the result here if needed
+     
+      
+    } catch (error) {
+      // Proper error handling
+      const errorMessage = error instanceof Error ? error.message : "Failed to update region";
+      setError(errorMessage);
+      console.error("Region change error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
   
   // Step 1: Handle address submission
   const handleAddressSubmit = async (event) => {
@@ -203,50 +245,6 @@ const Addresses = ({
     }
   }
 
-  // Step 2: Handle shipping method selection
-  const handleSetShippingMethod = async (id: string, variant: "shipping" | "pickup") => {
-    setError(null)
-    if (formRef.current) {
-      const isValid = formRef.current.checkValidity();
-      
-      if (!isValid) {
-        // Trigger the browser's built-in validation UI
-        const tempSubmitButton = document.createElement('button');
-        tempSubmitButton.type = 'submit';
-        formRef.current.appendChild(tempSubmitButton);
-        tempSubmitButton.click();
-        tempSubmitButton.remove();
-        
-        setFormError("Please fill in all required fields");
-        return;
-      }
-    }
-    if (variant === "pickup") {
-      setShowPickupOptions(PICKUP_OPTION_ON)
-    } else {
-      setShowPickupOptions(PICKUP_OPTION_OFF)
-    }
-
-    let currentId: string | null = null
-    setIsLoading(true)
-    setShippingMethodId((prev) => {
-      currentId = prev
-      return id
-    })
-
-    try {
-      const formData = new FormData(formRef?.current)
-      // Set addresses in the backend
-      const result = await setAddresses(null, formData)
-      await setShippingMethod({ cartId: cart?.id, shippingMethodId: id })
-      
-    } catch (err) {
-      setShippingMethodId(currentId)
-      setError(err.message)
-    } finally {
-      setIsLoading(false)
-    }
-  }
 
   // Step 3: Handle payment method selection
   const setPaymentMethod = async (method: string) => {
@@ -318,16 +316,8 @@ const Addresses = ({
       // Set addresses in the backend
       const result = await setAddresses(null, formData)
       if(result?.success){
-        const shipping = await listCartShippingMethods(cart.id);
-        console.log(shipping,"ashdfasdfasdfasd");
-        if(!shipping || shipping?.length==0){
-          return  setError("Shipping option not available")
-        }
-   let shippingMethodId=shipping[0].id
-        
-       let ress= await setShippingMethod({ cartId: cart?.id, shippingMethodId })
-
-        
+      
+ 
 
       // First confirm payment is ready
       const paymentReady = await handleSubmitPayment()
