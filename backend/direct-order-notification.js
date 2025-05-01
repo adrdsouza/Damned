@@ -9,9 +9,7 @@
 const fs = require('fs');
 const path = require('path');
 const nodemailer = require('nodemailer');
-
-// Access pug from our external modules directory to avoid installation conflicts
-const pug = require('/root/damneddesigns/external-modules/node_modules/pug');
+const pug = require('pug');
 
 module.exports = {
   registerSubscribers: async (container) => {
