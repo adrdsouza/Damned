@@ -26,20 +26,42 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({
     (cart.shipping_methods?.length ?? 0) < 1
 
   const paymentSession = cart.payment_collection?.payment_sessions?.[0]
+  
+  console.log("Payment Button - Payment Session:", paymentSession);
+  console.log("Payment Button - Provider ID:", paymentSession?.provider_id);
+
+  // Always print which provider would be selected with current logic
+  if (isManual(paymentSession?.provider_id)) {
+    console.log("Payment Button - Provider is Manual Payment");
+  } else if (isNmi(paymentSession?.provider_id)) {
+    console.log("Payment Button - Provider is NMI");
+  } else if (isSezzle(paymentSession?.provider_id)) {
+    console.log("Payment Button - Provider is Sezzle");
+  } else {
+    console.log("Payment Button - Provider is Unknown:", paymentSession?.provider_id);
+  }
+
+  // If no payment session or provider_id is null/undefined, use NMI as fallback
+  if (!paymentSession || !paymentSession.provider_id) {
+    console.log("Payment Button - No payment session or provider_id, using NMI as fallback");
+    return <NmiPaymentForm cart={cart} data-testid={dataTestId} />;
+  }
 
   switch (true) {
     case isManual(paymentSession?.provider_id):
       return (
         <ManualTestPaymentButton notReady={notReady} data-testid={dataTestId} />
       )
-    case isNmi(paymentSession?.provider_id):
+    case isNmi(paymentSession?.provider_id) || paymentSession?.provider_id === "pp_nmi_nmi":
       return <NmiPaymentForm cart={cart} data-testid={dataTestId} />
     case isSezzle(paymentSession?.provider_id):
       // TODO: Replace with actual SezzlePaymentForm component when implemented
       // return <SezzlePaymentForm cart={cart} data-testid={dataTestId} />
       return <Button disabled>Sezzle (Not Implemented)</Button>
     default:
-      return <Button disabled>Select a payment method</Button>
+      // Fallback to NMI if we can't determine the payment provider
+      console.log("Payment Button - Unknown provider, using NMI as fallback");
+      return <NmiPaymentForm cart={cart} data-testid={dataTestId} />
   }
 }
 

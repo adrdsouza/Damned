@@ -26,41 +26,68 @@ export default function CheckoutForm({
     const fetchMethods = async () => {
       if (!cart) return
 
+      setLoading(true); // Ensure loading state is true at the start
       try {
-        // --- START: Added Logging ---
-        console.log("CheckoutForm - Fetching methods for Cart ID:", cart.id, "Region ID:", cart.region?.id);
-        // --- END: Added Logging ---
+        console.log("============= CHECKOUT DEBUG START =============");
+        console.log("CheckoutForm - Cart:", JSON.stringify({
+          id: cart.id,
+          region_id: cart.region?.id,
+          payment_collection: cart.payment_collection,
+          payment_session: cart.payment_collection?.payment_sessions?.[0]
+        }));
 
-        const shipping = await listCartShippingMethods(cart.id) // Keep fetching shipping, just don't log it confusingly
-        const payment = await listCartPaymentMethods(cart.region?.id ?? "")
+        // Fetch shipping methods
+        console.log("CheckoutForm - Fetching shipping methods for Cart ID:", cart.id);
+        const shipping = await listCartShippingMethods(cart.id);
+        console.log("CheckoutForm - Shipping Methods:", JSON.stringify(shipping));
 
-        // --- START: Added Logging ---
-        console.log("CheckoutForm - Fetched Payment Methods:", payment);
-        // --- END: Added Logging ---
+        // Fetch payment methods
+        console.log("CheckoutForm - Fetching payment methods for Region ID:", cart.region?.id);
+        const payment = await listCartPaymentMethods(cart.region?.id ?? "");
+        console.log("CheckoutForm - Payment Methods FINAL:", JSON.stringify(payment));
+        console.log("CheckoutForm - Available Payment Provider IDs:", payment ? payment.map(p => p.id).join(", ") : "None");
 
-        if (shipping && payment) {
-          setShippingMethods(shipping)
-          setPaymentMethods(payment)
+        if (shipping) {
+          console.log("CheckoutForm - Setting shipping methods, count:", shipping.length);
+          setShippingMethods(shipping);
+        } else {
+          console.warn("CheckoutForm - No shipping methods returned");
         }
+        
+        if (payment && payment.length > 0) {
+          console.log("CheckoutForm - Setting payment methods, count:", payment.length);
+          setPaymentMethods(payment);
+        } else {
+          console.warn("CheckoutForm - No payment methods returned!");
+        }
+        console.log("============= CHECKOUT DEBUG END =============");
       } catch (error) {
-        console.error("CheckoutForm - Failed to fetch methods:", error) // Added context to error log
+        console.error("CheckoutForm - Failed to fetch methods:", error);
+        setShippingMethods([]); // Clear methods on error
+        setPaymentMethods([]); // Clear methods on error
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     }
 
-    fetchMethods()
-  }, [cart])
+    fetchMethods();
+  }, [cart]); // Dependency array includes cart
 
-  if (!cart || loading) {
-    return null // Or a loading skeleton
+  if (!cart) {
+    // Optionally show a message or skeleton if cart is null initially
+    return <div>Loading cart...</div>;
+  }
+
+  if (loading) {
+    // Optionally show a loading state for methods
+    return <div>Loading checkout methods...</div>;
   }
 
   return (
     <div className="w-full grid grid-cols-1 gap-y-8">
       <Addresses cart={cart} customer={customer} checkoutStep={checkoutStep} setCheckoutStep={setCheckoutStep} availableShippingMethods={shippingMethods} availablePaymentMethods={paymentMethods} />
 
-      {/* Uncommented Payment component */}
+      {/* Payment component is uncommented */}
       <Payment cart={cart} availablePaymentMethods={paymentMethods} checkoutStep={checkoutStep} setCheckoutStep={setCheckoutStep} />
 
       {/* <Review cart={cart} checkoutStep={checkoutStep} setCheckoutStep={setCheckoutStep}/> */}

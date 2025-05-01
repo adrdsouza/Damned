@@ -492,9 +492,10 @@ export async function setAddresses(currentState: unknown, formData: FormData) {
 /**
  * Places an order for a cart. If no cart ID is provided, it will use the cart ID from the cookies.
  * @param cartId - optional - The ID of the cart to place an order for.
+ * @param paymentContext - optional - Additional payment data like tokens.
  * @returns The cart object if the order was successful, or null if not.
  */
-export async function placeOrder(cartId?: string) {
+export async function placeOrder(cartId?: string, paymentContext?: any) {
   const id = cartId || (await getCartId())
 
   if (!id) {
@@ -505,8 +506,13 @@ export async function placeOrder(cartId?: string) {
     ...(await getAuthHeaders()),
   }
 
+  // If we have payment context data (like an NMI token), send it to the backend
+  const options = paymentContext ? { context: paymentContext } : {}
+  
+  console.log("Completing cart with options:", options);
+
   const cartRes = await sdk.store.cart
-    .complete(id, {}, headers) // Original call
+    .complete(id, options, headers) // Pass any payment context to backend
     .then(async (cartRes) => {
       const cartCacheTag = await getCacheTag("carts")
       revalidateTag(cartCacheTag)

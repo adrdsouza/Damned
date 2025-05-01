@@ -39,8 +39,12 @@ const NmiPaymentForm: React.FC<NmiPaymentFormProps> = ({
     // Clear previous errors and configure CollectJS
     setErrorMessage(null)
     try {
+      // Hard-code the tokenization key from NMI.md documentation
+      const tokenizationKey = "checkout_public_2he6c5yTBC73u3AV2reJeHb37TpEegUa";
+      console.log("Using NMI tokenization key:", tokenizationKey);
+      
       CollectJS.configure({
-        tokenizationKey: process.env.NEXT_PUBLIC_NMI_TOKENIZATION_KEY,
+        tokenizationKey: tokenizationKey,
         paymentSelector: `#${paymentButtonId}`, // Use consistent button ID
         variant: "inline",
         fields: {
@@ -88,12 +92,23 @@ const NmiPaymentForm: React.FC<NmiPaymentFormProps> = ({
     setErrorMessage(null)
 
     try {
-      // Assuming the backend NMI plugin handles the token associated with the session
+      // Pass the NMI token to the backend via the payment_context parameter
       console.log("NMI Payment Token obtained:", paymentToken);
-      console.log("Calling placeOrder() - Backend NMI plugin should handle token.");
-      await placeOrder() // Call original placeOrder
+      
+      // Create a payment context object with the NMI token
+      // Make sure to specify provider_id as pp_nmi_nmi if not available from cart
+      const providerId = cart.payment_collection?.payment_sessions?.[0]?.provider_id || "pp_nmi_nmi";
+      const paymentContext = {
+        payment_token: paymentToken,
+        provider_id: providerId,
+        nmi_token: paymentToken // Add redundant token field in case backend expects different field name
+      }
+      
+      console.log("Calling placeOrder with payment context:", paymentContext);
+      await placeOrder(undefined, paymentContext) // Call placeOrder with context
 
     } catch (error: any) {
+      console.error("Payment error:", error);
       setErrorMessage(error.message || "An error occurred while processing payment.")
       setSubmitting(false) // Ensure submitting is false on error
     }

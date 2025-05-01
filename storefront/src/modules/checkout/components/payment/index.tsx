@@ -9,6 +9,7 @@ import ErrorMessage from "@modules/checkout/components/error-message"
 import PaymentContainer, {
   StripeCardContainer,
 } from "@modules/checkout/components/payment-container"
+import NmiPaymentForm from "@modules/checkout/components/payment-methods/nmi/nmi-payment-form"
 import Divider from "@modules/common/components/divider"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useCallback, useEffect, useState } from "react"
@@ -47,10 +48,17 @@ const Payment = ({
   const setPaymentMethod = async (method: string) => {
     setError(null)
     setSelectedPaymentMethod(method)
-    if (isStripeFunc(method)) {
-      await initiatePaymentSession(cart, {
+    console.log("Payment method selected:", method);
+    
+    // Always initiate payment session for any payment method
+    try {
+      console.log("Initiating payment session for:", method);
+      const response = await initiatePaymentSession(cart, {
         provider_id: method,
-      })
+      });
+      console.log("Payment session initiated response:", response);
+    } catch (err) {
+      console.error("Error initiating payment session:", err);
     }
   }
 
@@ -135,34 +143,88 @@ const Payment = ({
       </div>
       <div>
         <div className={isOpen ? "block" : "hidden"}>
-          {!paidByGiftcard && availablePaymentMethods?.length && (
+          {!paidByGiftcard ? (
             <>
+              <div className="mb-4">
+                <Text className="mb-2">Choose a payment method:</Text>
+              </div>
+              
+              {/* Simple radio group with just two options */}
               <RadioGroup
                 value={selectedPaymentMethod}
-                onChange={(value: string) => setPaymentMethod(value)}
+                onChange={setPaymentMethod}
               >
-                {availablePaymentMethods.map((paymentMethod) => (
-                  <div key={paymentMethod.id}>
-                    {isStripeFunc(paymentMethod.id) ? (
-                      <StripeCardContainer
-                        paymentProviderId={paymentMethod.id}
-                        selectedPaymentOptionId={selectedPaymentMethod}
-                        paymentInfoMap={paymentInfoMap}
-                        setCardBrand={setCardBrand}
-                        setError={setError}
-                        setCardComplete={setCardComplete}
-                      />
-                    ) : (
-                      <PaymentContainer
-                        paymentInfoMap={paymentInfoMap}
-                        paymentProviderId={paymentMethod.id}
-                        selectedPaymentOptionId={selectedPaymentMethod}
-                      />
+                {/* Define two specific payment methods we want to show */}
+                <div className="space-y-3">
+                  {/* Manual Payment Option */}
+                  <RadioGroup.Option
+                    value="pp_system_default"
+                    className={({ checked }) => 
+                      `flex flex-col gap-y-2 cursor-pointer py-4 border rounded-md px-8 
+                      ${checked ? 'border-ui-border-interactive bg-ui-bg-highlight' : 'border-ui-border-base hover:shadow-borders-interactive'}`
+                    }
+                  >
+                    {({ checked }) => (
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-x-4">
+                          <div className={`h-5 w-5 rounded-full border flex items-center justify-center ${checked ? 'border-ui-border-interactive' : 'border-ui-border-base'}`}>
+                            {checked && <div className="h-3 w-3 rounded-full bg-ui-bg-interactive" />}
+                          </div>
+                          <Text className="text-base-regular">Manual Payment</Text>
+                        </div>
+                        <span className="justify-self-end text-ui-fg-base">
+                          <CreditCard />
+                        </span>
+                      </div>
                     )}
-                  </div>
-                ))}
+                  </RadioGroup.Option>
+                  
+                  {/* NMI Payment Option */}
+                  <RadioGroup.Option
+                    value="pp_nmi_nmi"
+                    className={({ checked }) => 
+                      `flex flex-col gap-y-2 cursor-pointer py-4 border rounded-md px-8
+                      ${checked ? 'border-ui-border-interactive bg-ui-bg-highlight' : 'border-ui-border-base hover:shadow-borders-interactive'}`
+                    }
+                  >
+                    {({ checked }) => (
+                      <>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-x-4">
+                            <div className={`h-5 w-5 rounded-full border flex items-center justify-center ${checked ? 'border-ui-border-interactive' : 'border-ui-border-base'}`}>
+                              {checked && <div className="h-3 w-3 rounded-full bg-ui-bg-interactive" />}
+                            </div>
+                            <Text className="text-base-regular">Credit Card (NMI)</Text>
+                          </div>
+                          <span className="justify-self-end text-ui-fg-base">
+                            <CreditCard />
+                          </span>
+                        </div>
+                        
+                        {/* Show NMI form when selected */}
+                        {checked && cart && (
+                          <div className="mt-4 pt-4 border-t border-ui-border-base">
+                            <NmiPaymentForm cart={cart} data-testid="nmi-payment-form" />
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </RadioGroup.Option>
+                </div>
               </RadioGroup>
             </>
+          ) : (
+            <div className="flex flex-col w-1/3">
+              <Text className="txt-medium-plus text-ui-fg-base mb-1">
+                Payment method
+              </Text>
+              <Text
+                className="txt-medium text-ui-fg-subtle"
+                data-testid="payment-method-summary"
+              >
+                Gift card
+              </Text>
+            </div>
           )}
 
           {paidByGiftcard && (

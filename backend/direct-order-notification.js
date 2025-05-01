@@ -11,7 +11,7 @@ const path = require('path');
 const nodemailer = require('nodemailer');
 const pug = require('pug');
 
-module.exports = function DirectOrderNotification({ eventBusService, orderService }) {
+module.exports = function ({ eventBusService, orderService }) {
   const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
     port: 465,

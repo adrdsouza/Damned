@@ -1,5 +1,33 @@
 import { loadEnv, defineConfig } from '@medusajs/framework/utils'
 
+// Add NodeJS types explicitly for process.env
+declare const process: {
+  env: {
+    [key: string]: string | undefined
+    NODE_ENV: string
+    DATABASE_URL: string
+    REDIS_URL: string
+    STORE_CORS: string
+    ADMIN_CORS: string
+    AUTH_CORS: string
+    JWT_SECRET?: string
+    COOKIE_SECRET?: string
+    SERVER_LINK?: string
+    NMI_SECURITY_KEY?: string
+    SEZZLE_PUBLIC_KEY?: string
+    SEZZLE_PRIVATE_KEY?: string
+    SEZZLE_WEBHOOK_SECRET?: string
+    SEZZLE_SANDBOX_MODE?: string
+    SEZZLE_CAPTURE_MODE?: string
+    SMTP_FROM?: string
+    SMTP_USERNAME?: string
+    GOOGLE_CLIENT_ID?: string
+    GOOGLE_CLIENT_SECRET?: string
+    GOOGLE_REFRESH_TOKEN?: string
+  }
+  cwd(): string
+}
+
 loadEnv(process.env.NODE_ENV || 'development', process.cwd())
 
 // Define the NMI plugin configuration
@@ -86,10 +114,7 @@ module.exports = defineConfig({
         ],
       },
     },
-    // Load custom order debug subscriber
-    {
-      resolve: require.resolve("./subscribers/order-subscription-debug.js")
-    }
+    // ...do not add custom subscriber here, Medusa will auto-load from src/subscribers...
   ],
   plugins: [
     // Add the payment plugin configurations here

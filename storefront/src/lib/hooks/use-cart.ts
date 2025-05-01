@@ -9,7 +9,14 @@ import { queryKeys } from "../query-keys"
 export function useCart() {
   const { data, ...rest } = useQuery({
     queryKey: queryKeys.cart(), // Uses ["cart"]
-    queryFn: async () => sdk.store.carts.retrieveCurrent(),
+    queryFn: async () => {
+      // Use direct client fetch approach to avoid TypeScript errors with SDK methods
+      const response = await sdk.client.fetch({
+        path: `/store/carts/current`,
+        method: "GET",
+      })
+      return response
+    },
     // Keep data fresh for a short period to avoid rapid refetches
     staleTime: 1000 * 60 * 1, // 1 minute
     // Refetch when the window gains focus, component mounts, or network reconnects
@@ -18,6 +25,6 @@ export function useCart() {
     refetchOnReconnect: true,
   })
 
-  // Return the cart object directly and the rest of the query state
-  return { cart: data?.cart, ...rest }
+  // Return the cart object from the response and the rest of the query state
+  return { cart: data?.cart, ...rest } // Access cart from the response object
 }
