@@ -114,41 +114,11 @@ module.exports = defineConfig({
         ],
       },
     },
-    // ...do not add custom subscriber here, Medusa will auto-load from src/subscribers...
   ],
   plugins: [
     // Add the payment plugin configurations here
     nmiPaymentPlugin,
     sezzlePaymentPlugin,
-    // Add Nodemailer with Google OAuth 2.0 for email notifications
-    {
-      resolve: `medusa-plugin-nodemailer`,
-      options: {
-        from: process.env.SMTP_FROM,
-        order_placed_template: "orderplaced",
-        enable_order_placed_emails: true,
-        enable_customer_password_reset: true,
-        enable_admin_password_reset: true,
-        send_bcc_to_admin: true,
-        bcc_receiver: "info@damneddesigns.com",
-        debug: true,
-        // Use direct template path for better reliability
-        template_path: "/root/damneddesigns/backend/data/emailTemplates",
-        transport: {
-          host: "smtp.gmail.com",
-          port: 465,
-          secure: true, // use SSL
-          auth: {
-            type: "OAuth2",
-            user: process.env.SMTP_USERNAME, // your Google email
-            clientId: process.env.GOOGLE_CLIENT_ID,
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-            refreshToken: process.env.GOOGLE_REFRESH_TOKEN,
-          },
-          logger: true,
-          debug: true
-        },
-      },
-    }
+   
   ]
 })
