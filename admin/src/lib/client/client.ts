@@ -6,6 +6,10 @@ export const sdk = new Medusa({
   baseUrl: backendUrl,
   auth: {
     type: "session",
+    credentials: "include",
+  },
+  publicConfig: {
+    credentials: "include",
   },
 })
 

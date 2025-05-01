@@ -1,12 +1,12 @@
 {
   "name": "@medusajs/dashboard",
-  "version": "2.7.0",
+  "version": "2.7.1",
   "scripts": {
     "generate:static": "node ./scripts/generate-currencies.js && prettier --write ./src/lib/currencies.ts",
     "dev": "vite",
     "build": "tsup && node ./scripts/generate-types.js",
     "build:preview": "vite build",
-    "preview": "vite preview --host --port 5173",
+    "preview": "vite preview",
     "test": "vitest --run",
     "i18n:validate": "node ./scripts/i18n/validate-translation.js",
     "i18n:schema": "node ./scripts/i18n/generate-schema.js",
@@ -36,7 +36,6 @@
   "files": [
     "package.json",
     "src",
-    "index.html",
     "dist"
   ],
   "dependencies": {
@@ -45,10 +44,10 @@
     "@dnd-kit/sortable": "^8.0.0",
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "3.4.2",
-    "@medusajs/admin-shared": "latest",
-    "@medusajs/icons": "latest",
-    "@medusajs/js-sdk": "latest",
-    "@medusajs/ui": "latest",
+    "@medusajs/admin-shared": "2.7.1",
+    "@medusajs/icons": "2.7.1",
+    "@medusajs/js-sdk": "2.7.1",
+    "@medusajs/ui": "4.0.9",
     "@tanstack/react-query": "5.64.2",
     "@tanstack/react-table": "8.20.5",
     "@tanstack/react-virtual": "^3.8.3",
@@ -71,18 +70,18 @@
     "react-hook-form": "7.49.1",
     "react-i18next": "13.5.0",
     "react-jwt": "^1.2.0",
-    "react-router-dom": "^7.5.2",
+    "react-router-dom": "6.20.1",
     "zod": "3.22.4"
   },
   "devDependencies": {
-    "@medusajs/admin-shared": "2.7.0",
-    "@medusajs/admin-vite-plugin": "latest",
-    "@medusajs/types": "latest",
-    "@medusajs/ui-preset": "latest",
+    "@medusajs/admin-shared": "2.7.1",
+    "@medusajs/admin-vite-plugin": "2.7.1",
+    "@medusajs/types": "2.7.1",
+    "@medusajs/ui-preset": "2.7.1",
     "@types/node": "^20.11.15",
     "@types/react": "^18.2.79",
     "@types/react-dom": "^18.2.25",
-    "@vitejs/plugin-react": "^4.4.1",
+    "@vitejs/plugin-react": "4.2.1",
     "ajv": "^8.17.1",
     "autoprefixer": "^10.4.17",
     "postcss": "^8.4.33",
@@ -94,5 +93,5 @@
     "vite-plugin-inspect": "^0.8.7",
     "vitest": "^3.0.5"
   },
-  "packageManager": "npm@10.9.2"
+  "packageManager": "yarn@3.2.1"
 }

@@ -19,7 +19,6 @@ const DEFAULT_PROPERTIES = [
   "tax_total",
   "refundable_total",
   "order_change",
-  "items.product_title",
 ]
 
 const DEFAULT_RELATIONS = [

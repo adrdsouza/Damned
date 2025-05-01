@@ -65,15 +65,15 @@ The admin panel includes several custom routes extending the standard Medusa adm
 The admin panel configuration relies on environment variables defined in `/root/damneddesigns/admin/.env`:
 
 ```
-# Using the /api path on the admin domain for backend communication
-VITE_MEDUSA_BACKEND_URL="https://admin.damneddesigns.com/api"
+# Direct connection to the API endpoint
+VITE_MEDUSA_BACKEND_URL="https://api.damneddesigns.com"
 VITE_MEDUSA_STOREFRONT_URL="https://damneddesigns.com"
 ```
 
 ### Development vs. Production Configuration
 
 - **Development**: Uses local backend URL (`http://localhost:9000`)
-- **Production**: Uses proxied API path via Caddy (`https://admin.damneddesigns.com/api`)
+- **Production**: Uses direct API domain (`https://api.damneddesigns.com`)
 
 ### Build Configuration
 
@@ -120,8 +120,8 @@ The production build process involves these steps:
    ```
    
 2. The build generates optimized assets in the `dist` directory
-3. The admin is then served using `npm run preview` command, which uses Vite's preview server
-4. PM2 manages this process for continuous operation
+3. The static files are served directly by Caddy from the `dist` directory
+4. No PM2 process is needed as Caddy handles serving the static files efficiently
 
 ## API Communication
 
@@ -129,8 +129,8 @@ The production build process involves these steps:
 
 The admin panel communicates with the Medusa backend using:
 
-1. **API Base URL**: `https://admin.damneddesigns.com/api`
-2. **Authentication**: Admin JWT tokens
+1. **API Base URL**: `https://api.damneddesigns.com`
+2. **Authentication**: Admin JWT tokens with cross-domain cookies
 3. **Request Pattern**: Uses Medusa Admin API client for standardized requests
 4. **API Routes**: Accesses `/admin/*` routes with elevated permissions
 
@@ -139,9 +139,10 @@ The admin panel communicates with the Medusa backend using:
 1. Admin user logs in via the login screen
 2. Credentials are validated against the Medusa backend
 3. On successful authentication:
-   - JWT token is stored in cookies
+   - JWT token is stored in cookies with domain `damneddesigns.com`
    - User is redirected to the dashboard
 4. Token refresh occurs automatically when needed
+5. Cross-domain cookies with `sameSite: "none"` allow authentication across subdomains
 
 ## Feature Overview
 
@@ -196,40 +197,66 @@ The admin panel communicates with the Medusa backend using:
 
 ### Logs & Monitoring
 
-- **Application Logs**: View with `pm2 logs damned-designs-admin`
+- **Application Logs**: View Caddy logs with `journalctl -u caddy` for admin panel serving issues
 - **Runtime Monitoring**: Use `pm2 monit` for real-time stats
 - **Console Debugging**: React Developer Tools for component inspection
 
 ### Common Issues & Solutions
 
-#### Admin Panel Connection Refused
+#### Admin Panel 404 Not Found
 
-If Caddy logs show "dial tcp [::1]:5173: connect: connection refused":
+If you encounter 404 Not Found errors or static assets not loading:
 
-1. Verify the admin service is running: `pm2 status damned-designs-admin`
-2. Check the `vite.config.mts` has the host set to "0.0.0.0" 
-3. Confirm the `.env` file points to the correct backend URL
-4. Rebuild if needed: `cd /root/damneddesigns/admin && npm run build:preview`
-5. Restart the service: `pm2 restart damned-designs-admin`
-
-#### Admin to Backend API Issues
-
-If the admin panel cannot communicate with the backend:
-
-1. Verify the admin `.env` file has `VITE_MEDUSA_BACKEND_URL="https://admin.damneddesigns.com/api"`
-2. Check the Caddy configuration includes the API proxy rule
-3. Ensure the backend CORS settings include the admin domain
-4. Test the API directly: `curl https://admin.damneddesigns.com/api/health`
-5. Check for errors in the browser console and network tab
+1. Verify the Caddy configuration is correct: `cat /etc/caddy/Caddyfile`
+2. Check that the static files exist in the dist directory: `ls -la /root/damneddesigns/admin/dist`
+3. Check for an `index.html` file in the dist directory: `ls -la /root/damneddesigns/admin/dist/index.html`
+4. If the index.html file is missing, rebuild the admin panel with:
+   ```bash
+   cd /root/damneddesigns/admin
+   npm run build:preview
+   ```
+5. Restart Caddy: `systemctl restart caddy`
 
 #### Authentication Problems
 
 If login fails or authentication errors occur:
 
 1. Clear browser cookies and local storage
-2. Check backend logs for authentication errors
-3. Verify the cookie settings in the Medusa configuration
-4. Ensure JWT secrets match between environments
+2. Check backend logs for authentication errors: `pm2 logs damned-designs-backend`
+3. Verify the admin panel's `.env` has `VITE_MEDUSA_BACKEND_URL="https://api.damneddesigns.com"`
+4. Check that backend's `.env` has proper AUTH_CORS setting that includes both admin.damneddesigns.com and api.damneddesigns.com
+5. Ensure the backend has COOKIE_DOMAIN=damneddesigns.com defined
+6. Check Caddy configuration for proper handling of /auth/* routes
+7. Check browser network tab for specific error responses
+8. Rebuild admin panel and restart backend:
+   ```bash
+   cd /root/damneddesigns/admin
+   npm run build:preview
+   pm2 restart damned-designs-backend
+   systemctl reload caddy
+   ```
+
+#### Admin to Backend API Issues
+
+If the admin panel cannot communicate with the backend:
+
+1. Verify the admin `.env` file has `VITE_MEDUSA_BACKEND_URL="https://api.damneddesigns.com"`
+2. Ensure the backend CORS settings include admin.damneddesigns.com and api.damneddesigns.com
+3. Test the API directly: `curl https://api.damneddesigns.com/health`
+4. Check the client configuration in `src/lib/client/client.ts` has credentials included:
+   ```javascript
+   export const sdk = new Medusa({
+     baseUrl: backendUrl,
+     auth: {
+       type: "session",
+       credentials: "include",
+     },
+     publicConfig: {
+       credentials: "include",
+     },
+   })
+   ```
+5. Check for errors in the browser console and network tab
 
 ## Security Considerations
 
@@ -240,6 +267,8 @@ The admin panel implements several security measures:
 3. **API Isolation**: Admin API routes are separate from public store routes
 4. **CORS Protection**: Strict CORS settings prevent unauthorized access
 5. **Subdomain Isolation**: Running on `admin.damneddesigns.com` for separation
+6. **Secure Cookies**: Cookies set with secure flag and proper domain
+7. **Cross-Domain Authentication**: Configured with SameSite=None and secure flag
 
 ## Performance Optimization
 
@@ -268,5 +297,7 @@ When deploying updated versions of the admin panel:
 2. Verify environment variables are correctly set
 3. Build the production assets: `npm run build:preview`
 4. Ensure the right backend URL is configured
-5. Restart the service: `pm2 restart damned-designs-admin`
-6. Verify the admin panel is accessible at `https://admin.damneddesigns.com`
+5. Verify the admin panel is accessible at `https://admin.damneddesigns.com`
+6. Test login and key functionality
+7. Verify that API requests are working properly
+8. Check for console errors during operation

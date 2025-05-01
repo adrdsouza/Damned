@@ -65,11 +65,9 @@
     "node": ">=20"
   },
   "overrides": {
-    "axios": "1.6.0",
-    "**/axios": "1.6.0"
+    "axios": "1.6.0"
   },
   "resolutions": {
-    "axios": "1.6.0",
-    "**/axios": "1.6.0"
+    "axios": "1.6.0"
   }
 }

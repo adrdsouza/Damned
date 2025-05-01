@@ -14,12 +14,13 @@ PM2 is a production process manager for Node.js applications that allows you to 
 
 ## Services Setup
 
-The Damned Designs project uses PM2 to manage four main services:
+The Damned Designs project uses PM2 to manage three main services:
 
 1. **Backend** (Medusa server)
 2. **Storefront** (Next.js application)
-3. **Admin Panel** (Admin dashboard)
-4. **Images Server** (Image hosting service)
+3. **Images Server** (Image hosting service)
+
+Note: The Admin Panel is now served directly by Caddy as static files from the `/root/damneddesigns/admin/dist` directory and doesn't require a PM2 process.
 
 ## Starting Services
 
@@ -112,5 +113,5 @@ The storefront service requires a valid publishable key in the `.env` file. If y
 
 - `damned-designs-backend` - Medusa backend server
 - `damned-designs-storefront` - Next.js storefront
-- `damned-designs-admin` - Admin dashboard
+~~- `damned-designs-admin` - Admin dashboard~~ (Now served directly by Caddy as static files)
 - `damned-designs-images` - Images server

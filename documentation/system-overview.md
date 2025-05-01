@@ -44,7 +44,7 @@ The system follows a modern e-commerce architecture with separate frontend, back
 - **Framework**: Next.js 15.0.3
 - **UI Library**: React 19 (RC)
 - **Styling**: Tailwind CSS
-- **State Management**: React Query via Medusa's JS SDK (latest version)
+- **State Management**: React Query via Medusa's JS SDK (v2.7.1)
 - **Package Manager**: npm (yarn removed)
 - **Features**: Product pages, cart, checkout, user accounts
 - **Directory**: `/root/damneddesigns/storefront`
@@ -263,22 +263,7 @@ module.exports = {
       instances: 1,
       exec_mode: "fork"
     },
-    {
-      // Admin Panel - Production Mode
-      name: "damned-designs-admin",
-      cwd: "/root/damneddesigns/admin",
-      script: "npm",
-      args: "run preview",
-      env: {
-        NODE_ENV: "production",
-      },
-      time: true,
-      autorestart: true,
-      max_restarts: 10,
-      watch: false,
-      instances: 1,
-      exec_mode: "fork"
-    },
+    // Admin Panel is now served by Caddy directly from static files at /root/damneddesigns/admin/dist
     {
       // Images Server
       name: "damned-designs-images",
@@ -335,7 +320,7 @@ pm2 save
 ### Web Server (Caddy)
 
 #### Overview
-Caddy is used as a reverse proxy and SSL certificate manager, handling all HTTPS connections and routing traffic to the appropriate internal services.
+Caddy is used as a reverse proxy, static file server, and SSL certificate manager, handling all HTTPS connections and routing traffic to the appropriate internal services or serving static files directly.
 
 #### API Access Architecture
 The system uses a strategic approach to API access with different endpoints for different client types:
@@ -368,19 +353,28 @@ damneddesigns.com {
 }
 
 admin.damneddesigns.com {
-    handle_path /api/* {
+    # API requests
+    @api {
+        path /api/*
+    }
+    handle @api {
         uri strip_prefix /api
         reverse_proxy 127.0.0.1:9000
     }
-    
-    handle {
-        reverse_proxy 127.0.0.1:5173
-        @notFound {
-            path_regexp notfound ^/([^.]+)$
-            not path /
-        }
-        rewrite @notFound /
+
+    # Admin auth endpoints directly
+    @auth {
+        path /auth/*
     }
+    handle @auth {
+        reverse_proxy 127.0.0.1:9000
+    }
+    
+    # All non-API/auth requests serve static files
+    root * /root/damneddesigns/admin/dist
+    encode gzip
+    file_server
+    try_files {path} /index.html
 }
 
 images.damneddesigns.com {
@@ -398,8 +392,9 @@ api.damneddesigns.com {
 The system employs a secure architecture where backend services are never directly exposed to the internet:
 
 1. **Backend API Service**: Runs exclusively on localhost (127.0.0.1:9000) and is not directly accessible from the public internet
-2. **Secure Proxy Layers with Separated Concerns**: 
-   - Caddy functions as a reverse proxy for all domains, providing a security layer
+2. **Admin Panel Static Files**: Served directly by Caddy from `/root/damneddesigns/admin/dist` without requiring a Node.js process
+3. **Secure Proxy Layers with Separated Concerns**: 
+   - Caddy functions as a reverse proxy and static file server for all domains, providing a security layer
    - All external traffic must pass through Caddy before reaching any service
    - Two different API access points are configured for different clients:
      * `https://admin.damneddesigns.com/api/*` - for admin panel API access (admin-specific routes)

@@ -5,7 +5,7 @@ This document contains critical information about the Damned Designs e-commerce 
 ## System Architecture & Status
 
 - **Backend**: Medusa.js v2.7.1 running on Node.js 20+
-- **Storefront**: Next.js 15.0.3 at port 8000 (using @medusajs/js-sdk latest version)
+- **Storefront**: Next.js 15.0.3 at port 8000 (using @medusajs/js-sdk v2.7.1)
 - **Admin Panel**: Medusa Dashboard v2.7.0 (Vite/React) running at port 5173
 - **Images Server**: Custom service at port 6162
 - **Database**: PostgreSQL (user: myuser, password: adrdsouza, database: medusa-medusaapp)
@@ -15,17 +15,17 @@ This document contains critical information about the Damned Designs e-commerce 
 
 ### Payment Providers
 - **NMI Payment Gateway**: Credit card processing
-  - Currently in **PRODUCTION MODE** with key: `h3WD8p6Hc8WM4eEAqpb6fsTJMYp45Mrp`
-  - Test key available: `6457Thfj624V5r7WUwc5v6a68Zsd6YEm`
+  - Currently in **TEST MODE** with key: `6457Thfj624V5r7WUwc5v6a68Zsd6YEm`
+  - Production key available: `h3WD8p6Hc8WM4eEAqpb6fsTJMYp45Mrp`
   
 - **Sezzle Payment Gateway**: Buy now, pay later
   - Using virtual card API approach
-  - Currently in **PRODUCTION MODE** with these credentials:
-    - Public key: `sz_pub_mHYs860HGQAamnTUWOMfmOOsISn9slaT`
-    - Private key: `sz_pr_SSKy28nqlOAd5ujZu9w8jEHCvGJ78fBR`
-  - Sandbox credentials available:
+  - Currently in **SANDBOX MODE** with these credentials:
     - Public key: `sz_pub_fV7SRB5FuCvueYl07GA5lOObLRjEY6be`
     - Private key: `sz_pr_nIhPldbj7QgcZjWffh78GV6kYKgyqBog`
+  - Production credentials available:
+    - Public key: `sz_pub_mHYs860HGQAamnTUWOMfmOOsISn9slaT`
+    - Private key: `sz_pr_SSKy28nqlOAd5ujZu9w8jEHCvGJ78fBR`
 
 ### Test Card Information
 - **NMI Test Cards** (use only when NMI is in test mode):
@@ -46,7 +46,7 @@ This document contains critical information about the Damned Designs e-commerce 
 |---------|----------|------|-----|-------|
 | Backend | damned-designs-backend | 9000 | https://api.damneddesigns.com | Core e-commerce engine v2.7.1 |
 | Storefront | damned-designs-storefront | 8000 | https://damneddesigns.com | Next.js 15.0.3 customer-facing store |
-| Admin | damned-designs-admin | 5173 | https://admin.damneddesigns.com | Admin dashboard |
+| Admin | Static (Caddy) | N/A | https://admin.damneddesigns.com | Admin dashboard (statically served) |
 | Images Server | damned-designs-images | 6162 | https://images.damneddesigns.com | Image hosting |
 
 ## Important URLs & Access
@@ -74,10 +74,10 @@ This document contains critical information about the Damned Designs e-commerce 
 pm2 list
 
 # Check logs for specific service
-pm2 logs damned-designs-admin
+pm2 logs damned-designs-backend
 
 # Restart specific service
-pm2 restart damned-designs-admin
+pm2 restart damned-designs-backend
 
 # Restart all services
 pm2 restart all
@@ -143,22 +143,7 @@ module.exports = {
       instances: 1,
       exec_mode: "fork"
     },
-    {
-      // Admin Panel - Production Mode
-      name: "damned-designs-admin",
-      cwd: "/root/damneddesigns/admin",
-      script: "npm",
-      args: "run preview",
-      env: {
-        NODE_ENV: "production",
-      },
-      time: true,
-      autorestart: true,
-      max_restarts: 10,
-      watch: false,
-      instances: 1,
-      exec_mode: "fork"
-    },
+    // Admin Panel is now served by Caddy directly from static files at /root/damneddesigns/admin/dist
     {
       // Images Server
       name: "damned-designs-images",
@@ -189,19 +174,28 @@ damneddesigns.com {
 }
 
 admin.damneddesigns.com {
-    handle_path /api/* {
+    # API requests
+    @api {
+        path /api/*
+    }
+    handle @api {
         uri strip_prefix /api
         reverse_proxy 127.0.0.1:9000
     }
-    
-    handle {
-        reverse_proxy 127.0.0.1:5173
-        @notFound {
-            path_regexp notfound ^/([^.]+)$
-            not path /
-        }
-        rewrite @notFound /
+
+    # Admin auth endpoints directly
+    @auth {
+        path /auth/*
     }
+    handle @auth {
+        reverse_proxy 127.0.0.1:9000
+    }
+    
+    # All non-API/auth requests serve static files
+    root * /root/damneddesigns/admin/dist
+    encode gzip
+    file_server
+    try_files {path} /index.html
 }
 
 images.damneddesigns.com {
@@ -223,18 +217,19 @@ Key settings in `/root/damneddesigns/backend/.env`:
 STORE_CORS=http://localhost:8000,https://docs.medusajs.com,https://damneddesigns.com,https://api.damneddesigns.com
 ADMIN_CORS=http://localhost:5173,http://localhost:9000,https://docs.medusajs.com,https://damneddesigns.com,https://admin.damneddesigns.com
 AUTH_CORS=http://localhost:5173,http://localhost:9000,http://localhost:8000,https://docs.medusajs.com,https://damneddesigns.com,https://admin.damneddesigns.com,https://api.damneddesigns.com
+COOKIE_DOMAIN=damneddesigns.com
 REDIS_URL=redis://localhost:6379
 DATABASE_URL=postgres://myuser:adrdsouza@localhost/medusa-medusaapp
 SERVER_LINK=https://api.damneddesigns.com
 IMAGE_SERVER_URL=https://images.damneddesigns.com
 
 # NMI Payment Plugin Configuration
-NMI_SECURITY_KEY=h3WD8p6Hc8WM4eEAqpb6fsTJMYp45Mrp
+NMI_SECURITY_KEY=6457Thfj624V5r7WUwc5v6a68Zsd6YEm
 
 # Sezzle Payment Plugin Configuration
-SEZZLE_PUBLIC_KEY=sz_pub_mHYs860HGQAamnTUWOMfmOOsISn9slaT
-SEZZLE_PRIVATE_KEY=sz_pr_SSKy28nqlOAd5ujZu9w8jEHCvGJ78fBR
-SEZZLE_SANDBOX_MODE=false
+SEZZLE_PUBLIC_KEY=sz_pub_fV7SRB5FuCvueYl07GA5lOObLRjEY6be
+SEZZLE_PRIVATE_KEY=sz_pr_nIhPldbj7QgcZjWffh78GV6kYKgyqBog
+SEZZLE_SANDBOX_MODE=true
 SEZZLE_CAPTURE_MODE=automatic
 ```
 
@@ -254,7 +249,7 @@ NEXT_PUBLIC_DEFAULT_REGION=us
 Key settings in `/root/damneddesigns/admin/.env`:
 
 ```
-VITE_MEDUSA_BACKEND_URL="https://admin.damneddesigns.com/api"
+VITE_MEDUSA_BACKEND_URL="https://api.damneddesigns.com"
 VITE_MEDUSA_STOREFRONT_URL="https://damneddesigns.com"
 ```
 
@@ -350,7 +345,7 @@ psql -U myuser -d medusa-medusaapp < /path/to/database_backup.sql
 4. **Start all services using the provided script**
    ```bash
    cd /root/damneddesigns
-   ./start-pm2.sh
+   ./scripts/utility/start-pm2.sh
    ```
 
 ## Backup and Recovery
@@ -361,10 +356,10 @@ The system includes comprehensive backup scripts:
 
 ```bash
 # Create a standard backup
-/root/damneddesigns/backup-project.sh
+/root/damneddesigns/scripts/backup/backup-project.sh
 
 # Create an incremental backup
-/root/damneddesigns/backup-incremental.sh
+/root/damneddesigns/scripts/backup/backup-incremental.sh
 
 # Create a database backup only
 pg_dump -U myuser -d medusa-medusaapp > backup_$(date +%Y%m%d).sql
@@ -374,16 +369,16 @@ pg_dump -U myuser -d medusa-medusaapp > backup_$(date +%Y%m%d).sql
 
 ```bash
 # List available backups
-/root/damneddesigns/restore-project.sh --list
+/root/damneddesigns/scripts/backup/restore-project.sh --list
 
 # Restore from a project backup
-/root/damneddesigns/restore-project.sh --file BACKUP_FILENAME
+/root/damneddesigns/scripts/backup/restore-project.sh --file BACKUP_FILENAME
 
 # Restore from Google Drive backup (if configured)
-/root/damneddesigns/restore-project.sh --from-drive BACKUP_FILENAME
+/root/damneddesigns/scripts/backup/restore-project.sh --from-drive BACKUP_FILENAME
 ```
 
-For complete details on the backup system, see `/documentation/BACKUP.md`.
+For complete details on the backup system, see `/documentation/backup.md`.
 
 ## Common Issues & Fixes
 
@@ -422,6 +417,18 @@ For complete details on the backup system, see `/documentation/BACKUP.md`.
     // In /storefront/src/app/[countryCode]/(main)/products/[handle]/page.tsx
     export const dynamic = 'force-dynamic'
     ```
+
+### Admin Authentication Issues
+- **Login Failures**:
+  - **Problem**: Authentication errors when logging into admin panel
+  - **Solution**:
+    1. Verify AUTH_CORS in backend .env includes api.damneddesigns.com
+    2. Ensure COOKIE_DOMAIN=damneddesigns.com is set in backend .env
+    3. Verify admin .env points to API domain: VITE_MEDUSA_BACKEND_URL="https://api.damneddesigns.com"
+    4. Check Caddy configuration for proper /auth/* route handling
+    5. Rebuild admin panel: `cd /root/damneddesigns/admin && npm run build:preview`
+    6. Restart backend: `pm2 restart damned-designs-backend && pm2 save`
+    7. Reload Caddy: `systemctl reload caddy`
 
 ### Connection Refused Errors
 - **Caddy Connection Issues**:
@@ -479,6 +486,20 @@ journalctl -u caddy
 pm2 monit
 ```
 
+### Admin Panel Maintenance
+
+```bash
+# Rebuild admin panel after changes
+cd /root/damneddesigns/admin
+npm run build:preview
+
+# Verify admin panel is accessible
+curl -I https://admin.damneddesigns.com
+
+# Check for index.html existence
+ls -la /root/damneddesigns/admin/dist/index.html
+```
+
 ## Technical Support Contact Information
 
 For technical support, contact:
@@ -486,3 +507,44 @@ For technical support, contact:
 - Secondary: admin@damneddesigns.com
 
 For emergency issues related to the e-commerce platform, contact the system administrator directly.
+
+# Claude Code Configuration
+
+## Principles
+- Solve problems with minimal steps while maintaining professional standards
+- Never modify system configuration without explicit permission
+- Prioritize maintainable, secure, and efficient solutions
+- Use standard libraries and tools when appropriate
+- Explain reasoning behind significant decisions
+
+## Preferences
+- Favor minimal dependencies
+- Write well-documented, self-explanatory code
+- Provide clear error handling
+- Use idiomatic patterns for the language/framework
+- Include comments for complex logic
+
+## When making system changes
+- Always ask for confirmation before modifying:
+  - System environment variables
+  - Global configurations
+  - User permissions
+  - Network settings
+  - Package managers at system level
+
+## Output format
+- Present solutions with step-by-step explanations
+- Include complete code samples
+- Highlight potential issues or edge cases
+- Suggest alternatives when relevant
+
+## Examples of approved operations
+- Creating/modifying files in the current working directory
+- Using language-specific package managers (npm, pip, etc.) for project dependencies
+- Running standard development tools (compilers, linters, etc.)
+
+## Examples of operations requiring permission
+- Installing system-wide packages
+- Modifying PATH or environment variables
+- Changing file permissions outside working directory
+- Creating services or scheduled tasks

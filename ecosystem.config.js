@@ -33,22 +33,7 @@ HOST:"0.0.0.0"
       instances: 1,
       exec_mode: "fork"
     },
-    {
-      // Admin Panel - Production Mode
-      name: "damned-designs-admin",
-      cwd: "/root/damneddesigns/admin",
-      script: "npm",
-      args: "run preview",
-      env: {
-        NODE_ENV: "production",
-      },
-      time: true,
-      autorestart: true,
-      max_restarts: 10,
-      watch: false,
-      instances: 1,
-      exec_mode: "fork"
-    },
+    // Admin Panel is now served by Caddy directly from static files at /root/damneddesigns/admin/dist
     {
       // Images Server
       name: "damned-designs-images",

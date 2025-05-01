@@ -10,9 +10,28 @@ export default {
   registerSubscribers: async (container: ContainerType) => {
     const eventBus = container.resolve("eventBusService") as EventBusType;
     const pgConnection = container.resolve("db");
+    const notificationService = container.resolve("notificationService");
     
+    // Register notification service to handle order.placed events
+    try {
+      notificationService.subscribe("order.placed", "nodemailer");
+      console.log("Successfully registered nodemailer for order.placed notifications");
+    } catch (error) {
+      console.error(`Error registering notification handler: ${error.message}`);
+    }
+    
+    // Handle the order.placed event
     eventBus.subscribe("order.placed", async (data) => {
       await handleOrderPlaced(pgConnection, data);
+      
+      // Trigger standard order placed notifications (customer + admin BCC via config)
+      try {
+        await notificationService.send("order.placed", data);
+        console.log(`Standard order.placed notification triggered for order ${data.id}`);
+      } catch (error) {
+        // Log any errors but don't block the rest of the process
+        console.error(`Error triggering order.placed notification: ${error.message}`);
+      }
     });
   }
 };

@@ -46,6 +46,11 @@ module.exports = defineConfig({
       authCors: process.env.AUTH_CORS!,
       jwtSecret: process.env.JWT_SECRET || "supersecret",
       cookieSecret: process.env.COOKIE_SECRET || "supersecret",
+      cookie: {
+        secure: true,
+        sameSite: "none", 
+        maxAge: 60 * 60 * 24 * 30, // 30 days
+      }
     },
     cors,
     // Register custom entities for MikroORM (including LineItem with product_title)
@@ -91,6 +96,15 @@ module.exports = defineConfig({
       resolve: `medusa-plugin-nodemailer`,
       options: {
         from: process.env.SMTP_FROM,
+        order_placed_template: "orderplaced",
+        enable_order_placed_emails: true,
+        enable_customer_password_reset: true,
+        enable_admin_password_reset: true,
+        send_bcc_to_admin: true,
+        bcc_receiver: "info@damneddesigns.com",
+        debug: true,
+        // Use direct template path for better reliability
+        template_path: "/root/damneddesigns/backend/data/emailTemplates",
         transport: {
           host: "smtp.gmail.com",
           port: 465,
@@ -101,9 +115,9 @@ module.exports = defineConfig({
             clientId: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
             refreshToken: process.env.GOOGLE_REFRESH_TOKEN,
-            accessToken: process.env.GOOGLE_ACCESS_TOKEN, // Optional
-            expires: process.env.GOOGLE_TOKEN_EXPIRES // Optional
           },
+          logger: true,
+          debug: true
         },
       },
     }

@@ -41,12 +41,13 @@ cd ..
 echo "Starting images server with PM2..."
 pm2 start ecosystem.config.js --only damned-designs-images
 
-# Step 5: Build and start admin panel with PM2
-echo "Building and starting admin panel with PM2..."
+# Step 5: Build admin panel for static serving by Caddy
+echo "Building admin panel for static serving via Caddy..."
 cd admin
-npm run build:preview  # Build the admin panel first
+npm run build:preview  # Build the admin panel
 cd ..
-pm2 start ecosystem.config.js --only damned-designs-admin
+echo "Admin panel built successfully in /root/damneddesigns/admin/dist"
+echo "Caddy will serve these files directly - no PM2 process needed"
 
 # Step 6: Save the PM2 configuration
 echo "Saving PM2 configuration..."
@@ -70,4 +71,4 @@ echo "Available Services:"
 echo "  damned-designs-backend"
 echo "  damned-designs-storefront"
 echo "  damned-designs-images"
-echo "  damned-designs-admin"
+echo "  Note: Admin panel is now statically served by Caddy from /root/damneddesigns/admin/dist"
