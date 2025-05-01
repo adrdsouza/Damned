@@ -1,69 +1,97 @@
-# Payment Implementation Updates
+# Refined Payment Implementation Plan (2025-05-01)
 
-## Current Checkout Structure Overview
+## Overview
 
-The storefront checkout has:
-1. A `PaymentButton` component that renders different buttons based on provider ID
-2. The provider detection functions in `constants.tsx` (`isNmi`, `isSezzle`, etc.)
-3. A placeholder `GenericPaymentButton` handling both NMI and Sezzle (not properly integrated)
-4. An existing `nmi-payment-form.tsx` that's not connected to the checkout flow
+This plan outlines the steps to integrate NMI (using Collect.js) and Sezzle (using redirect flow) payment providers into the Medusa Next.js storefront, aligning with both provider recommendations and Medusa best practices.
 
-## Critical Updates Needed for NMI Implementation
+## Assessment of Previous Plan
 
-1. **Payment Flow Integration**
-   - Currently both NMI and Sezzle use a generic button that doesn't properly handle tokenization
-   - Need to modify `payment-button/index.tsx` to render the proper `NmiPaymentForm` component instead
+*   The original plan was solid but needed refinement, particularly around state management.
+*   Using dedicated components (`NmiPaymentForm`, `SezzlePaymentForm`) is correct.
+*   Relying on backend Medusa payment plugins is the standard architecture.
+*   The missing `useCart`/`useCheckout` hooks were correctly identified as a blocker.
 
-2. **Script Loading**
-   - Add Collect.js script loading in checkout layout or a higher-level component
-   - Ensure script is loaded before payment form renders
+## Refined Step-by-Step Plan
 
-3. **Missing Hooks Implementation**
-   - Implement cart access without relying on missing hooks:
-   ```tsx
-   // Option 1: Cart is already passed to PaymentButton, pass it to NmiPaymentForm
-   case isNmi(paymentSession?.provider_id):
-     return <NmiPaymentForm cart={cart} data-testid={dataTestId} />
-   
-   // Option 2: Create minimal hooks using existing API functions
-   // src/lib/hooks/use-cart.tsx
-   export function useCart() {
-     // Use existing cart state from parent components or React Query
-     return { cart: /* get from context or props */ };
-   }
-   ```
+1.  **Prerequisite - Storefront State Management:**
+    *   **Goal:** Ensure reliable access to cart and checkout state.
+    *   **Action:** Implement minimal `useCart` and `useCheckout` hooks (e.g., in `src/lib/hooks/`) using React Query and the Medusa JS SDK. This provides a cleaner solution than prop-drilling and aligns with common Medusa starter patterns.
 
-4. **Tokenization Key**
-   - Add `NEXT_PUBLIC_NMI_TOKENIZATION_KEY=checkout_public_2he6c5yTBC73u3AV2reJeHb37TpEegUa` to storefront `.env`
+2.  **NMI Integration (Storefront):**
+    *   **Goal:** Integrate the NMI payment form using Collect.js for secure, client-side tokenization.
+    *   **Actions:**
+        *   Load the Collect.js script (`https://secure.nmi.com/token/Collect.js`) reliably (e.g., in the main checkout layout or dynamically in the NMI component).
+        *   Add `NEXT_PUBLIC_NMI_TOKENIZATION_KEY=checkout_public_2he6c5yTBC73u3AV2reJeHb37TpEegUa` to the storefront `.env` file.
+        *   Update `payment-button/index.tsx` to render `NmiPaymentForm`, passing the `cart` obtained from the new hook.
+        *   Refactor `nmi-payment-form.tsx` to:
+            *   Use the new state hooks (`useCart`, `useCheckout`).
+            *   Implement the Collect.js initialization using the public tokenization key.
+            *   Handle form submission to trigger Collect.js tokenization.
+            *   On successful tokenization, call the `placeOrder` helper.
+        *   Ensure the `placeOrder` helper function (likely in `lib/data/cart` or similar) sends the obtained NMI payment token within the `context.payment_context` when completing the cart via the Medusa backend API (`medusaClient.carts.complete`).
 
-5. **placeOrder Function Update**
-   - Modify `placeOrder` in `lib/data/cart` to handle the NMI payment token
+3.  **Sezzle Integration (Storefront & Backend):**
+    *   **Goal:** Implement the Sezzle redirect payment flow.
+    *   **Actions:**
+        *   Create the `SezzlePaymentForm` component (`src/modules/checkout/components/payment-methods/sezzle/sezzle-payment-form.tsx`). This component will:
+            *   Use state hooks (`useCart`).
+            *   On submission/button click, call a backend endpoint to create a Sezzle session.
+            *   Handle the redirect to the URL provided by the backend.
+        *   Update `payment-button/index.tsx` to render `SezzlePaymentForm`.
+        *   **Backend (Sezzle Payment Plugin):** Implement an API endpoint (e.g., `/store/sezzle/session`) to:
+            *   Receive the cart ID.
+            *   Use the Medusa Sezzle plugin service (`sezzleProviderService.createPayment`) to initiate the payment session with Sezzle.
+            *   Return the Sezzle redirect URL (`session.redirect_url`) to the storefront.
+        *   **Storefront:** Create a dedicated callback route (e.g., `/checkout/sezzle-return`) to:
+            *   Receive the user back from Sezzle (with query parameters like `orderRef`).
+            *   Call a backend endpoint to verify the Sezzle payment status using the received parameters.
+            *   If verified, retrieve the cart ID (potentially stored in local storage or passed via state during redirect).
+            *   Complete the order via the `placeOrder` helper or directly using `medusaClient.carts.complete`.
+            *   Redirect the user to the order confirmation page.
+        *   **Backend (Sezzle Payment Plugin):** Implement an API endpoint (e.g., `/store/sezzle/verify`) to handle the verification call from the storefront callback route, confirming the payment status with Sezzle if necessary.
 
-## Critical Updates Needed for Sezzle Implementation
+4.  **Testing:**
+    *   **Goal:** Ensure end-to-end functionality and robustness.
+    *   **Actions:**
+        *   Test NMI flow with test card details via Collect.js. Verify tokenization and successful order completion.
+        *   Test Sezzle flow: initiation, redirect to Sezzle, successful return, order completion. Test cancellation flow.
+        *   Verify order creation and payment status updates in Medusa Admin for both providers.
+        *   Test error handling: invalid card (NMI), failed tokenization (NMI), failed redirect (Sezzle), user cancellation (Sezzle), backend errors during completion.
 
-1. **Create Sezzle Component**
-   - Implement a dedicated Sezzle payment component at `src/modules/checkout/components/payment-methods/sezzle/sezzle-payment-form.tsx`
-   - Similar structure to NMI but with Sezzle's redirect flow
+## High-Level Flow Diagram
 
-2. **Update PaymentButton**
-   - Modify `payment-button/index.tsx` to render the Sezzle component:
-   ```tsx
-   case isSezzle(paymentSession?.provider_id):
-     return <SezzlePaymentForm cart={cart} data-testid={dataTestId} />
-   ```
+```mermaid
+graph TD
+    subgraph Storefront Checkout
+        A[Checkout Page] --> B{Payment Step};
+        B --> C[PaymentContainer];
+        C --> D[PaymentButton Router];
+        D -- NMI --> E[NMI Payment Form];
+        D -- Sezzle --> F[Sezzle Payment Form];
+        E -- Collect.js Token --> G[placeOrder Helper];
+        F -- Initiate Redirect --> H[Backend Sezzle Endpoint: Create Session];
+        H -- Redirect URL --> F;
+        F -- Redirect User --> I[Sezzle Portal];
+        I -- Return User --> J[Storefront Sezzle Callback Route];
+        J -- Verify --> K[Backend Sezzle Endpoint: Verify Session];
+        K -- Confirmation --> J;
+        J -- Complete Order --> G;
+    end
 
-3. **Session & Redirect Handling**
-   - Implement backend endpoint for creating Sezzle sessions
-   - Add redirect handling in storefront for the return from Sezzle
+    subgraph Medusa Backend
+        G --> L[Medusa Cart Completion API];
+        L -- Payment Context (NMI Token/Sezzle Info) --> M[Payment Plugin (NMI/Sezzle)];
+        M -- Process Payment --> N[Payment Provider API (NMI/Sezzle)];
+        N -- Result --> M;
+        M -- Update Payment Status --> L;
+        L -- Create Order --> O[Order Module];
+        H(Create Sezzle Session); K(Verify Sezzle Session);
+    end
 
-4. **Callback Route**
-   - Create a return URL page/route to handle Sezzle callbacks after approval
+    subgraph External Services
+        I; N;
+    end
 
-## Implementation Priority Order
-
-1. Fix the hooks issue or refactor to use provided cart data
-2. Update `payment-button/index.tsx` to use proper payment forms
-3. Ensure Collect.js script loading for NMI
-4. Implement backend endpoints for Sezzle session creation and confirmation
-5. Create the Sezzle form component
-6. Test end-to-end flows
+    style Storefront Checkout fill:#f9f,stroke:#333,stroke-width:2px
+    style Medusa Backend fill:#ccf,stroke:#333,stroke-width:2px
+    style External Services fill:#dfd,stroke:#333,stroke-width:2px

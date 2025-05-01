@@ -27,16 +27,23 @@ export default function CheckoutForm({
       if (!cart) return
 
       try {
-        const shipping = await listCartShippingMethods(cart.id)
+        // --- START: Added Logging ---
+        console.log("CheckoutForm - Fetching methods for Cart ID:", cart.id, "Region ID:", cart.region?.id);
+        // --- END: Added Logging ---
+
+        const shipping = await listCartShippingMethods(cart.id) // Keep fetching shipping, just don't log it confusingly
         const payment = await listCartPaymentMethods(cart.region?.id ?? "")
-console.log(shipping,"asdjgafksdhgashkjfa");
+
+        // --- START: Added Logging ---
+        console.log("CheckoutForm - Fetched Payment Methods:", payment);
+        // --- END: Added Logging ---
 
         if (shipping && payment) {
           setShippingMethods(shipping)
           setPaymentMethods(payment)
         }
       } catch (error) {
-        console.error("Failed to fetch methods:", error)
+        console.error("CheckoutForm - Failed to fetch methods:", error) // Added context to error log
       } finally {
         setLoading(false)
       }
@@ -46,18 +53,17 @@ console.log(shipping,"asdjgafksdhgashkjfa");
   }, [cart])
 
   if (!cart || loading) {
-    return null
+    return null // Or a loading skeleton
   }
 
   return (
     <div className="w-full grid grid-cols-1 gap-y-8">
       <Addresses cart={cart} customer={customer} checkoutStep={checkoutStep} setCheckoutStep={setCheckoutStep} availableShippingMethods={shippingMethods} availablePaymentMethods={paymentMethods} />
 
-      {/* <Shipping cart={cart} availableShippingMethods={shippingMethods} checkoutStep={checkoutStep} setCheckoutStep={setCheckoutStep}/>
-
+      {/* Uncommented Payment component */}
       <Payment cart={cart} availablePaymentMethods={paymentMethods} checkoutStep={checkoutStep} setCheckoutStep={setCheckoutStep} />
 
-      <Review cart={cart} checkoutStep={checkoutStep} setCheckoutStep={setCheckoutStep}/> */}
+      {/* <Review cart={cart} checkoutStep={checkoutStep} setCheckoutStep={setCheckoutStep}/> */}
     </div>
   )
 }

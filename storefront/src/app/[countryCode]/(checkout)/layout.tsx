@@ -1,6 +1,7 @@
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import ChevronDown from "@modules/common/icons/chevron-down"
 import MedusaCTA from "@modules/layout/components/medusa-cta"
+import Script from "next/script"
 
 export default function CheckoutLayout({
   children,
@@ -38,6 +39,12 @@ export default function CheckoutLayout({
       <div className="py-4 w-full flex items-center justify-center">
         <MedusaCTA />
       </div>
+      {/* Load NMI Collect.js script */}
+      <Script
+        src="https://secure.nmi.com/token/Collect.js"
+        strategy="beforeInteractive"
+        data-testid="nmi-collect-js-script" // Added for potential testing
+      />
     </div>
   )
 }

@@ -37,7 +37,7 @@ HOST:"0.0.0.0"
     {
       // Images Server
       name: "damned-designs-images",
-      cwd: "/root/damneddesigns/images/images",
+      cwd: "/root/damneddesigns/images",
       script: "node",
       args: "index.js",
       env: {

@@ -10,16 +10,22 @@ const app = express();
 const port = process.env.PORT || 6162;
 const uploadDir = process.env.UPLOAD_DIR || 'static';
 const domainUrl = process.env.DOMAIN_URL || 'http://localhost:6162';
-const whitelist = ["http://localhost:9000","undefined","https://admin.damneddesigns.com","http://localhost:8000"]
+
+// Parse allowed origins from environment variable
+const allowedOrigins = process.env.ALLOWED_ORIGINS ? 
+  process.env.ALLOWED_ORIGINS.split(',') : 
+  ["http://localhost:9000", "https://admin.damneddesigns.com", "http://localhost:8000"];
+  
 const corsOptions = {
   origin: function (origin, callback) {
-    console.log(origin, "origin");
-    if (!origin || whitelist.includes(origin)) {
+    if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
+      console.log(`Blocked by CORS: ${origin}`);
       callback(new Error('Not allowed by CORS'));
     }
-  }
+  },
+  credentials: true
 };
 
  
@@ -72,7 +78,18 @@ app.delete('/delete/:key', async (req, res) => {
   }
 });
 
+// Global error handler
+app.use((err, req, res, next) => {
+  console.error(`Error: ${err.message}`);
+  res.status(500).json({ 
+    error: 'Server error', 
+    message: process.env.NODE_ENV === 'production' ? null : err.message 
+  });
+});
+
 // Start the server
 app.listen(port, () => {
-  console.log(`Image server is running at http://localhost:${port} here is binded domain ${domainUrl}`);
+  console.log(`Image server is running at http://localhost:${port}`);
+  console.log(`Public domain: ${domainUrl}`);
+  console.log(`Allowed origins: ${allowedOrigins.join(', ')}`);
 });

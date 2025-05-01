@@ -6,6 +6,8 @@ import { HttpTypes } from "@medusajs/types"
 import { Button } from "@medusajs/ui"
 import React, { useState } from "react"
 import ErrorMessage from "../error-message"
+import NmiPaymentForm from "../payment-methods/nmi/nmi-payment-form"
+// import SezzlePaymentForm from "../payment-methods/sezzle/sezzle-payment-form" // Placeholder for future import
 
 type PaymentButtonProps = {
   cart: HttpTypes.StoreCart
@@ -31,15 +33,11 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({
         <ManualTestPaymentButton notReady={notReady} data-testid={dataTestId} />
       )
     case isNmi(paymentSession?.provider_id):
+      return <NmiPaymentForm cart={cart} data-testid={dataTestId} />
     case isSezzle(paymentSession?.provider_id):
-      // Use a generic button for NMI and Sezzle for now
-      return (
-        <GenericPaymentButton
-          notReady={notReady}
-          providerId={paymentSession?.provider_id}
-          data-testid={dataTestId}
-        />
-      )
+      // TODO: Replace with actual SezzlePaymentForm component when implemented
+      // return <SezzlePaymentForm cart={cart} data-testid={dataTestId} />
+      return <Button disabled>Sezzle (Not Implemented)</Button>
     default:
       return <Button disabled>Select a payment method</Button>
   }

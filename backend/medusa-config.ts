@@ -85,6 +85,10 @@ module.exports = defineConfig({
           },
         ],
       },
+    },
+    // Load custom order debug subscriber
+    {
+      resolve: require.resolve("./subscribers/order-subscription-debug.js")
     }
   ],
   plugins: [

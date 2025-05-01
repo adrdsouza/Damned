@@ -71,7 +71,7 @@ export async function retrieveCartWithoutCache(cartId?: string) {
           "*items, *region, *items.product, *items.variant, *items.thumbnail, *items.metadata, +items.total, *promotions, +shipping_methods.name",
       },
       headers,
-   
+
     })
     .then(({ cart }) => cart)
     .catch(() => null)
@@ -144,30 +144,30 @@ const handleUpdateShippingPrices = async (cartId: string) => {
     if(cart?.shipping_address){
        const shippingMethods = await listCartShippingMethods(cartId);
 console.log(shippingMethods,"asdfasdfassdsdfasdfasd");
- 
+
        // Step 3: Verify shipping methods are available
        if (!shippingMethods || shippingMethods.length === 0) {
          return
        }
      let findFreeShipping = shippingMethods?.find((method) => method.amount == 0);
- let oldShippingMethod = cart?.shipping_methods[0]?.shipping_option_id;
+ let oldShippingMethod = cart?.shipping_methods?.[0]?.shipping_option_id; // Added optional chaining
  if(cart?.item_total >=100 && findFreeShipping && oldShippingMethod !=findFreeShipping?.id){
    console.log(findFreeShipping,"asdfasdfasdfasdfasd");
-  
+
    const shippingMethodId = findFreeShipping.id;
-   const result = await setShippingMethod({ 
-     cartId, 
-     shippingMethodId 
+   const result = await setShippingMethod({
+     cartId,
+     shippingMethodId
    });
-  
+
    console.log(result,"asdfasdfasdfasdfasd");
 
 }else{
 // Step 4: Set default shipping method (first option)
 let paidShipping = shippingMethods?.filter((method) => method.amount > 0);
 if(oldShippingMethod !=paidShipping[0]?.id){
-    let addshippin=await setShippingMethod({ 
-       cartId, 
+    let addshippin=await setShippingMethod({
+       cartId,
         shippingMethodId :paidShipping[0]?.id})
     }
     }
@@ -185,7 +185,7 @@ export async function addToCart({
   quantity: number
   countryCode: string
 }) {
- 
+
   if (!variantId) {
     throw new Error("Missing variant ID when adding to cart")
   }
@@ -199,7 +199,7 @@ export async function addToCart({
   const headers = {
     ...(await getAuthHeaders()),
   }
-  
+
   await sdk.store.cart
     .createLineItem(
       cart.id,
@@ -212,7 +212,7 @@ export async function addToCart({
     )
     .then(async () => {
       await handleUpdateShippingPrices(cart.id)
-      
+
       // await sdk.store.cart.update(cart.id, {
       //   shipping_address: {
       //     country_code: process.env.NEXT_PUBLIC_DEFAULT_REGION ?? "us",
@@ -220,7 +220,7 @@ export async function addToCart({
       //     // to be filled by the user later
       //   }
       // })
-    
+
       const cartCacheTag = await getCacheTag("carts")
       revalidateTag(cartCacheTag)
 
@@ -250,7 +250,7 @@ export async function updateLineItem({
   const headers = {
     ...(await getAuthHeaders()),
   }
- 
+
   await sdk.store.cart
     .updateLineItem(cartId, lineId, { quantity }, {}, headers)
     .then(async () => {
@@ -328,7 +328,7 @@ export async function updateShippingCounty({
     return data
       //  const cartCacheTag = await getCacheTag("carts")
       //       revalidateTag(cartCacheTag)
-           
+
       //       const fulfillmentCacheTag = await getCacheTag("fulfillment")
       //          revalidateTag(fulfillmentCacheTag)
   })
@@ -506,7 +506,7 @@ export async function placeOrder(cartId?: string) {
   }
 
   const cartRes = await sdk.store.cart
-    .complete(id, {}, headers)
+    .complete(id, {}, headers) // Original call
     .then(async (cartRes) => {
       const cartCacheTag = await getCacheTag("carts")
       revalidateTag(cartCacheTag)
