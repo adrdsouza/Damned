@@ -52,6 +52,30 @@ const sezzlePaymentPlugin = {
   }
 };
 
+// Define the Nodemailer plugin configuration
+const nodemailerPlugin = {
+  resolve: "medusa-plugin-nodemailer",
+  options: {
+    from: process.env.SMTP_FROM,
+    template_path: "data/emailTemplates",
+    enable_order_placed_emails: true,
+    enable_customer_password_reset: true,
+    bcc_receiver: process.env.SMTP_FROM, // Admin will receive a BCC of customer emails
+    transport: {
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: {
+        type: "OAuth2",
+        user: process.env.SMTP_USERNAME,
+        clientId: process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        refreshToken: process.env.GOOGLE_REFRESH_TOKEN,
+      }
+    }
+  }
+};
+
 // Ensure CORS settings include all necessary domains
 const cors = {
   origin: [
@@ -74,13 +98,13 @@ module.exports = defineConfig({
       authCors: process.env.AUTH_CORS!,
       jwtSecret: process.env.JWT_SECRET || "supersecret",
       cookieSecret: process.env.COOKIE_SECRET || "supersecret",
-    
+
     },
-  
+
     // Register custom entities for MikroORM (including LineItem with product_title)
   },
   modules:[
-  
+
     {
       resolve: "@medusajs/medusa/file",
       options: {
@@ -102,6 +126,6 @@ module.exports = defineConfig({
     // Add the payment plugin configurations here
     nmiPaymentPlugin,
     sezzlePaymentPlugin,
-   
+    nodemailerPlugin
   ]
 })
