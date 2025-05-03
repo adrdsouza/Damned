@@ -1,9 +1,27 @@
 import type { SubscriberArgs, SubscriberConfig } from "@medusajs/framework"
 import nodemailer from "nodemailer"
 
+// Store constants
+const STORE = {
+  NAME: process.env.STORE_NAME || "Damned Designs",
+  URL: process.env.STORE_URL || "https://damneddesigns.com",
+  ADMIN_URL: process.env.ADMIN_URL || "https://admin.damneddesigns.com",
+  LOGO_URL: process.env.STORE_LOGO || "https://damneddesigns.com/Logo.svg",
+  SUPPORT_EMAIL: process.env.SUPPORT_EMAIL || "support@damneddesigns.com",
+  ORDER_PREFIX: "DD" // Prefix for order numbers
+}
+
+// Email constants
+const EMAIL = {
+  USER: process.env.EMAIL_USER || "alishanwd1@gmail.com",
+  PASS: process.env.EMAIL_PASS || "epmq fknl jdwh wtkr",
+  FROM: process.env.EMAIL_FROM || "alishanwd1@gmail.com",
+  ADMIN: process.env.EMAIL_ADMIN || "alishanwd1@gmail.com"
+}
+
 /**
  * This subscriber handles sending order confirmation emails to both the customer and admin
- * when an order is placed. It uses Google SMTP with OAuth2 for sending emails.
+ * when an order is placed. It uses Gmail with app password for sending emails.
  */
 export default async function orderPlacedEmailHandler({
   event: { data },
@@ -14,8 +32,8 @@ export default async function orderPlacedEmailHandler({
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: "alishanwd1@gmail.com",
-      pass: "epmq fknl jdwh wtkr", // App Password, NOT Gmail password
+      user: EMAIL.USER,
+      pass: EMAIL.PASS,
     },
   })
 
@@ -50,7 +68,7 @@ const taxTotal = orderWithRelations?.tax_total?.numeric_ ?? 0;
 const total = orderWithRelations?.total?.numeric_ ?? 0;
 const discountTotal = orderWithRelations?.discount_total?.numeric_ ?? 0;
 
-  
+
     // Format order items for display in email
     const items = orderWithRelations?.items?.map(item => {
       const title = item?.product_title || item?.title || "Product";
@@ -82,16 +100,16 @@ const discountTotal = orderWithRelations?.discount_total?.numeric_ ?? 0;
     const customerHtml = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee;">
         <div style="text-align: center; margin-bottom: 20px;">
-          <img src="https://damneddesigns.com/Logo.svg" alt="Damned Designs" style="max-width: 200px; height: auto;">
+          <img src="${STORE.LOGO_URL}" alt="${STORE.NAME}" style="max-width: 200px; height: auto;">
           <h1 style="color: #333;">Thank you for your order!</h1>
         </div>
 
         <div style="padding: 20px 0;">
           <p>Hello ${orderWithRelations?.email},</p>
-          <p>Thank you for your purchase with Damned Designs. Your order has been received and is being processed.</p>
+          <p>Thank you for your purchase with ${STORE.NAME}. Your order has been received and is being processed.</p>
 
           <h2 style="color: #333;">Order Details:</h2>
-          <p><strong>Order Number:</strong> DD${orderWithRelations?.display_id}</p>
+          <p><strong>Order Number:</strong> ${STORE.ORDER_PREFIX}${orderWithRelations?.display_id}</p>
           <p><strong>Date:</strong> ${new Date(orderWithRelations.created_at).toLocaleDateString()}</p>
 
           <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
@@ -120,8 +138,8 @@ const discountTotal = orderWithRelations?.discount_total?.numeric_ ?? 0;
         </div>
 
         <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; font-size: 14px; color: #666;">
-          <p>If you have any questions about your order, please contact our customer service team at support@damneddesigns.com.</p>
-          <p>Thank you for shopping with Damned Designs!</p>
+          <p>If you have any questions about your order, please contact our customer service team at ${STORE.SUPPORT_EMAIL}.</p>
+          <p>Thank you for shopping with ${STORE.NAME}!</p>
         </div>
       </div>
     `;
@@ -131,7 +149,7 @@ const discountTotal = orderWithRelations?.discount_total?.numeric_ ?? 0;
     const adminHtml = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee;">
         <div style="text-align: center; margin-bottom: 20px;">
-          <img src="https://damneddesigns.com/Logo.svg" alt="Damned Designs" style="max-width: 200px; height: auto;">
+          <img src="${STORE.LOGO_URL}" alt="${STORE.NAME}" style="max-width: 200px; height: auto;">
           <h1 style="color: #333;">New Order Received!</h1>
         </div>
 
@@ -143,9 +161,9 @@ const discountTotal = orderWithRelations?.discount_total?.numeric_ ?? 0;
           <p><strong>Customer:</strong> ${orderWithRelations?.customer ? `${orderWithRelations?.customer?.first_name ?? addr?.first_name} ${orderWithRelations?.customer?.last_name ??  addr?.last_name}` : ''} (${orderWithRelations?.email})</p>
 
           <h2 style="color: #333;">Order Details:</h2>
-          <p><strong>Order Number:</strong> ${orderWithRelations?.display_id}</p>
+          <p><strong>Order Number:</strong> ${STORE.ORDER_PREFIX}${orderWithRelations?.display_id}</p>
           <p><strong>Date:</strong> ${new Date(orderWithRelations?.created_at).toLocaleDateString()}</p>
-          <p><strong>Order URL:</strong> <a href="https://admin.damneddesigns.com/orders/${orderWithRelations?.id}">View in Admin Panel</a></p>
+          <p><strong>Order URL:</strong> <a href="${STORE.ADMIN_URL}/orders/${orderWithRelations?.id}">View in Admin Panel</a></p>
 
           <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
             <thead>
@@ -173,8 +191,8 @@ const discountTotal = orderWithRelations?.discount_total?.numeric_ ?? 0;
         </div>
 
         <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; font-size: 14px; color: #666;">
-          <p>This is an automated notification from your Damned Designs e-commerce system.</p>
-          <p>© ${new Date().getFullYear()} Damned Designs - All rights reserved</p>
+          <p>This is an automated notification from your ${STORE.NAME} e-commerce system.</p>
+          <p>© ${new Date().getFullYear()} ${STORE.NAME} - All rights reserved</p>
         </div>
       </div>
     `;
@@ -184,18 +202,18 @@ const discountTotal = orderWithRelations?.discount_total?.numeric_ ?? 0;
     }
     // Send email to customer
     await transporter.sendMail({
-      from: "alishanwd1@gmail.com",
+      from: EMAIL.FROM,
       to: orderWithRelations?.email,
-      subject: `Damned Designs - Order Confirmation DD${orderWithRelations?.display_id}`,
+      subject: `${STORE.NAME} - Order Confirmation ${STORE.ORDER_PREFIX}${orderWithRelations?.display_id}`,
       html: customerHtml,
     })
     console.log(`Customer email sent for order ${data.id}`)
 
     // Send email to admin
     await transporter.sendMail({
-      from: "alishanwd1@gmail.com",
-      to: "alishanwd1@gmail.com", // Send to admin email
-      subject: `[ADMIN] New Order DD${orderWithRelations?.display_id}`,
+      from: EMAIL.FROM,
+      to: EMAIL.ADMIN, // Send to admin email
+      subject: `[ADMIN] New Order ${STORE.ORDER_PREFIX}${orderWithRelations?.display_id}`,
       html: adminHtml,
     })
     console.log(`Admin email sent for order ${data.id}`)
