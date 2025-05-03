@@ -41,6 +41,18 @@ const Login = ({ setCurrentView }: Props) => {
             data-testid="password-input"
           />
         </div>
+        <div className="flex items-center justify-end w-full mt-2">
+          <button
+            onClick={(e) => {
+              e.preventDefault()
+              setCurrentView(LOGIN_VIEW.RESET_PASSWORD)
+            }}
+            className="text-small-regular text-ui-fg-interactive underline"
+            data-testid="forgot-password-button"
+          >
+            Forgot password?
+          </button>
+        </div>
         <ErrorMessage error={message} data-testid="login-error-message" />
         <SubmitButton data-testid="sign-in-button" className="w-full mt-6">
           Sign in
