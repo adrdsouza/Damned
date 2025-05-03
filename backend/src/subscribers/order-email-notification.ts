@@ -7,7 +7,7 @@ const STORE = {
   URL: process.env.STORE_URL || "https://damneddesigns.com",
   ADMIN_URL: process.env.ADMIN_URL || "https://admin.damneddesigns.com",
   LOGO_URL: process.env.STORE_LOGO || "https://damneddesigns.com/Logo.svg",
-  SUPPORT_EMAIL: process.env.SUPPORT_EMAIL || "support@damneddesigns.com",
+  SUPPORT_EMAIL: process.env.SUPPORT_EMAIL || "info@damneddesigns.com",
   ORDER_PREFIX: "DD" // Prefix for order numbers
 }
 

@@ -6,7 +6,7 @@ const STORE = {
   NAME: process.env.STORE_NAME || "Damned Designs",
   URL: process.env.STORE_URL || "https://damneddesigns.com",
   LOGO_URL: process.env.STORE_LOGO || "https://damneddesigns.com/Logo.svg",
-  SUPPORT_EMAIL: process.env.SUPPORT_EMAIL || "support@damneddesigns.com"
+  SUPPORT_EMAIL: process.env.SUPPORT_EMAIL || "info@damneddesigns.com"
 }
 
 // Email constants
