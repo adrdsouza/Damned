@@ -503,7 +503,7 @@ ls -la /root/damneddesigns/admin/dist/index.html
 ## Technical Support Contact Information
 
 For technical support, contact:
-- Primary: support@damneddesigns.com
+- Primary: info@damneddesigns.com
 - Secondary: admin@damneddesigns.com
 
 For emergency issues related to the e-commerce platform, contact the system administrator directly.

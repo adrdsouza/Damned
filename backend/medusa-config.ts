@@ -52,6 +52,30 @@ const sezzlePaymentPlugin = {
   }
 };
 
+// Define the Nodemailer plugin configuration
+const nodemailerPlugin = {
+  resolve: "medusa-plugin-nodemailer",
+  options: {
+    from: process.env.SMTP_FROM,
+    template_path: "data/emailTemplates",
+    enable_order_placed_emails: true,
+    enable_customer_password_reset: true,
+    bcc_receiver: process.env.SMTP_FROM, // Admin will receive a BCC of customer emails
+    transport: {
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: {
+        type: "OAuth2",
+        user: process.env.SMTP_USERNAME,
+        clientId: process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        refreshToken: process.env.GOOGLE_REFRESH_TOKEN,
+      }
+    }
+  }
+};
+
 // Ensure CORS settings include all necessary domains
 const cors = {
   origin: [
@@ -74,31 +98,13 @@ module.exports = defineConfig({
       authCors: process.env.AUTH_CORS!,
       jwtSecret: process.env.JWT_SECRET || "supersecret",
       cookieSecret: process.env.COOKIE_SECRET || "supersecret",
-      cookie: {
-        secure: true,
-        sameSite: "none", 
-        maxAge: 60 * 60 * 24 * 30, // 30 days
-      }
+
     },
-    cors,
+
     // Register custom entities for MikroORM (including LineItem with product_title)
-    entities: ["./src/models/*.ts"],
   },
   modules:[
-    {
-      resolve: "@medusajs/cache-redis",
-      key: "cache",
-      options: {
-        redisUrl: process.env.REDIS_URL,
-      },
-    },
-    {
-      resolve: "@medusajs/event-bus-redis",
-      key: "event_bus",
-      options: {
-        redisUrl: process.env.REDIS_URL,
-      },
-    },
+
     {
       resolve: "@medusajs/medusa/file",
       options: {
@@ -120,35 +126,6 @@ module.exports = defineConfig({
     // Add the payment plugin configurations here
     nmiPaymentPlugin,
     sezzlePaymentPlugin,
-    // Add Nodemailer with Google OAuth 2.0 for email notifications
-    {
-      resolve: `medusa-plugin-nodemailer`,
-      options: {
-        from: process.env.SMTP_FROM,
-        order_placed_template: "orderplaced",
-        enable_order_placed_emails: true,
-        enable_customer_password_reset: true,
-        enable_admin_password_reset: true,
-        send_bcc_to_admin: true,
-        bcc_receiver: "info@damneddesigns.com",
-        debug: true,
-        // Use direct template path for better reliability
-        template_path: "/root/damneddesigns/backend/data/emailTemplates",
-        transport: {
-          host: "smtp.gmail.com",
-          port: 465,
-          secure: true, // use SSL
-          auth: {
-            type: "OAuth2",
-            user: process.env.SMTP_USERNAME, // your Google email
-            clientId: process.env.GOOGLE_CLIENT_ID,
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-            refreshToken: process.env.GOOGLE_REFRESH_TOKEN,
-          },
-          logger: true,
-          debug: true
-        },
-      },
-    }
+    nodemailerPlugin
   ]
 })
