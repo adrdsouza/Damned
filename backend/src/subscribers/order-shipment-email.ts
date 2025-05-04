@@ -118,7 +118,8 @@ export default async function orderShipmentEmailHandler({
       return;
     }
 
-    const order = fulfillment?.order;
+    // Use type assertion to handle extended Order properties
+    const order = fulfillment?.order as any;
 
     // Validate order data
     if (!order) {
@@ -287,7 +288,7 @@ Thank you for shopping with ${STORE.NAME}!
       await transporter.sendMail({
         from: EMAIL.FROM,
         to: EMAIL.ADMIN,
-        subject: `[ADMIN COPY] Shipment Notification - ${STORE.ORDER_PREFIX}${order?.display_id}`,
+        subject: `[ADMIN COPY] Shipment Notification - ${STORE.ORDER_PREFIX}${order?.display_id || ""}`,
         html: shipmentHtml,
         headers: {
           'X-Entity-Ref-ID': `shipment-admin-${data.id}`, // Prevent duplicate emails

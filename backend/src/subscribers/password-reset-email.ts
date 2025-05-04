@@ -75,6 +75,8 @@ export default async function passwordResetEmailHandler({
     token,
     actor_type,
   } },
+  // container is not used but required by the type
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   container,
 }: SubscriberArgs<{ entity_id: string, token: string, actor_type: string }>) {
   // Get the email transporter

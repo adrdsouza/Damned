@@ -64,13 +64,15 @@ export default async function orderPlacedEmailHandler({
       "discount_total"
       ],
     })
-    let orderWithRelations=orderData[0]
-  console.log(orderWithRelations,"orderWithRelatioasdns");
-  const subtotal = orderWithRelations?.subtotal?.numeric_ ?? 0;
-const shippingTotal = orderWithRelations?.shipping_total?.numeric_ ?? 0;
-const taxTotal = orderWithRelations?.tax_total?.numeric_ ?? 0;
-const total = orderWithRelations?.total?.numeric_ ?? 0;
-const discountTotal = orderWithRelations?.discount_total?.numeric_ ?? 0;
+    // Use type assertion to handle extended Order properties
+    let orderWithRelations = orderData[0] as any;
+  // Process order data
+  const subtotal = getNumber(orderWithRelations?.subtotal ?? 0);
+  const shippingTotal = getNumber(orderWithRelations?.shipping_total ?? 0);
+  const taxTotal = getNumber(orderWithRelations?.tax_total ?? 0);
+  const total = getNumber(orderWithRelations?.total ?? 0);
+  // Discount total is calculated but not used in this template
+  // const discountTotal = getNumber(orderWithRelations?.discount_total ?? 0);
 
 
     // Format order items for display in email
@@ -230,7 +232,7 @@ const discountTotal = orderWithRelations?.discount_total?.numeric_ ?? 0;
 export const config: SubscriberConfig = {
   event: "order.placed",
 }
-function getNumber(value) {
+function getNumber(value: any): number {
   if (value && typeof value === 'object' && 'numeric_' in value) {
     return value.numeric_; // Medusa BigNumber format
   } else if (typeof value === 'object' && typeof value.toNumber === 'function') {

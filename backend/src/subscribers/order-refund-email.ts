@@ -15,9 +15,8 @@ const STORE = {
 
 // Email constants
 const EMAIL = {
-  USER: process.env.EMAIL_USER || "info@damneddesigns.com",
-  PASS: process.env.EMAIL_PASS || "epmq fknl jdwh wtkr",
-  FROM: process.env.EMAIL_FROM || "info@damneddesigns.com",
+  USER: process.env.SMTP_USERNAME || process.env.EMAIL_USER || "info@damneddesigns.com",
+  FROM: process.env.SMTP_FROM || process.env.EMAIL_FROM || "info@damneddesigns.com",
   ADMIN: process.env.EMAIL_ADMIN || "info@damneddesigns.com",
   REPLY_TO: process.env.EMAIL_REPLY_TO || process.env.SUPPORT_EMAIL || "info@damneddesigns.com"
 }
@@ -51,10 +50,15 @@ let emailTransporter: Transporter | null = null;
 function getEmailTransporter(): Transporter {
   if (!emailTransporter) {
     emailTransporter = nodemailer.createTransport({
-      service: "gmail",
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
       auth: {
+        type: "OAuth2",
         user: EMAIL.USER,
-        pass: EMAIL.PASS,
+        clientId: process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        refreshToken: process.env.GOOGLE_REFRESH_TOKEN,
       },
       // Add pool configuration for better performance with multiple emails
       pool: true,
@@ -111,7 +115,8 @@ export default async function orderRefundEmailHandler({
       ],
     });
 
-    const order = orderData[0];
+    // Use type assertion to handle extended Order properties
+    const order = orderData[0] as any;
 console.log(order,"ordfgsdfgsfgsdfgsdfger");
     // Validate order data
     if (!order) {
@@ -126,8 +131,8 @@ console.log(order,"ordfgsdfgsfgsdfgsdfger");
     }
 
     // Get the specific refund
-    const refund = order.refunds?.find(r => r.id === data.refund_id);
-    
+    const refund = order.refunds?.find((r: any) => r.id === data.refund_id);
+
     if (!refund) {
       logger.warn(`No refund found with ID ${data.refund_id} for order ${data.id}, skipping refund notification`);
       return;
@@ -135,10 +140,10 @@ console.log(order,"ordfgsdfgsfgsdfgsdfger");
 
     // Get refund reason if available
     const refundReason = refund.reason || order.metadata?.refund_reason || "Your order has been refunded.";
-    
+
     // Calculate total refunded amount (including this refund)
-    const totalRefundedAmount = order.refunds?.reduce((sum, r) => sum + (r.amount || 0), 0) || 0;
-    
+    const totalRefundedAmount = order.refunds?.reduce((sum: number, r: any) => sum + (r.amount || 0), 0) || 0;
+
     // Determine if this is a full or partial refund
     const isFullRefund = totalRefundedAmount >= order.total;
     const refundType = isFullRefund ? "Full Refund" : "Partial Refund";
@@ -149,7 +154,7 @@ console.log(order,"ordfgsdfgsfgsdfgsdfger");
       const quantity = item?.quantity || 0;
       const unitPrice = item?.unit_price || 0;
       const total = (quantity * unitPrice) / 100; // Convert from cents to dollars
-      
+
       return `<tr>
         <td style="${STYLES.tableCell}">${title}</td>
         <td style="${STYLES.tableCellCenter}">${quantity}</td>
@@ -160,13 +165,6 @@ console.log(order,"ordfgsdfgsfgsdfgsdfger");
 
     // Format shipping address
     const shippingAddress = order.shipping_address;
-    const formattedAddress = shippingAddress ? `
-      <p>${shippingAddress.first_name || ''} ${shippingAddress.last_name || ''}</p>
-      <p>${shippingAddress.address_1 || ''}</p>
-      ${shippingAddress.address_2 ? `<p>${shippingAddress.address_2}</p>` : ''}
-      <p>${shippingAddress.city || ''}, ${shippingAddress.province || ''} ${shippingAddress.postal_code || ''}</p>
-      <p>${shippingAddress.country_code || ''}</p>
-    ` : '<p>No shipping address provided</p>';
 
     // Get customer name
     const customerName = order.customer?.first_name ||
@@ -231,7 +229,7 @@ console.log(order,"ordfgsdfgsfgsdfgsdfger");
           </div>
 
           <p>The refund has been processed and should appear on your original payment method within 3-10 business days, depending on your bank or credit card issuer.</p>
-          
+
           <p>If you have any questions about this refund, please don't hesitate to contact our customer service team at ${STORE.SUPPORT_EMAIL}.</p>
         </div>
 

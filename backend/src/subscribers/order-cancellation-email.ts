@@ -81,8 +81,8 @@ export default async function orderCancellationEmailHandler({
   // Get the email transporter
   const transporter = getEmailTransporter();
 
-  // Start tracking execution time for performance monitoring
-  const startTime = Date.now();
+  // Start tracking execution time for performance monitoring (commented out as not used)
+  // const startTime = Date.now();
 
   try {
 
@@ -115,7 +115,8 @@ export default async function orderCancellationEmailHandler({
       ],
     });
 
-    const order = orderData[0];
+    // Use type assertion to handle extended Order properties
+    const order = orderData[0] as any;
     // Validate order data
     if (!order) {
       logger.warn(`No order found with ID ${data.id}, skipping cancellation notification`);
@@ -148,13 +149,6 @@ export default async function orderCancellationEmailHandler({
 
     // Format shipping address
     const shippingAddress = order.shipping_address;
-    const formattedAddress = shippingAddress ? `
-      <p>${shippingAddress.first_name || ''} ${shippingAddress.last_name || ''}</p>
-      <p>${shippingAddress.address_1 || ''}</p>
-      ${shippingAddress.address_2 ? `<p>${shippingAddress.address_2}</p>` : ''}
-      <p>${shippingAddress.city || ''}, ${shippingAddress.province || ''} ${shippingAddress.postal_code || ''}</p>
-      <p>${shippingAddress.country_code || ''}</p>
-    ` : '<p>No shipping address provided</p>';
 
     // Get customer name
     const customerName = order.customer?.first_name ||
@@ -224,7 +218,7 @@ export default async function orderCancellationEmailHandler({
     `;
 
     // Send order cancellation notification email to customer
-    const info = await transporter.sendMail({
+    await transporter.sendMail({
       from: EMAIL.FROM,
       to: order.email,
       replyTo: EMAIL.REPLY_TO,
@@ -275,7 +269,8 @@ ${STORE.COMPANY_ADDRESS}
       }
     });
 
-    const executionTime = Date.now() - startTime;
+    // Calculate execution time for logging if needed
+    // const executionTime = Date.now() - startTime;
 
     // Always send a copy to admin for cancellations
     await transporter.sendMail({
@@ -314,7 +309,7 @@ Please check the logs for more details.`,
 export const config: SubscriberConfig = {
   event: "order.canceled",
 }
-function getNumber(value) {
+function getNumber(value: any): number {
   if (value && typeof value === 'object' && 'numeric_' in value) {
     return value.numeric_; // Medusa BigNumber format
   } else if (typeof value === 'object' && typeof value.toNumber === 'function') {
