@@ -265,3 +265,4 @@ nextjs-starter-medusa/playwright/.cache/
 nextjs-starter-medusa/playwright/.auth
 
 **/.claude/settings.local.json
+documentation/CLAUDE.md
