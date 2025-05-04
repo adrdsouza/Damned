@@ -15,10 +15,9 @@ const STORE = {
 
 // Email constants
 const EMAIL = {
-  USER: process.env.EMAIL_USER || "alishanwd1@gmail.com",
-  PASS: process.env.EMAIL_PASS || "epmq fknl jdwh wtkr",
-  FROM: process.env.EMAIL_FROM || "alishanwd1@gmail.com",
-  ADMIN: process.env.EMAIL_ADMIN || "alishanwd1@gmail.com",
+  USER: process.env.SMTP_USERNAME || process.env.EMAIL_USER || "info@damneddesigns.com",
+  FROM: process.env.SMTP_FROM || process.env.EMAIL_FROM || "info@damneddesigns.com",
+  ADMIN: process.env.EMAIL_ADMIN || "info@damneddesigns.com",
   REPLY_TO: process.env.EMAIL_REPLY_TO || process.env.SUPPORT_EMAIL || "info@damneddesigns.com"
 }
 
@@ -51,10 +50,15 @@ let emailTransporter: Transporter | null = null;
 function getEmailTransporter(): Transporter {
   if (!emailTransporter) {
     emailTransporter = nodemailer.createTransport({
-      service: "gmail",
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
       auth: {
+        type: "OAuth2",
         user: EMAIL.USER,
-        pass: EMAIL.PASS,
+        clientId: process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        refreshToken: process.env.GOOGLE_REFRESH_TOKEN,
       },
       // Add pool configuration for better performance with multiple emails
       pool: true,

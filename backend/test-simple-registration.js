@@ -8,7 +8,7 @@ async function testSimpleRegistrationEmail() {
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: process.env.EMAIL_USER || "alishanwd1@gmail.com",
+      user: process.env.EMAIL_USER || "info@damneddesigns.com",
       pass: process.env.EMAIL_PASS || "epmq fknl jdwh wtkr",
     }
   });
@@ -20,8 +20,8 @@ async function testSimpleRegistrationEmail() {
     
     // Send a simple test email
     const info = await transporter.sendMail({
-      from: process.env.EMAIL_FROM || "alishanwd1@gmail.com",
-      to: process.env.EMAIL_ADMIN || "alishanwd1@gmail.com",
+      from: process.env.EMAIL_FROM || "info@damneddesigns.com",
+      to: process.env.EMAIL_ADMIN || "info@damneddesigns.com",
       subject: "Welcome to Damned Designs - Test",
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee;">

@@ -12,10 +12,10 @@ const STORE = {
 
 // Email constants
 const EMAIL = {
-  USER: process.env.EMAIL_USER || "alishanwd1@gmail.com",
+  USER: process.env.EMAIL_USER || "info@damneddesigns.com",
   PASS: process.env.EMAIL_PASS || "epmq fknl jdwh wtkr",
-  FROM: process.env.EMAIL_FROM || "alishanwd1@gmail.com",
-  ADMIN: process.env.EMAIL_ADMIN || "alishanwd1@gmail.com"
+  FROM: process.env.EMAIL_FROM || "info@damneddesigns.com",
+  ADMIN: process.env.EMAIL_ADMIN || "info@damneddesigns.com"
 }
 
 // Mock order data for testing

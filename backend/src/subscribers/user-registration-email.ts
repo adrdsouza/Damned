@@ -12,10 +12,9 @@ const STORE = {
 
 // Email constants
 const EMAIL = {
-  USER: process.env.EMAIL_USER || "alishanwd1@gmail.com",
-  PASS: process.env.EMAIL_PASS || "epmq fknl jdwh wtkr",
-  FROM: process.env.EMAIL_FROM || "alishanwd1@gmail.com",
-  ADMIN: process.env.EMAIL_ADMIN || "alishanwd1@gmail.com"
+  USER: process.env.SMTP_USERNAME || process.env.EMAIL_USER || "info@damneddesigns.com",
+  FROM: process.env.SMTP_FROM || process.env.EMAIL_FROM || "info@damneddesigns.com",
+  ADMIN: process.env.EMAIL_ADMIN || "info@damneddesigns.com"
 }
 
 /**
@@ -26,12 +25,17 @@ export default async function userRegistrationEmailHandler({
   event: { data },
   container,
 }: SubscriberArgs<{ id: string }>) {
-  // Create a transporter using Gmail with app password
+  // Create a transporter using Gmail with OAuth2
   const transporter = nodemailer.createTransport({
-    service: "gmail",
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
     auth: {
+      type: "OAuth2",
       user: EMAIL.USER,
-      pass: EMAIL.PASS,
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      refreshToken: process.env.GOOGLE_REFRESH_TOKEN,
     },
   })
 
@@ -52,7 +56,7 @@ export default async function userRegistrationEmailHandler({
     })
 
     const customer = customerData[0]
-    
+
     if (!customer?.email) {
       console.log("No email found for customer, skipping welcome email")
       return
@@ -69,14 +73,14 @@ export default async function userRegistrationEmailHandler({
         <div style="padding: 20px 0;">
           <p>Hello ${customer.first_name || 'there'},</p>
           <p>Thank you for creating an account with ${STORE.NAME}. We're excited to have you join our community!</p>
-          
+
           <div style="background-color: #f9f9f9; padding: 15px; border-radius: 4px; margin: 20px 0;">
             <h2 style="color: #333; margin-top: 0;">Your Account Information:</h2>
             <p><strong>Email:</strong> ${customer.email}</p>
             <p><strong>Name:</strong> ${customer.first_name || ''} ${customer.last_name || ''}</p>
             <p><strong>Date Joined:</strong> ${new Date(customer.created_at).toLocaleDateString()}</p>
           </div>
-          
+
           <p>With your account, you can:</p>
           <ul style="padding-left: 20px; line-height: 1.6;">
             <li>Track your orders</li>
@@ -84,13 +88,13 @@ export default async function userRegistrationEmailHandler({
             <li>Update your profile information</li>
             <li>Save your shipping addresses</li>
           </ul>
-          
+
           <div style="text-align: center; margin: 30px 0;">
             <a href="${STORE.URL}/account" style="background-color: #4CAF50; color: white; padding: 12px 20px; text-decoration: none; border-radius: 4px; font-weight: bold;">
               Visit Your Account
             </a>
           </div>
-          
+
           <p>If you have any questions or need assistance, please don't hesitate to contact our customer service team at ${STORE.SUPPORT_EMAIL}.</p>
         </div>
 
@@ -122,7 +126,7 @@ export default async function userRegistrationEmailHandler({
           <p style="background-color: #f0f7ff; color: #0066cc; padding: 10px; border-radius: 4px; text-align: center; margin-bottom: 20px; font-size: 16px;">
             <strong>📣 ADMIN NOTIFICATION: New customer has registered</strong>
           </p>
-          
+
           <div style="background-color: #f9f9f9; padding: 15px; border-radius: 4px; margin: 20px 0;">
             <h2 style="color: #333; margin-top: 0;">Customer Information:</h2>
             <p><strong>Customer ID:</strong> ${customer.id}</p>

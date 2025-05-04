@@ -13,27 +13,31 @@ const STORE = {
 
 // Email constants
 const EMAIL = {
-  USER: process.env.EMAIL_USER || "alishanwd1@gmail.com",
-  PASS: process.env.EMAIL_PASS || "epmq fknl jdwh wtkr",
-  FROM: process.env.EMAIL_FROM || "alishanwd1@gmail.com",
-  ADMIN: process.env.EMAIL_ADMIN || "alishanwd1@gmail.com"
+  USER: process.env.SMTP_USERNAME || process.env.EMAIL_USER || "info@damneddesigns.com",
+  FROM: process.env.SMTP_FROM || process.env.EMAIL_FROM || "info@damneddesigns.com",
+  ADMIN: process.env.EMAIL_ADMIN || "info@damneddesigns.com"
 }
 
 /**
  * This subscriber handles sending order confirmation emails to both the customer and admin
- * when an order is placed. It uses Gmail with app password for sending emails.
+ * when an order is placed. It uses Gmail with OAuth2 authentication for sending emails.
  */
 export default async function orderPlacedEmailHandler({
   event: { data },
   container,
 }: SubscriberArgs<{ id: string }>) {
 
-  // Create a transporter using Gmail with app password
+  // Create a transporter using Gmail with OAuth2
   const transporter = nodemailer.createTransport({
-    service: "gmail",
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
     auth: {
+      type: "OAuth2",
       user: EMAIL.USER,
-      pass: EMAIL.PASS,
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      refreshToken: process.env.GOOGLE_REFRESH_TOKEN,
     },
   })
 

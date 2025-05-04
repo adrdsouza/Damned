@@ -14,10 +14,9 @@ const STORE = {
 
 // Email constants
 const EMAIL = {
-  USER: process.env.EMAIL_USER || "alishanwd1@gmail.com",
-  PASS: process.env.EMAIL_PASS || "epmq fknl jdwh wtkr",
-  FROM: process.env.EMAIL_FROM || "alishanwd1@gmail.com",
-  ADMIN: process.env.EMAIL_ADMIN || "alishanwd1@gmail.com",
+  USER: process.env.SMTP_USERNAME || process.env.EMAIL_USER || "info@damneddesigns.com",
+  FROM: process.env.SMTP_FROM || process.env.EMAIL_FROM || "info@damneddesigns.com",
+  ADMIN: process.env.EMAIL_ADMIN || "info@damneddesigns.com",
   REPLY_TO: process.env.EMAIL_REPLY_TO || process.env.SUPPORT_EMAIL || "info@damneddesigns.com"
 }
 
@@ -46,10 +45,15 @@ let emailTransporter: Transporter | null = null;
 function getEmailTransporter(): Transporter {
   if (!emailTransporter) {
     emailTransporter = nodemailer.createTransport({
-      service: "gmail",
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
       auth: {
+        type: "OAuth2",
         user: EMAIL.USER,
-        pass: EMAIL.PASS,
+        clientId: process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        refreshToken: process.env.GOOGLE_REFRESH_TOKEN,
       },
       // Add pool configuration for better performance with multiple emails
       pool: true,
@@ -84,18 +88,18 @@ export default async function passwordResetEmailHandler({
 
     // Determine if this is a customer or admin user
     const isCustomer = actor_type === "customer";
-    
+
     // Set the appropriate reset URL based on user type
-    const urlPrefix = isCustomer ? 
-      process.env.STORE_URL || STORE.URL : 
+    const urlPrefix = isCustomer ?
+      process.env.STORE_URL || STORE.URL :
       process.env.ADMIN_URL || STORE.ADMIN_URL;
-    
+
     const resetUrl = `${urlPrefix}/reset-password?token=${encodeURIComponent(token)}&email=${encodeURIComponent(email)}`;
-    
+
     // Set expiration time (typically 1 hour from now)
     const expirationTime = new Date();
     expirationTime.setHours(expirationTime.getHours() + 1);
-    
+
     // Create password reset email HTML
     const resetHtml = `
       <div style="${STYLES.container}">
@@ -111,21 +115,21 @@ export default async function passwordResetEmailHandler({
           <div style="${STYLES.resetBox}">
             <h2 style="${STYLES.title}">Reset Your Password</h2>
             <p>To reset your password, click the button below:</p>
-            
+
             <div style="text-align: center; margin: 25px 0;">
               <a href="${resetUrl}" style="${STYLES.button}">
                 Reset Password
               </a>
             </div>
-            
+
             <p>Or copy and paste this URL into your browser:</p>
             <p style="word-break: break-all;"><a href="${resetUrl}" style="${STYLES.link}">${resetUrl}</a></p>
-            
+
             <p style="${STYLES.warningText}">This link will expire in 1 hour (at ${expirationTime.toLocaleTimeString()} on ${expirationTime.toLocaleDateString()}).</p>
           </div>
 
           <p>If you didn't request a password reset, please contact our support team at ${STORE.SUPPORT_EMAIL} immediately.</p>
-          
+
           <p>For security reasons, this link can only be used once. If you need to reset your password again, please request a new link.</p>
         </div>
 
