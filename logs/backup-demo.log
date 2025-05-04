@@ -1,0 +1,35 @@
+[2025-04-23 11:39:15] Starting backup process for Damned Designs e-commerce system...
+[2025-04-23 11:39:15] Creating database backup...
+[2025-04-23 11:39:17] Backing up key configuration files...
+[2025-04-23 11:39:17] Creating compressed backup archive...
+20250423_113915/
+20250423_113915/Caddyfile
+20250423_113915/backend.env
+20250423_113915/documentation/
+20250423_113915/documentation/COD.md
+20250423_113915/documentation/Sezzle.md
+20250423_113915/documentation/PM2.md
+20250423_113915/documentation/checkpoints/
+20250423_113915/documentation/checkpoints/latest
+20250423_113915/documentation/SMTP.md
+20250423_113915/documentation/.gitignore
+20250423_113915/documentation/NMI.md
+20250423_113915/documentation/BACKUP.md
+20250423_113915/documentation/system-overview.md
+20250423_113915/documentation/CHECKPOINT-20250423.md
+20250423_113915/ecosystem.config.js
+20250423_113915/admin.env
+20250423_113915/storefront.env
+20250423_113915/medusa_db_20250423_113915.sql
+[2025-04-23 11:39:18] Cleaning up temporary files...
+[2025-04-23 11:39:18] Uploading backup to Google Drive...
+[2025-04-23 11:39:19] WARNING: rclone not configured for Google Drive. Skipping upload.
+[2025-04-23 11:39:19] To configure rclone, run: rclone config
+[2025-04-23 11:39:19] Then create a remote named 'gdrive' pointing to your Google Drive
+[2025-04-23 11:39:19] Cleaning up old backups...
+[2025-04-23 11:39:19] Backup process completed successfully.
+====================================================
+Backup saved to: /root/damneddesigns/backups/damneddesigns_backup_20250423_113915.tar.gz
+Backup sizes:
+28M	/root/damneddesigns/backups/damneddesigns_backup_20250423_113915.tar.gz
+====================================================

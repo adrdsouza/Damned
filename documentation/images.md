@@ -9,8 +9,13 @@ The Damned Designs Image Server is a dedicated service for handling product imag
 ### Core Components
 
 - **Framework**: Custom Node.js application
+<<<<<<< HEAD
 - **Directory**: `/root/damneddesigns/images`
 - **Main Entry Point**: `/root/damneddesigns/images/index.js`
+=======
+- **Directory**: `/root/damneddesigns/images/images`
+- **Main Entry Point**: `/root/damneddesigns/images/images/index.js`
+>>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1
 - **Storage**: Local file storage in the `static` directory
 - **Port**: 6162 (internal)
 - **Public URL**: https://images.damneddesigns.com
@@ -18,11 +23,19 @@ The Damned Designs Image Server is a dedicated service for handling product imag
 ### Directory Structure
 
 ```
+<<<<<<< HEAD
 /images/
 ├── index.js                # Main server file
 ├── package.json            # Dependencies and scripts
 ├── package-lock.json       # Dependency lock file
 ├── .env                    # Environment configuration
+=======
+/images/images/
+├── index.js                # Main server file
+├── package.json            # Dependencies and scripts
+├── package-lock.json       # Dependency lock file
+├── .gitignore              # Git ignore file
+>>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1
 └── static/                 # Image storage directory
     ├── products/           # Product images
     ├── categories/         # Category images
@@ -34,7 +47,18 @@ The Damned Designs Image Server is a dedicated service for handling product imag
 
 ### Environment Variables
 
+<<<<<<< HEAD
 See `documentation/env-variables.md` for all required environment variables for the images server.
+=======
+The image server configuration relies on environment variables:
+
+```
+PORT=6162                                                        # Server port
+DOMAIN_URL=https://images.damneddesigns.com                      # Public domain URL
+UPLOAD_DIR=static                                                # Upload directory
+ALLOWED_ORIGINS=https://admin.damneddesigns.com,https://api.damneddesigns.com   # CORS allowed origins
+```
+>>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1
 
 ### External Access Configuration
 
@@ -54,7 +78,16 @@ This provides:
 
 ## Image Processing Capabilities
 
+<<<<<<< HEAD
 *Note: The current implementation does not support resizing, format conversion, optimization, or watermarking. These features are planned for future releases.*
+=======
+The image server provides several image processing features:
+
+1. **Resizing**: Generate thumbnails and responsive sizes
+2. **Format Conversion**: Convert between image formats (JPEG, PNG, WebP)
+3. **Optimization**: Compress images for web delivery
+4. **Watermarking**: Add watermarks to product images (optional)
+>>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1
 
 ## API Endpoints
 
@@ -62,6 +95,7 @@ This provides:
 
 ```
 POST /upload
+<<<<<<< HEAD
 Content-Type: application/json
 ```
 
@@ -78,24 +112,47 @@ Example request body:
   "content": "<binary data as string>"
 }
 ```
+=======
+Content-Type: multipart/form-data
+```
+
+Parameters:
+- `file`: The image file to upload
+- `directory`: (optional) Subdirectory for storage (default: 'products')
+- `filename`: (optional) Custom filename (default: auto-generated)
+>>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1
 
 Response:
 ```json
 {
+<<<<<<< HEAD
   "url": "https://images.damneddesigns.com/static/1683141234567-example.jpg",
   "key": "1683141234567-example.jpg"
+=======
+  "success": true,
+  "url": "https://images.damneddesigns.com/products/example-image.jpg",
+  "path": "/products/example-image.jpg"
+>>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1
 }
 ```
 
 ### Image Retrieval
 
 ```
+<<<<<<< HEAD
 GET /static/{filename}
+=======
+GET /{directory}/{filename}
+>>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1
 ```
 
 Example:
 ```
+<<<<<<< HEAD
 https://images.damneddesigns.com/static/1683141234567-example.jpg
+=======
+https://images.damneddesigns.com/products/example-image.jpg
+>>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1
 ```
 
 ### Resized Image Retrieval
@@ -172,7 +229,11 @@ All uploaded files undergo validation:
 
 ## Monitoring & Logs
 
+<<<<<<< HEAD
 - **Application Logs**: View with `pm2 logs images`
+=======
+- **Application Logs**: View with `pm2 logs damned-designs-images`
+>>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1
 - **PM2 Monitoring**: Use `pm2 monit` for real-time stats
 - **File System Monitoring**: Track disk usage with `df -h`
 
@@ -182,19 +243,33 @@ All uploaded files undergo validation:
 
 If the image server is inaccessible:
 
+<<<<<<< HEAD
 1. Check if the service is running: `pm2 status images`
 2. Verify the service is listening on port 6162: `ss -tlnp | grep 6162`
 3. Check Caddy configuration for proper proxy settings
 4. Restart if needed: `pm2 restart images`
+=======
+1. Check if the service is running: `pm2 status damned-designs-images`
+2. Verify the service is listening on port 6162: `ss -tlnp | grep 6162`
+3. Check Caddy configuration for proper proxy settings
+4. Restart if needed: `pm2 restart damned-designs-images`
+>>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1
 
 ### Upload Failures
 
 If image uploads are failing:
 
+<<<<<<< HEAD
 1. Check server logs for error messages: `pm2 logs images`
 2. Verify CORS settings include the origin making the request
 3. Check file size limits and MIME type restrictions
 4. Verify the upload directory is writable: `ls -la /root/damneddesigns/images/static`
+=======
+1. Check server logs for error messages: `pm2 logs damned-designs-images`
+2. Verify CORS settings include the origin making the request
+3. Check file size limits and MIME type restrictions
+4. Verify the upload directory is writable: `ls -la /root/damneddesigns/images/images/static`
+>>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1
 
 ### Image Not Found Errors
 
@@ -235,10 +310,17 @@ The image data is included in the system backup process:
 
 When deploying updates to the image server:
 
+<<<<<<< HEAD
 1. Stop the current service: `pm2 stop images`
 2. Update the code: Pull latest changes or copy files
 3. Install dependencies if needed: `npm install`
 4. Restart the service: `pm2 start images`
+=======
+1. Stop the current service: `pm2 stop damned-designs-images`
+2. Update the code: Pull latest changes or copy files
+3. Install dependencies if needed: `npm install`
+4. Restart the service: `pm2 start damned-designs-images`
+>>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1
 5. Verify functionality by uploading a test image
 
 ## Future Considerations

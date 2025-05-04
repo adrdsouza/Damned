@@ -79,7 +79,24 @@ The server/client component boundary is carefully managed:
 
 ### Environment Variables
 
+<<<<<<< HEAD
 See `documentation/env-variables.md` for all required environment variables for the storefront.
+=======
+The storefront configuration relies on environment variables defined in `/root/damneddesigns/storefront/.env`:
+
+```
+# Backend communication
+MEDUSA_BACKEND_URL=https://api.damneddesigns.com
+NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY=pk_4a68e1bd85e72212ebbe8364d329891e7bdabcc921912541f37078fcfe197bfe
+
+# Storefront configuration
+NEXT_PUBLIC_BASE_URL=https://damneddesigns.com
+NEXT_PUBLIC_DEFAULT_REGION=us
+
+# Revalidation
+REVALIDATE_SECRET=supersecret
+```
+>>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1
 
 ### Medusa Client Configuration
 
@@ -304,7 +321,11 @@ async function ProductPage({ params }: Props) {
 - **Solution**:
   1. Connect to the PostgreSQL database: `psql -U myuser -d medusa-medusaapp`
   2. Add the missing column: `ALTER TABLE cart_line_item ADD COLUMN is_giftcard BOOLEAN NOT NULL DEFAULT FALSE;`
+<<<<<<< HEAD
   3. Restart services: `pm2 restart backend storefront`
+=======
+  3. Restart services: `pm2 restart damned-designs-backend damned-designs-storefront`
+>>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1
 
 ### Payment Provider Issues
 
@@ -331,7 +352,11 @@ If the storefront cannot connect to the backend:
 2. Check the Caddy configuration for proper proxy settings
 3. Ensure the publishable API key is correct and being sent with requests
 4. Check browser console for CORS or network errors
+<<<<<<< HEAD
 5. Verify the backend is running: `pm2 status backend`
+=======
+5. Verify the backend is running: `pm2 status damned-designs-backend`
+>>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1
 
 ## Performance Optimization
 
@@ -367,7 +392,11 @@ The standard deployment process:
 
 2. Start or restart the service with PM2:
    ```bash
+<<<<<<< HEAD
    pm2 restart storefront
+=======
+   pm2 restart damned-designs-storefront
+>>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1
    ```
 
 3. Verify the deployment:

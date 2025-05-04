@@ -4,6 +4,7 @@
 
 The Damned Designs backend is a Medusa.js-based e-commerce engine that powers the entire shopping experience. This document provides detailed information about the backend architecture, configuration, development workflow, and troubleshooting.
 
+<<<<<<< HEAD
 ## Quick Production Setup Checklist
 
 1. **Clone the repository and install dependencies:**
@@ -66,6 +67,8 @@ The Damned Designs backend is a Medusa.js-based e-commerce engine that powers th
    curl https://api.damneddesigns.com/health
    ```
 
+=======
+>>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1
 ## Architecture & Components
 
 ### Core Components
@@ -103,7 +106,32 @@ The backend includes several custom extensions to the core Medusa functionality:
 
 ### Environment Variables
 
+<<<<<<< HEAD
 See `documentation/env-variables.md` for all required environment variables for the backend.
+=======
+The backend configuration relies on environment variables defined in `/root/damneddesigns/backend/.env`. Critical variables include:
+
+```
+STORE_CORS=http://localhost:8000,https://docs.medusajs.com,https://damneddesigns.com
+ADMIN_CORS=http://localhost:5173,http://localhost:9000,https://docs.medusajs.com,https://damneddesigns.com,https://admin.damneddesigns.com
+AUTH_CORS=http://localhost:5173,http://localhost:9000,http://localhost:8000,https://docs.medusajs.com,https://damneddesigns.com,https://admin.damneddesigns.com
+REDIS_URL=redis://localhost:6379
+JWT_SECRET=d9c01c57d4f64e8b9a36b3297a4cf6c2e98b1f4a5e7c3d2b
+COOKIE_SECRET=e8f2a7d6c3b9e5f1a4d2c7b3e5f9a8d6c3b2e5f8a7d9c6
+DATABASE_URL=postgres://myuser:adrdsouza@localhost/medusa-medusaapp
+SERVER_LINK=https://api.damneddesigns.com
+IMAGE_SERVER_URL=https://images.damneddesigns.com
+
+# NMI Payment Provider
+NMI_SECURITY_KEY=h3WD8p6Hc8WM4eEAqpb6fsTJMYp45Mrp
+NMI_CHECKOUT_PUBLIC_KEY=checkout_public_2he6c5yTBC73u3AV2reJeHb37TpEegUa
+
+# Sezzle Payment Provider
+SEZZLE_PRIVATE_KEY=sz_pr_SSKy28nqlOAd5ujZu9w8jEHCvGJ78fBR
+SEZZLE_PUBLIC_KEY=sz_pub_mHYs860HGQAamnTUWOMfmOOsISn9slaT
+SEZZLE_API_MODE=sandbox
+```
+>>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1
 
 ### Database Schema
 
@@ -210,7 +238,11 @@ Sezzle operates in sandbox mode for testing:
 
 ## Monitoring & Logs
 
+<<<<<<< HEAD
 - **Application Logs**: View with `pm2 logs backend`
+=======
+- **Application Logs**: View with `pm2 logs damned-designs-backend`
+>>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1
 - **Error Tracking**: All errors are logged to stdout/stderr, captured by PM2
 - **PM2 Monitoring**: Use `pm2 monit` for real-time monitoring of the backend
 
@@ -220,10 +252,17 @@ Sezzle operates in sandbox mode for testing:
 
 If the backend API is inaccessible:
 
+<<<<<<< HEAD
 1. Check if the service is running: `pm2 status backend`
 2. Verify the service is listening on port 9000: `ss -tlnp | grep 9000`
 3. Check for errors in logs: `pm2 logs backend`
 4. Restart if needed: `pm2 restart backend`
+=======
+1. Check if the service is running: `pm2 status damned-designs-backend`
+2. Verify the service is listening on port 9000: `ss -tlnp | grep 9000`
+3. Check for errors in logs: `pm2 logs damned-designs-backend`
+4. Restart if needed: `pm2 restart damned-designs-backend`
+>>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1
 
 ### Payment Provider Issues
 
@@ -241,7 +280,11 @@ If NMI payment processing fails:
 
 2. Check backend logs for specific NMI error responses:
    ```bash
+<<<<<<< HEAD
    pm2 logs backend | grep NMI
+=======
+   pm2 logs damned-designs-backend | grep NMI
+>>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1
    ```
 
 3. Verify NMI gateway configuration in medusa-config.ts:
@@ -278,8 +321,13 @@ If Sezzle payment processing fails:
 
 2. Check backend logs for specific Sezzle error responses:
    ```bash
+<<<<<<< HEAD
    pm2 logs backend | grep -i sezzle
    pm2 logs backend | grep -i "401"
+=======
+   pm2 logs damned-designs-backend | grep -i sezzle
+   pm2 logs damned-designs-backend | grep -i "401"
+>>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1
    ```
 
 3. Verify Sezzle configuration in medusa-config.ts:

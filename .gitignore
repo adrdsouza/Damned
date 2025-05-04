@@ -5,10 +5,13 @@ ehthumbs.db
 Desktop.ini
 $RECYCLE.BIN/
 backups/
+<<<<<<< HEAD
 .npm
 .pm2
 .vscode-server
 logs
+=======
+>>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1
 
 # IDE/Editor folders
 .idea/

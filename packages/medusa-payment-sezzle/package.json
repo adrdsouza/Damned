@@ -1,0 +1,30 @@
+{
+  "name": "medusa-payment-sezzle",
+  "version": "1.0.0",
+  "description": "Sezzle payment plugin for Medusa",
+  "main": "dist/index.js",
+  "scripts": {
+    "prepare": "babel src --out-dir dist",
+    "build": "babel src --out-dir dist",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@medusajs/medusa": "^2.7.1",
+    "@medusajs/types": "^2.7.0",
+    "axios": "^1.9.0",
+    "body-parser": "^1.x",
+    "express": "^4.x"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.x",
+    "@babel/core": "^7.x",
+    "@babel/plugin-transform-class-properties": "^7.x",
+    "@babel/plugin-transform-private-methods": "^7.x",
+    "@babel/plugin-transform-private-property-in-object": "^7.x",
+    "@babel/plugin-transform-runtime": "^7.x",
+    "@babel/preset-env": "^7.x",
+    "dotenv": "^16.5.0"
+  }
+}

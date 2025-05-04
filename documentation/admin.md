@@ -2,6 +2,7 @@
 
 ## Overview
 
+<<<<<<< HEAD
 The Damned Designs Admin Panel is a Vite-based React application that provides the administrative interface for managing the e-commerce platform. This document details the architecture, configuration, operational aspects, and custom modifications of the admin system.
 
 ## Quick Production Setup Checklist
@@ -46,6 +47,9 @@ The Damned Designs Admin Panel is a Vite-based React application that provides t
   - Ensure backend CORS and cookies are set (see backend.md).
 - **No PM2 needed:**
   - The admin panel is served as static files by Caddy only.
+=======
+The Damned Designs Admin Panel is a Vite-based React application that provides the administrative interface for managing the e-commerce platform. This document details the architecture, configuration, and operational aspects of the admin system.
+>>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1
 
 ## Architecture & Components
 
@@ -105,7 +109,17 @@ The admin panel includes several custom routes extending the standard Medusa adm
 
 ### Environment Variables
 
+<<<<<<< HEAD
 See `documentation/env-variables.md` for all required environment variables for the admin panel.
+=======
+The admin panel configuration relies on environment variables defined in `/root/damneddesigns/admin/.env`:
+
+```
+# Direct connection to the API endpoint
+VITE_MEDUSA_BACKEND_URL="https://api.damneddesigns.com"
+VITE_MEDUSA_STOREFRONT_URL="https://damneddesigns.com"
+```
+>>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1
 
 ### Development vs. Production Configuration
 
@@ -218,9 +232,13 @@ The admin panel communicates with the Medusa backend using:
    - Payment provider configuration
    - Shipping option management
 
+<<<<<<< HEAD
 ## Custom Extensions & Modifications
 
 ### Core Extensions
+=======
+### Custom Extensions
+>>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1
 
 1. **Reservation System**:
    - Create reservations for products
@@ -232,6 +250,7 @@ The admin panel communicates with the Medusa backend using:
    - Set up tax overrides for specific products/regions
    - Province-level tax configuration
 
+<<<<<<< HEAD
 ### Custom Modifications
 
 #### 1. Order Line Item Product Title Display
@@ -270,6 +289,8 @@ After updates or changes to customizations, verify:
 - [ ] Order creation workflow correctly saves product titles
 - [ ] Order management features (returns, exchanges, claims) work properly
 
+=======
+>>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1
 ## Monitoring & Troubleshooting
 
 ### Logs & Monitoring
@@ -299,7 +320,11 @@ If you encounter 404 Not Found errors or static assets not loading:
 If login fails or authentication errors occur:
 
 1. Clear browser cookies and local storage
+<<<<<<< HEAD
 2. Check backend logs for authentication errors: `pm2 logs backend`
+=======
+2. Check backend logs for authentication errors: `pm2 logs damned-designs-backend`
+>>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1
 3. Verify the admin panel's `.env` has `VITE_MEDUSA_BACKEND_URL="https://api.damneddesigns.com"`
 4. Check that backend's `.env` has proper AUTH_CORS setting that includes both admin.damneddesigns.com and api.damneddesigns.com
 5. Ensure the backend has COOKIE_DOMAIN=damneddesigns.com defined
@@ -309,7 +334,11 @@ If login fails or authentication errors occur:
    ```bash
    cd /root/damneddesigns/admin
    npm run build:preview
+<<<<<<< HEAD
    pm2 restart backend
+=======
+   pm2 restart damned-designs-backend
+>>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1
    systemctl reload caddy
    ```
 
@@ -335,6 +364,7 @@ If the admin panel cannot communicate with the backend:
    ```
 5. Check for errors in the browser console and network tab
 
+<<<<<<< HEAD
 ### CORS & Caddy Configuration
 
 - Ensure CORS settings in `.env` and backend are correct:
@@ -343,6 +373,8 @@ If the admin panel cannot communicate with the backend:
 - Caddy should be configured to serve the `dist/` directory as static files for the admin panel domain.
 - After every build, Caddy must be restarted to pick up the new static files.
 
+=======
+>>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1
 ## Security Considerations
 
 The admin panel implements several security measures:
@@ -364,9 +396,13 @@ The admin panel is optimized for production with:
 3. **Caching Strategy**: Effective React Query caching
 4. **Server-Side Pagination**: For large datasets in tables
 
+<<<<<<< HEAD
 ## Development & Customization Guide
 
 ### Adding New Features
+=======
+## Customization & Extension
+>>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1
 
 To add new custom features to the admin panel:
 
@@ -375,6 +411,7 @@ To add new custom features to the admin panel:
 3. Implement the required components using Medusa UI components
 4. Connect to the backend API using the admin API client
 5. Add any necessary translations in i18n files
+<<<<<<< HEAD
 6. Document the customization in this file under "Custom Modifications"
 
 ### Maintaining Customizations
@@ -390,6 +427,8 @@ When implementing new customizations:
 2. Create backup copies of customized files
 3. Add necessary test cases to the testing checklist
 4. Update the deployment checklist if needed
+=======
+>>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1
 
 ## Deployment Checklist
 
@@ -397,6 +436,7 @@ When deploying updated versions of the admin panel:
 
 1. Update dependencies: `npm update`
 2. Verify environment variables are correctly set
+<<<<<<< HEAD
 3. Review and reapply any customizations from the "Custom Modifications" section
 4. Build the production assets: `npm run build:preview`
 5. Ensure the right backend URL is configured
@@ -405,3 +445,11 @@ When deploying updated versions of the admin panel:
 8. Test login and key functionality
 9. Verify that API requests are working properly
 10. Check for console errors during operation
+=======
+3. Build the production assets: `npm run build:preview`
+4. Ensure the right backend URL is configured
+5. Verify the admin panel is accessible at `https://admin.damneddesigns.com`
+6. Test login and key functionality
+7. Verify that API requests are working properly
+8. Check for console errors during operation
+>>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1

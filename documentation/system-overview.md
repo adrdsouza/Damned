@@ -1,6 +1,10 @@
 # Damned Designs System Overview
 
+<<<<<<< HEAD
 This document provides a high-level overview of the Damned Designs e-commerce system architecture and key components. For setup, environment variables, and recovery, see `system-config.md` and `env-variables.md`.
+=======
+This document provides a comprehensive overview of the Damned Designs e-commerce system architecture, configuration, and key components.
+>>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1
 
 ## 1. System Architecture
 
@@ -59,13 +63,69 @@ The system follows a modern e-commerce architecture with separate frontend, back
 - **Directory**: `/root/damneddesigns/admin`
 
 #### Additional Services
+<<<<<<< HEAD
 - **Image Server**: Dedicated service for image handling - located in `/root/damneddesigns/images`
+=======
+- **Image Server**: Dedicated service for image handling - located in `/root/damneddesigns/images/images`
+>>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1
 - **Process Manager**: PM2 for all Node.js services
 - **Web Server**: Caddy for reverse proxy and SSL
 
 ## 2. Configuration Details
 
+<<<<<<< HEAD
 For all environment variables and setup instructions, see `documentation/env-variables.md` and `documentation/system-config.md`.
+=======
+### Environment Variables
+
+#### Backend (`.env`)
+```
+STORE_CORS=http://localhost:8000,https://docs.medusajs.com,https://damneddesigns.com,https://api.damneddesigns.com
+ADMIN_CORS=http://localhost:5173,http://localhost:9000,https://docs.medusajs.com,https://damneddesigns.com,https://admin.damneddesigns.com
+AUTH_CORS=http://localhost:5173,http://localhost:9000,http://localhost:8000,https://docs.medusajs.com,https://damneddesigns.com,https://admin.damneddesigns.com,https://api.damneddesigns.com
+REDIS_URL=redis://localhost:6379
+DATABASE_URL=postgres://myuser:adrdsouza@localhost/medusa-medusaapp
+SERVER_LINK=https://api.damneddesigns.com
+IMAGE_SERVER_URL=https://images.damneddesigns.com
+
+# NMI Payment Plugin Configuration
+NMI_SECURITY_KEY=h3WD8p6Hc8WM4eEAqpb6fsTJMYp45Mrp
+
+# Sezzle Payment Plugin Configuration
+SEZZLE_PUBLIC_KEY=sz_pub_mHYs860HGQAamnTUWOMfmOOsISn9slaT
+SEZZLE_PRIVATE_KEY=sz_pr_SSKy28nqlOAd5ujZu9w8jEHCvGJ78fBR
+SEZZLE_SANDBOX_MODE=false
+SEZZLE_CAPTURE_MODE=automatic
+
+# Nodemailer Gmail OAuth Configuration
+SMTP_FROM=info@damneddesigns.com
+SMTP_USERNAME=info@damneddesigns.com
+```
+
+#### Storefront (`.env`)
+```
+# Using the dedicated API subdomain for backend communication
+MEDUSA_BACKEND_URL=https://api.damneddesigns.com
+NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY=pk_4a68e1bd85e72212ebbe8364d329891e7bdabcc921912541f37078fcfe197bfe
+NEXT_PUBLIC_BASE_URL=https://damneddesigns.com
+NEXT_PUBLIC_DEFAULT_REGION=us
+```
+
+#### Admin Panel (`.env`)
+```
+# Using the /api path on the admin domain for backend communication
+VITE_MEDUSA_BACKEND_URL="https://admin.damneddesigns.com/api"
+VITE_MEDUSA_STOREFRONT_URL="https://damneddesigns.com"
+```
+
+### Key Configuration Files
+
+- **Medusa Config**: `backend/medusa-config.ts`
+- **PM2 Config**: `ecosystem.config.js` (manages all services)
+- **Payment Gateway Config**: 
+  - NMI: Configuration in `.env` and `/packages/medusa-payment-nmi`
+  - Sezzle: Configuration in `.env` and `/packages/medusa-payment-sezzle`
+>>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1
 
 ## 3. Payment Integrations
 
@@ -76,17 +136,30 @@ The NMI payment integration enables secure credit card processing through Networ
 
 #### Configuration Details
 - **Integration Type**: Direct API Integration
+<<<<<<< HEAD
 - **Test Mode**: Currently in TEST mode
+=======
+- **Test Mode**: Currently in PRODUCTION mode
+>>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1
 - **API Endpoint**: `https://secure.nmi.com/api/transact.php`
 - **Plugin Location**: `/packages/medusa-payment-nmi`
 - **Database ID**: `pp_nmi_nmi`
 
+<<<<<<< HEAD
 #### Test Credentials (Currently in use)
 - **Test Security Key**: `6457Thfj624V5r7WUwc5v6a68Zsd6YEm`
 
 #### Production Credentials (Available when needed)
 - **Production Security Key**: `h3WD8p6Hc8WM4eEAqpb6fsTJMYp45Mrp`
 
+=======
+#### Production Credentials (Currently in use)
+- **Production Security Key**: `h3WD8p6Hc8WM4eEAqpb6fsTJMYp45Mrp`
+
+#### Test Credentials (Not currently in use)
+- **Test Security Key**: `6457Thfj624V5r7WUwc5v6a68Zsd6YEm`
+
+>>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1
 #### Features
 - ✅ Payment processing (authorization & capture)
 - ✅ Payment status tracking
@@ -109,12 +182,18 @@ The system is configured for Sezzle "Buy Now, Pay Later" integration, allowing c
 #### Configuration Details
 - **Integration Type**: Virtual Card API Integration
 - **Authentication**: Two-step process with token-based auth
+<<<<<<< HEAD
 - **Mode**: Currently in SANDBOX mode (`SEZZLE_SANDBOX_MODE=true`)
 - **API Endpoint**: https://sandbox.gateway.sezzle.com (sandbox)
+=======
+- **Mode**: Currently in PRODUCTION mode (`SEZZLE_SANDBOX_MODE=false`)
+- **API Endpoint**: https://gateway.sezzle.com (production)
+>>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1
 - **Plugin Location**: `/packages/medusa-payment-sezzle`
 - **Database ID**: `pp_sezzle_sezzle`
 - **Capture Mode**: Automatic (`SEZZLE_CAPTURE_MODE=automatic`)
 
+<<<<<<< HEAD
 #### Sandbox Credentials (Currently in use)
 - **Public Key**: `sz_pub_fV7SRB5FuCvueYl07GA5lOObLRjEY6be`
 - **Private Key**: `sz_pr_nIhPldbj7QgcZjWffh78GV6kYKgyqBog`
@@ -123,6 +202,16 @@ The system is configured for Sezzle "Buy Now, Pay Later" integration, allowing c
 - **Public Key**: `sz_pub_mHYs860HGQAamnTUWOMfmOOsISn9slaT`
 - **Private Key**: `sz_pr_SSKy28nqlOAd5ujZu9w8jEHCvGJ78fBR`
 
+=======
+#### Production Credentials (Currently in use)
+- **Public Key**: `sz_pub_mHYs860HGQAamnTUWOMfmOOsISn9slaT`
+- **Private Key**: `sz_pr_SSKy28nqlOAd5ujZu9w8jEHCvGJ78fBR`
+
+#### Sandbox Credentials (Not currently in use)
+- **Public Key**: `sz_pub_fV7SRB5FuCvueYl07GA5lOObLRjEY6be`
+- **Private Key**: `sz_pr_nIhPldbj7QgcZjWffh78GV6kYKgyqBog`
+
+>>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1
 #### Key Features
 - ✅ Checkout integration with Sezzle "Buy Now, Pay Later" via virtual card
 - ✅ Token-based authentication with expiration management
@@ -152,11 +241,16 @@ The system uses Medusa's built-in manual payment provider for offline payment op
 ## 4. Email Integration (SMTP)
 
 ### Overview
+<<<<<<< HEAD
 The system uses Medusa's built-in nodemailer plugin to send transactional emails via Gmail SMTP with OAuth2 authentication.
+=======
+The system uses Gmail SMTP with OAuth2 authentication for sending transactional emails to customers.
+>>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1
 
 ### Configuration Details
 - **Provider**: Gmail SMTP with OAuth2
 - **From Address**: info@damneddesigns.com
+<<<<<<< HEAD
 - **Templates**: Pug templates in `/backend/data/emailTemplates/`
 - **Documentation**: For complete details, see `/documentation/EMAIL-SYSTEM.md`
 
@@ -167,6 +261,17 @@ The system uses Medusa's built-in nodemailer plugin to send transactional emails
 - Password resets (`password-reset`)
 - Admin invitations (`invite`)
 - Order returns/refunds (`order-return`)
+=======
+- **Plugin**: medusa-plugin-nodemailer
+- **Authentication**: Google OAuth2
+
+### Email Types
+- Order confirmations
+- Shipping updates
+- Password resets
+- Welcome emails
+- Customer notifications
+>>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1
 
 ## 5. Process Management (PM2)
 
@@ -185,6 +290,7 @@ The main configuration file is located at `/root/damneddesigns/ecosystem.config.
 module.exports = {
   apps: [
     {
+<<<<<<< HEAD
       // Backend Medusa Server in production mode with admin disabled
       name: "backend",
       cwd: "/root/damneddesigns/backend",
@@ -192,6 +298,15 @@ module.exports = {
       args: "medusa start --port 9000",
       env: {
         NODE_ENV: "production"
+=======
+      // Backend Medusa Server
+      name: "damned-designs-backend",
+      cwd: "/root/damneddesigns/backend/.medusa/server",
+      script: "npm",
+      args: "run start",
+      env: {
+        NODE_ENV: "production",
+>>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1
       },
       time: true,
       autorestart: true,
@@ -202,12 +317,20 @@ module.exports = {
     },
     {
       // Storefront Next.js Server (Production Mode)
+<<<<<<< HEAD
       name: "storefront",
+=======
+      name: "damned-designs-storefront",
+>>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1
       cwd: "/root/damneddesigns/storefront",
       script: "npm",
       args: "run start",
       env: {
+<<<<<<< HEAD
         NODE_ENV: "production",
+=======
+        HOST: "0.0.0.0"
+>>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1
       },    
       time: true,
       autorestart: true,
@@ -216,11 +339,21 @@ module.exports = {
       instances: 1,
       exec_mode: "fork"
     },
+<<<<<<< HEAD
     {
       // Images Server
       name: "images",
       cwd: "/root/damneddesigns/images",
       script: "index.js",
+=======
+    // Admin Panel is now served by Caddy directly from static files at /root/damneddesigns/admin/dist
+    {
+      // Images Server
+      name: "damned-designs-images",
+      cwd: "/root/damneddesigns/images/images",
+      script: "node",
+      args: "index.js",
+>>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1
       env: {
         NODE_ENV: "production",
       },
@@ -237,10 +370,17 @@ module.exports = {
 
 ### PM2 Commands
 - **Start all services**: `pm2 start ecosystem.config.js`
+<<<<<<< HEAD
 - **Restart specific service**: `pm2 restart backend`
 - **Stop specific service**: `pm2 stop damned-designs-frontend`
 - **Stop all services**: `pm2 stop all`
 - **View logs**: `pm2 logs` or `pm2 logs backend`
+=======
+- **Restart specific service**: `pm2 restart damned-designs-backend`
+- **Stop specific service**: `pm2 stop damned-designs-frontend`
+- **Stop all services**: `pm2 stop all`
+- **View logs**: `pm2 logs` or `pm2 logs damned-designs-backend`
+>>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1
 - **Monitor resources**: `pm2 monit`
 - **Save current process list**: `pm2 save`
 - **Setup startup script**: `pm2 startup`
@@ -333,6 +473,7 @@ images.damneddesigns.com {
 }
 
 api.damneddesigns.com {
+<<<<<<< HEAD
     header {
         Access-Control-Allow-Origin "https://admin.damneddesigns.com"
         Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
@@ -341,6 +482,8 @@ api.damneddesigns.com {
         Access-Control-Max-Age "3600"
         defer
     }
+=======
+>>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1
     reverse_proxy 127.0.0.1:9000
 }
 ```
@@ -423,13 +566,20 @@ Caddy automatically handles SSL certificate provisioning and renewal through Let
 
 ## 8. Maintenance and Recovery
 
+<<<<<<< HEAD
 For all reset, recovery, and troubleshooting steps, see `documentation/system-config.md`.
 
+=======
+>>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1
 ### Important Directories
 - **Backend**: `/root/damneddesigns/backend` - Medusa.js server
 - **Storefront**: `/root/damneddesigns/storefront` - Next.js storefront for customers
 - **Admin**: `/root/damneddesigns/admin` - Medusa admin dashboard
+<<<<<<< HEAD
 - **Images**: `/root/damneddesigns/images` - Custom image service
+=======
+- **Images**: `/root/damneddesigns/images/images` - Custom image service
+>>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1
 - **Packages**: `/root/damneddesigns/packages` - Custom plugins including payment providers
 - **Documentation**: `/root/damneddesigns/documentation` - System documentation
 
@@ -444,6 +594,115 @@ For all reset, recovery, and troubleshooting steps, see `documentation/system-co
   psql -U myuser -d medusa-medusaapp < backup_file.sql
   ```
 
+<<<<<<< HEAD
 ---
 
 *Last updated: May 2, 2025 (System versions: Medusa 2.7.1, Next.js 15.0.3, Admin 2.7.0, Payment providers in production mode)*
+=======
+### Troubleshooting Steps
+1. Check PM2 logs for errors: `pm2 logs`
+2. Verify Redis is running: `redis-cli ping`
+3. Check PostgreSQL connection: `psql -U myuser -d medusa-medusaapp`
+4. Restart services as needed: `pm2 restart <service-name>`
+5. Check Caddy logs: `journalctl -u caddy`
+
+### Complete System Reinstallation Guide
+
+The preferred method for reinstalling the system is to use the provided backup and restore scripts:
+
+```bash
+# List available backups
+/root/damneddesigns/restore-project.sh --list
+
+# Restore from a project backup
+/root/damneddesigns/restore-project.sh --file damneddesigns_project_backup_20250423_123456.tar.gz
+
+# Restore database from backup
+psql -U myuser -d medusa-medusaapp < path/to/database_backup.sql
+```
+
+For detailed manual installation steps, see the "System Installation/Reinstallation Guide" section in `/root/damneddesigns/CLAUDE.md`.
+
+## 9. Troubleshooting
+
+### Common Issues and Solutions
+
+#### Database Schema Mismatches
+- **Problem**: "column i1.is_giftcard does not exist" error when adding products to cart
+- **Solution**:
+  1. Connect to the PostgreSQL database: `psql -U myuser -d medusa-medusaapp`
+  2. Add the missing column: `ALTER TABLE cart_line_item ADD COLUMN is_giftcard BOOLEAN NOT NULL DEFAULT FALSE;`
+  3. Restart services: `pm2 restart damned-designs-backend damned-designs-storefront`
+
+#### Product Page 500 Errors
+- **Problem**: Server-side rendering errors on product pages
+- **Solution**: Force dynamic rendering by adding to product page file:
+  ```javascript
+  // In /storefront/src/app/[countryCode]/(main)/products/[handle]/page.tsx
+  export const dynamic = 'force-dynamic'
+  ```
+
+#### Connection Refused Errors
+- **Problem**: Caddy logs show connection refused errors
+- **Solution**:
+  1. Ensure all services are running: `pm2 list`
+  2. Verify services are listening on correct ports: `ss -tlnp | grep -E '8000|9000|5173|6162'`
+  3. Make sure Caddyfile uses `127.0.0.1` instead of `localhost` for all reverse proxies
+  4. Restart affected services and Caddy
+
+#### Switching Payment Provider Modes
+
+**NMI**:
+- For production mode: Use key `h3WD8p6Hc8WM4eEAqpb6fsTJMYp45Mrp` in backend .env
+- For test mode: Use key `6457Thfj624V5r7WUwc5v6a68Zsd6YEm` in backend .env
+
+**Sezzle**:
+- For production mode: Set `SEZZLE_SANDBOX_MODE=false` in backend .env
+- For sandbox mode: Set `SEZZLE_SANDBOX_MODE=true` in backend .env
+
+After changing any environment variables, restart the backend:
+```bash
+pm2 restart damned-designs-backend
+pm2 save
+```
+
+## 10. Backup and Recovery
+
+The system includes a comprehensive backup solution. Full details can be found in the dedicated backup documentation at `/documentation/BACKUP.md`.
+
+### Key Features
+- Project backups (non-database files)
+- Database backups
+- Incremental backup system
+- Google Drive integration for off-site storage
+
+### Creating Backups
+
+```bash
+# Create a project backup
+/root/damneddesigns/backup-project.sh
+
+# Create an incremental backup
+/root/damneddesigns/backup-incremental.sh
+
+# Create a database backup
+pg_dump -U myuser -d medusa-medusaapp > backup_$(date +%Y%m%d).sql
+```
+
+### Restoring from Backups
+
+```bash
+# List available backups
+/root/damneddesigns/restore-project.sh --list
+
+# Restore from a project backup
+/root/damneddesigns/restore-project.sh --file BACKUP_FILENAME
+
+# Restore database from backup
+psql -U myuser -d medusa-medusaapp < backup_file.sql
+```
+
+---
+
+*Last updated: April 30, 2025 (System versions: Medusa 2.7.1, Next.js 15.0.3, Admin 2.7.0, Payment providers in production mode)*
+>>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1
