@@ -1,0 +1,44 @@
+{
+  "name": "medusa-payment-nmi",
+  "version": "1.0.0",
+  "description": "NMI payment plugin for Medusa",
+  "main": "dist/index.js",
+  "scripts": {
+    "prepare": "babel src --out-dir dist",
+    "build": "babel src --out-dir dist",
+    "postinstall": "npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@medusajs/medusa": "^2.7.1",
+    "@medusajs/types": "^2.7.0",
+    "axios": "^1.9.0",
+    "body-parser": "^1.x",
+    "express": "^4.x",
+    "@babel/cli": "^7.21.5",
+    "@babel/core": "^7.21.4",
+    "@babel/plugin-transform-class-properties": "^7.x",
+    "@babel/plugin-transform-private-methods": "^7.x",
+    "@babel/plugin-transform-private-property-in-object": "^7.x",
+    "@babel/plugin-transform-runtime": "^7.x",
+    "@babel/preset-env": "^7.x",
+    "dotenv": "^16.5.0"
+  },
+  "devDependencies": {},
+  "peerDependencies": {
+    "@medusajs/medusa": "^1.20.10 || ^2.0.0"
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env"
+    ],
+    "plugins": [
+      "@babel/plugin-transform-runtime",
+      "@babel/plugin-transform-class-properties",
+      "@babel/plugin-transform-private-methods",
+      "@babel/plugin-transform-private-property-in-object"
+    ]
+  }
+}

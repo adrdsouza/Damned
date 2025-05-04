@@ -1,0 +1,49 @@
+doctype html
+html
+  head
+    style
+      include style.css
+  body
+    .container
+      .header
+        img.logo(src=`https://damneddesigns.com/Logo.svg` alt="Damned Designs")
+        h1 Your Refund Has Been Processed
+      .content
+        p Hello #{data.email},
+        p We've processed a refund for your order with Damned Designs.
+        
+        h2 Order Details:
+        p 
+          strong Order Number: 
+          span #{data.display_id}
+        p
+          strong Refund Date: 
+          span #{new Date().toLocaleDateString()}
+        
+        if data.refunds && data.refunds.length > 0
+          .refund-details
+            h2 Refund Information:
+            each refund in data.refunds
+              p
+                strong Refund Amount: 
+                span $#{(refund.amount / 100).toFixed(2)}
+              if refund.reason
+                p
+                  strong Reason: 
+                  span #{refund.reason}
+              if refund.note
+                p
+                  strong Note: 
+                  span #{refund.note}
+        else
+          .refund-details
+            h2 Refund Information:
+            p
+              strong Refund Amount: 
+              span $#{(data.refunded_total / 100).toFixed(2)}
+            
+        p Please note that it may take 5-7 business days for the refund to appear in your account, depending on your payment provider.
+            
+      .footer
+        p If you have any questions about your refund, please contact our customer service team at support@damneddesigns.com.
+        p Thank you for shopping with Damned Designs!
