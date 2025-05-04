@@ -2,7 +2,7 @@ module.exports = {
   apps: [
     {
       // Backend Medusa Server
-      name: "damned-designs-backend",
+      name: "backend",
       cwd: "/root/damneddesigns/backend/.medusa/server",
       script: "npm",
       args: "run start",
@@ -18,7 +18,7 @@ module.exports = {
     },
     {
       // Storefront Next.js Server (Production Mode)
-      name: "damned-designs-storefront",
+      name: "storefront",
       cwd: "/root/damneddesigns/storefront",
       script: "npm",
       args: "run start",
@@ -36,7 +36,7 @@ HOST:"0.0.0.0"
     // Admin Panel is now served by Caddy directly from static files at /root/damneddesigns/admin/dist
     {
       // Images Server
-      name: "damned-designs-images",
+      name: "images",
       cwd: "/root/damneddesigns/images",
       script: "node",
       args: "index.js",
