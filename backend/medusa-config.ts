@@ -110,8 +110,8 @@ module.exports = defineConfig({
       options: {
         providers: [
           {
-            resolve: "@medusajs/file-local",
-            id: "local",
+            resolve: "./src/modules/my-files",
+            id: "my-file",
             options: {
               backend_url: process.env.SERVER_LINK || "http://localhost:9000",
               upload_dir: "uploads",
