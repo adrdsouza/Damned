@@ -1,2 +1,0 @@
-# Run daily backup at 3:00 AM
-0 3 * * * /root/damneddesigns/backup.sh > /root/damneddesigns/backup.log 2>&1
