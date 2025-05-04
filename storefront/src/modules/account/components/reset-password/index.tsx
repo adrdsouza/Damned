@@ -29,7 +29,6 @@ const ResetPassword = ({ setCurrentView }: Props) => {
 
     try {
       let res:any=await resetPassword(email);
-      console.log(res,"sadfdfasdasdfad");
       
       if(res?.success){
 

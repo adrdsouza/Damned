@@ -63,18 +63,16 @@ export default function ResetPasswordForm() {
 
     setLoading(true)
     setError(null)
-console.log(token,"sdfasdfassfasdfasd");
 
     try {
 let res=await updatePassword(email,password,token)
-console.log(res,"sdfsdgsdfgs");
 
 if(res?.success){
   setSuccess(true)
 
   // Redirect to login page after 3 seconds
   setTimeout(() => {
-    router.push("/account/login")
+    router.push("/account")
   }, 3000)
 }else{
   setError( "An error occurred while resetting your password. Please try again.")
