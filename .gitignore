@@ -12,6 +12,8 @@ backups/
 logs
 =======
 >>>>>>> d4d4b96a18440c787d584830841abd610f1a05d1
+documentation/CLAUDE.md
+
 
 # IDE/Editor folders
 .idea/
