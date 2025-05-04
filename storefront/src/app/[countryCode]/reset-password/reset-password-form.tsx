@@ -6,6 +6,7 @@ import { SubmitButton } from "@modules/checkout/components/submit-button"
 import ErrorMessage from "@modules/checkout/components/error-message"
 import { useRouter } from "next/navigation"
 import { sdk } from "@lib/config"
+import { updatePassword } from "@lib/data/customer"
 
 export default function ResetPasswordForm() {
   const router = useRouter()
@@ -65,22 +66,21 @@ export default function ResetPasswordForm() {
 console.log(token,"sdfasdfassfasdfasd");
 
     try {
-      await sdk.auth.updateProvider(
-        "customer",
-        "emailpass",
-        {
-          email,
-          password,
-        },
-        token
-      )
+let res=await updatePassword(email,password,token)
+console.log(res,"sdfsdgsdfgs");
 
-      setSuccess(true)
+if(res?.success){
+  setSuccess(true)
 
-      // Redirect to login page after 3 seconds
-      setTimeout(() => {
-        router.push("/account/login")
-      }, 3000)
+  // Redirect to login page after 3 seconds
+  setTimeout(() => {
+    router.push("/account/login")
+  }, 3000)
+}else{
+  setError( "An error occurred while resetting your password. Please try again.")
+
+}
+   
 
     } catch (err: any) {
       setError(err.message || "An error occurred while resetting your password. Please try again.")

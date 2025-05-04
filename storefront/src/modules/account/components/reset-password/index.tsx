@@ -6,6 +6,7 @@ import ErrorMessage from "@modules/checkout/components/error-message"
 import { SubmitButton } from "@modules/checkout/components/submit-button"
 import Input from "@modules/common/components/input"
 import { sdk } from "@lib/config"
+import { resetPassword } from "@lib/data/customer"
 
 type Props = {
   setCurrentView: (view: LOGIN_VIEW) => void
@@ -27,10 +28,13 @@ const ResetPassword = ({ setCurrentView }: Props) => {
     setError(null)
 
     try {
-      await sdk.auth.resetPassword("customer", "emailpass", {
-        identifier: email,
-      })
-      setSuccess(true)
+      let res:any=await resetPassword(email);
+      console.log(res,"sadfdfasdasdfad");
+      
+      if(res?.success){
+
+        setSuccess(true)
+      }
     } catch (err: any) {
       setError(err.message || "An error occurred during the password reset request")
     } finally {

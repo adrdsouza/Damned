@@ -214,7 +214,52 @@ export const deleteCustomerAddress = async (
       return { success: false, error: err.toString() }
     })
 }
+export const resetPassword = async (
+  email: string
+): Promise<any> => {
+  const headers = {
+    ...(await getAuthHeaders()),
+  }
+  return  await sdk.auth.resetPassword("customer", "emailpass", {
+          identifier: email,
+        }).then(async () => {
+      const customerCacheTag = await getCacheTag("customers")
+      revalidateTag(customerCacheTag)
+      return { success: true, error: null }
+    })
+    .catch((err) => {
+      return { success: false, error: err.toString() }
+    })
 
+ 
+}
+
+export const updatePassword = async (
+  email: string | null,
+  password:string,
+  token:string |null
+): Promise<any> => {
+  const headers = {
+    ...(await getAuthHeaders()),
+  }
+  return await sdk.auth.updateProvider(
+    "customer",
+    "emailpass",
+    {
+      email,
+      password,
+    },
+    token
+  ).then(async () => {
+    const customerCacheTag = await getCacheTag("customers")
+    revalidateTag(customerCacheTag)
+    return { success: true, error: null }
+  })
+  .catch((err) => {
+    return { success: false, error: err.toString() }
+  })
+ 
+}
 export const updateCustomerAddress = async (
   currentState: Record<string, unknown>,
   formData: FormData
